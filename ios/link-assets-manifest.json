@@ -1,0 +1,13 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "assets/Fonts/Forza-Black.ttf",
+      "sha1": "89db6d44c3f78d57b4717954bf5bfac3bbb7f44f"
+    },
+    {
+      "path": "assets/Fonts/Forza-Bold.ttf",
+      "sha1": "28c86b3963cf1bc343a95aefcfb7ee3ba1ed9365"
+    }
+  ]
+}
