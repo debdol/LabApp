@@ -27,9 +27,9 @@ const Mechanicsss = () => {
                 }
             }
         }
-        axios.get(`https://maps.googleapis.com/maps/api/distancematrix/json?origins=${postUserlat, postUserLong}&destinations=${28.548552, 77.257133}&units=imperial&key=AIzaSyBBf7fZdra0HYK1I3SZqAtjiwKtlzQo7Ag`)
-            .then((res) => { console.log("res in map :", res.data) })
-            .catch((err) => console.log("res in map :", err))
+        // axios.get(`https://maps.googleapis.com/maps/api/distancematrix/json?origins=${postUserlat, postUserLong}&destinations=${28.548552, 77.257133}&units=imperial&key=`)
+        //     .then((res) => { console.log("res in map :", res.data) })
+        //     .catch((err) => console.log("res in map :", err))
     };
 
     useEffect(() => {
