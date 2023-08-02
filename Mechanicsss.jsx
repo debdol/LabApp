@@ -7,31 +7,35 @@ import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import { StyleContext } from './App';
 // import MapboxGL, { MarkerView } from "@rnmapbox/maps";
 import axios from 'axios';
-import MapView, { PROVIDER_GOOGLE, Marker, MapViewDirections, } from 'react-native-maps';
+import MapView, { PROVIDER_GOOGLE, Marker, MapViewDirections, AnimatedRegion, MapCircle } from 'react-native-maps';
 
 const Mechanicsss = () => {
     const navigation = useNavigation();
     const { postServiceRequestDetails, postUserlat, postUserLong } = useContext(StyleContext);
     const [markers, setMarkers] = useState(null);
-    // console.log("M-Coordinate", markers);
-    const mechanicsDetailsUpdation = () => {
-        let query = "";
-        if (markers) {
-            for (let i = 0; i < markers.length; i++) {
-                if (i == markers.length - 1) {
-                    query = query + `${markers[i].longitude},${markers[i].latitude}`
-                    // console.log("distancesss :", query);
-                }
-                else {
-                    query = query + `${markers[i].longitude},${markers[i].latitude};`
-                }
-            }
-        }
-        // axios.get(`https://maps.googleapis.com/maps/api/distancematrix/json?origins=${postUserlat, postUserLong}&destinations=${28.548552, 77.257133}&units=imperial&key=`)
-        //     .then((res) => { console.log("res in map :", res.data) })
-        //     .catch((err) => console.log("res in map :", err))
-    };
+    const [distance, setDistance] = useState([]);
 
+    // console.log("M-Coordinate", distance);
+    // const mechanicsDetailsUpdation = () => {
+    //     let query = "";
+    //     if (markers) {
+    //         let query = [];
+    //         for (let i = 0; i < markers.length; i++) {
+    //             // query = query + `${markers[i].longitude},${markers[i].latitude}`
+    //             console.log(markers[i].latitude);
+    //             axios.get(`https://maps.googleapis.com/maps/api/distancematrix/json?origins=${postUserlat},${postUserLong}&destinations=${markers[i].latitude},${markers[i].longitude}&units=imperial&key=`)
+    //                 .then((res) => {
+    //                     console.log("distances :",res.data.rows[0].elements[0])
+    //                     // query.push(res.data.rows[0].elements[0].distance.text[i])
+    //                     // setDistance(query);
+    //                 })
+    //                 .catch((err) => console.log("res in map :", err))
+    //         }
+    //         // console.log("query :",  markers.length)
+    //     }
+
+
+    // };
     useEffect(() => {
         if (postServiceRequestDetails) {
             const temp = postServiceRequestDetails.map((item) => item.location);
@@ -41,12 +45,12 @@ const Mechanicsss = () => {
     }, [postServiceRequestDetails]);
 
     useEffect(() => {
-        mechanicsDetailsUpdation();
+        // mechanicsDetailsUpdation();
     }, [markers])
 
     const mechanicsList_Handler = ({ item, index }) => {
         // mechanicsDetailsUpdation(item.location);
-        // console.log("imag pathssssssss:", `http://43.204.88.205${imgPath[1]}`,"index :",index);
+        // console.log("distance :",distance)
         return (
             <View style={styles.machanicsNearMeMainContainer}>
                 <View style={styles.flatListPicAndLocationView}>
@@ -64,6 +68,7 @@ const Mechanicsss = () => {
                 </View>
                 <View>
                     <Text style={styles.AutomobileTxt}>Automobile Mechanic</Text>
+                    <Text style={{ width: "70%", borderWidth: 1, borderColor: "red" }}>18Km away (18mins)</Text>
                     <View style={styles.locationPinAndLocationName}>
                         <Entypo name='location-pin' style={{ fontSize: 20, color: "black" }} />
                         <Text style={{ fontSize: 16, color: "black", fontFamily: "Forza-Bold" }}>{item.address}</Text>
@@ -120,13 +125,20 @@ const Mechanicsss = () => {
                                 latitudeDelta: 0.0922,
                                 longitudeDelta: 0.0421,
                             }}
-                            // showsUserLocation={true}
+                            showsUserLocation
+                            followUserLocation
                             zoomTapEnabled={true}
-                            maxZoomLevel={15}
-                            loadingEnabled={true}
-                            moveOnMarkerPress={true}
-                        // userLocationPriority='high'
                         >
+                            <MapCircle
+                                center={{
+                                    latitude: postUserlat,
+                                    longitude: postUserLong,
+                                }}
+                                radius={15000}
+                                strokeWidth={2}
+                                strokeColor={'#1a66ff'}
+                                fillColor={'rgba(230,238,255,0.5)'}
+                            />
                             {markers ? (
                                 markers.map((item, index) => {
                                     return (
