@@ -7,35 +7,14 @@ import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import { StyleContext } from './App';
 // import MapboxGL, { MarkerView } from "@rnmapbox/maps";
 import axios from 'axios';
-import MapView, { PROVIDER_GOOGLE, Marker, MapViewDirections, AnimatedRegion, MapCircle } from 'react-native-maps';
+import MapView, { PROVIDER_GOOGLE, Marker, MapViewDirections, AnimatedRegion, MapCircle, MapMarker } from 'react-native-maps';
 
 const Mechanicsss = () => {
     const navigation = useNavigation();
     const { postServiceRequestDetails, postUserlat, postUserLong } = useContext(StyleContext);
     const [markers, setMarkers] = useState(null);
-    const [distance, setDistance] = useState([]);
 
-    // console.log("M-Coordinate", distance);
-    // const mechanicsDetailsUpdation = () => {
-    //     let query = "";
-    //     if (markers) {
-    //         let query = [];
-    //         for (let i = 0; i < markers.length; i++) {
-    //             // query = query + `${markers[i].longitude},${markers[i].latitude}`
-    //             console.log(markers[i].latitude);
-    //             axios.get(`https://maps.googleapis.com/maps/api/distancematrix/json?origins=${postUserlat},${postUserLong}&destinations=${markers[i].latitude},${markers[i].longitude}&units=imperial&key=`)
-    //                 .then((res) => {
-    //                     console.log("distances :",res.data.rows[0].elements[0])
-    //                     // query.push(res.data.rows[0].elements[0].distance.text[i])
-    //                     // setDistance(query);
-    //                 })
-    //                 .catch((err) => console.log("res in map :", err))
-    //         }
-    //         // console.log("query :",  markers.length)
-    //     }
-
-
-    // };
+    console.log("mechanics details :", postServiceRequestDetails);
     useEffect(() => {
         if (postServiceRequestDetails) {
             const temp = postServiceRequestDetails.map((item) => item.location);
@@ -43,10 +22,6 @@ const Mechanicsss = () => {
             setMarkers(temp);
         }
     }, [postServiceRequestDetails]);
-
-    useEffect(() => {
-        // mechanicsDetailsUpdation();
-    }, [markers])
 
     const mechanicsList_Handler = ({ item, index }) => {
         // mechanicsDetailsUpdation(item.location);
@@ -68,7 +43,7 @@ const Mechanicsss = () => {
                 </View>
                 <View>
                     <Text style={styles.AutomobileTxt}>Automobile Mechanic</Text>
-                    <Text style={{ width: "70%", borderWidth: 1, borderColor: "red" }}>18Km away (18mins)</Text>
+                    <Text style={{ width: "79%", color: "black" ,fontFamily:"Forza-Bold"}}>{item.distance} away ({item.duration})</Text>
                     <View style={styles.locationPinAndLocationName}>
                         <Entypo name='location-pin' style={{ fontSize: 20, color: "black" }} />
                         <Text style={{ fontSize: 16, color: "black", fontFamily: "Forza-Bold" }}>{item.address}</Text>
@@ -79,7 +54,7 @@ const Mechanicsss = () => {
                             justifyContent: "center", alignItems: "center",
                         }}>
                             <Text style={{ fontSize: 12, marginBottom: 9, color: "#3D4759", fontFamily: "Forza-Bold" }}>Working time</Text>
-                            <Text style={{ backgroundColor: "#F2F9FF", borderRadius: 5, color: "#3D4759", width: 90, height: 40, textAlignVertical: "center", textAlign: "center" }}>{item.working_time.from_time}am-{item.working_time.to_time}pm</Text>
+                            <Text style={{ backgroundColor: "#F2F9FF", borderRadius: 5, color: "#3D4759", width: 90, height: 40, textAlignVertical: "center", textAlign: "center" }}>{item.working_time.from_time}-{item.working_time.to_time}</Text>
                         </View>
                         <View style={{
                             // borderWidth: 1,
@@ -110,52 +85,55 @@ const Mechanicsss = () => {
     return (
         <View>
             {postServiceRequestDetails ? (
-                <View style={styles.page}>
-                    <View style={styles.headingView}>
-                        <AntDesign name='left' size={29} style={styles.headingIcon} onPress={() => navigation.goBack()} />
-                        <Text style={styles.headingTxt}>Mechanics</Text>
-                    </View>
+                <>
                     <View style={styles.page}>
-                        <MapView
-                            provider={PROVIDER_GOOGLE}
-                            style={{ width: "100%", height: "80%" }}
-                            initialRegion={{
-                                latitude: postUserlat,
-                                longitude: postUserLong,
-                                latitudeDelta: 0.0922,
-                                longitudeDelta: 0.0421,
-                            }}
-                            showsUserLocation
-                            followUserLocation
-                            zoomTapEnabled={true}
-                        >
-                            <MapCircle
-                                center={{
+                        <View style={styles.headingView}>
+                            <AntDesign name='left' size={29} style={styles.headingIcon} onPress={() => navigation.goBack()} />
+                            <Text style={styles.headingTxt}>Mechanics</Text>
+                        </View>
+                        <View style={styles.page}>
+                            <MapView
+                                provider={PROVIDER_GOOGLE}
+                                style={{ width: "100%", height: "80%" }}
+                                initialRegion={{
                                     latitude: postUserlat,
                                     longitude: postUserLong,
+                                    latitudeDelta: 0.0922,
+                                    longitudeDelta: 0.0421,
                                 }}
-                                radius={15000}
-                                strokeWidth={2}
-                                strokeColor={'#1a66ff'}
-                                fillColor={'rgba(230,238,255,0.5)'}
-                            />
-                            {markers ? (
-                                markers.map((item, index) => {
-                                    return (
-                                        <Marker coordinate={{ latitude: Number(item.latitude), longitude: Number(item.longitude) }}
-                                            key={index}
-                                            tracksViewChanges={false}>
-                                            <Image source={require("./assets/MapMarker.png")} style={styles.markerImg} />
-                                        </Marker>
-                                    )
-                                })
-                            ) : null}
-                        </MapView>
-                    </View >
-                    <View style={{ position: "absolute", zIndex: 2, top: 544 }}>
+                                showsUserLocation
+                                followUserLocation
+                                zoomTapEnabled={true}
+                            >
+                                <MapCircle
+                                    center={{
+                                        latitude: postUserlat,
+                                        longitude: postUserLong,
+                                    }}
+                                    radius={15000}
+                                    strokeWidth={2}
+                                    strokeColor={'#1a66ff'}
+                                    fillColor={'rgba(230,238,255,0.5)'}
+                                />
+                                {markers ? (
+                                    markers.map((item, index) => {
+                                        return (
+                                            <MapMarker coordinate={{ latitude: Number(item.latitude), longitude: Number(item.longitude) }} tracksViewChanges={false} key={index}>
+                                                <Marker coordinate={{ latitude: Number(item.latitude), longitude: Number(item.longitude) }}
+                                                >
+                                                    <Image source={require("./assets/MechanicIcon.png")} style={styles.markerImg} />
+                                                </Marker>
+                                            </MapMarker>
+                                        )
+                                    })
+                                ) : null}
+                            </MapView>
+                        </View >
+                    </View>
+                    <View style={{ position: "absolute", zIndex: 2, top: 544, backgroundColor: "rgba(52, 52, 52, 0.8)", width: "100%", paddingVertical: 9 }}>
                         <FlatList data={postServiceRequestDetails} renderItem={({ item, index }) => mechanicsList_Handler({ item, index })} keyExtractor={(item, index) => index} horizontal />
                     </View>
-                </View>
+                </>
             ) : (<ActivityIndicator size="large" color="#0000ff" style={{ alignItems: "center", marginTop: 350 }} />)}
         </View>
     );
@@ -192,7 +170,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: "#E0EAEF",
         backgroundColor: "#FFFFFF",
-        height: 290,
+        height: 270,
         width: 220,
         flexDirection: "column",
         justifyContent: "space-evenly",
@@ -247,7 +225,7 @@ const styles = StyleSheet.create({
     },
     page: {
         // top: "40%",
-        height: "140%",
+        height: "98%",
         width: "100%",
         alignItems: "center",
     },

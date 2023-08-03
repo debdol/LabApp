@@ -3,22 +3,11 @@ import React, { useContext, useEffect, useState } from 'react'
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { useNavigation } from '@react-navigation/native'
 import { StyleContext } from './App';
-// import MapboxGL, { MarkerView } from "@rnmapbox/maps";
-// import MapBox from './MAPS/MapBox';
 import MapView, { PROVIDER_GOOGLE, Marker, MapMarker, } from 'react-native-maps';
-// MapboxGL.setWellKnownTileServer('Mapbox');
 export const token = "pk.eyJ1Ijoic2FuZ3JhbS1ta2oiLCJhIjoiY2xqNDR1N2R3MHMycjNkbzAwbTd4eWtpcCJ9.6C-telOrK-86LmYXGu3FVA";
-// MapboxGL.setAccessToken(token);
 const SearchMechanics = () => {
     const { postUserlat, postUserLong } = useContext(StyleContext);
     const navigation = useNavigation();
-
-
-    // useEffect(() => {
-    //     // MapboxGL.setTelemetryEnabled(false);
-    //     // console.log("user lat long :", postUserLong, postUserlat);
-    // }, []);
-
 
     return (
         <View>
@@ -54,8 +43,8 @@ const SearchMechanics = () => {
                     maxZoomLevel={25}
                 // userLocationPriority='high'
                 >
-                    <MapMarker coordinate={{ latitude: Number(postUserlat), longitude: Number(postUserLong) }}>
-                        <Marker coordinate={{latitude: Number(postUserlat), longitude: Number(postUserLong)}} tracksViewChanges={false}>
+                    <MapMarker coordinate={{ latitude: Number(postUserlat), longitude: Number(postUserLong) }} tracksViewChanges={true}>
+                        <Marker coordinate={{ latitude: Number(postUserlat), longitude: Number(postUserLong) }}>
                             <Image source={require("./assets/MapMarker.png")} style={styles.markerImg} />
                         </Marker>
                     </MapMarker>

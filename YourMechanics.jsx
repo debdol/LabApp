@@ -1,52 +1,29 @@
 import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import MapboxGL from "@rnmapbox/maps";
 import { StyleContext } from './App';
 import { useNavigation } from '@react-navigation/native';
 import call from "react-native-phone-call";
-import axios from 'axios';
-import { token } from './SearchMechanics';
-
-MapboxGL.setWellKnownTileServer('Mapbox');
-MapboxGL.setAccessToken("pk.eyJ1Ijoic2FuZ3JhbS1ta2oiLCJhIjoiY2xqNDR1N2R3MHMycjNkbzAwbTd4eWtpcCJ9.6C-telOrK-86LmYXGu3FVA");
+import MapView, { PROVIDER_GOOGLE, Marker, Polyline } from 'react-native-maps';
 
 const YourMechanics = () => {
     const navigation = useNavigation();
     const { postUserCarNumber, postUserLocationDetails, postUserService, postServiceRequestDetails, postMehcanicsDetails, postUserlat, postUserLong } = useContext(StyleContext);
     const coordinatesExamples = [postMehcanicsDetails.location.longitude, postMehcanicsDetails.location.latitude];
-    const userLatLong = [postUserLong, postUserlat];
-    const [distance, setDistance] = useState();
-    const [time, setTime] = useState();
     const [mNumber, setMNumber] = useState(null);
-    // console.log("co ordinates in map page :", postUserLong,postUserlat,postMehcanicsDetails.location.longitude,postMehcanicsDetails.location.latitude);
-    let uLong = postUserLong;
-    let uLat = postUserlat;
-    let mLong = postMehcanicsDetails.location.longitude;
-    let mLat = postMehcanicsDetails.location.latitude
     const lotationObject = [
-        { longitude: postUserLong, latitude: postUserlat },
-        { longitude: postMehcanicsDetails.location.longitude, latitude: postMehcanicsDetails.location.latitude }
+        { latitude: postUserlat, longitude: postUserLong },
+        { latitude: Number(postMehcanicsDetails.location.latitude), longitude: Number(postMehcanicsDetails.location.longitude) }
     ]
     useEffect(() => {
-        MapboxGL.setTelemetryEnabled(false);
         setMNumber(postMehcanicsDetails.contact_number);
-        // console.log("number :", mNumber);
-        axios.get(`https://api.mapbox.com/directions/v5/mapbox/driving/${uLong},${uLat};${mLong},${mLat}?alternatives=true&geometries=geojson&language=en&overview=full&steps=true&access_token=${token}`)
-            .then((res) => {
-                console.log("responecececec :", res.data.routes[0]);
-                let kmDistance = Math.floor(res.data.routes[0].distance / 1000);
-                let minTime = Math.floor(res.data.routes[0].duration / 60);
-                console.log("time :",minTime);
-                setTime(minTime);
-                setDistance(kmDistance);
-            })
-            .catch((error) => console.log(error))
+        console.log("djjasdjhgs :",postMehcanicsDetails)
     }, []);
 
     const callMechanic = () => {
         if (mNumber) {
-            const args = {
+            console.log("call number :",mNumber);
+            let args = {
                 number: mNumber, // String value with the number to call
                 prompt: false, // Optional boolean property. Determines if the user should be prompted prior to the call 
                 skipCanOpen: true // Skip the canOpenURL check
@@ -71,23 +48,52 @@ const YourMechanics = () => {
                 </View>
                 <View style={styles.page}>
                     <View style={styles.container}>
-                        <MapboxGL.MapView style={{ flex: 1, }}>
+                        <MapView
+                            provider={PROVIDER_GOOGLE}
+                            style={{ width: "100%", height: "100%" }}
+                            initialRegion={{
+                                latitude: postUserlat,
+                                longitude: postUserLong,
+                                latitudeDelta: 0.0922,
+                                longitudeDelta: 0.0421,
+                            }}
+                        >
+                            <Polyline
+                                coordinates={[
+                                    lotationObject[0],
+                                    lotationObject[1]
+                                ]}
+                                strokeColor="#007AFF"
+                                strokeWidth={2}
+                            />
                             {lotationObject ? lotationObject.map((item, index) => {
-                                // console.log("items :", item);
-                                return (
-                                    <View key={index}>
-                                        <MapboxGL.Camera
-                                            zoomLevel={7}
-                                            centerCoordinate={userLatLong}
-                                        />
-                                        <MapboxGL.PointAnnotation
-                                            id="point"
-                                            coordinate={[item.longitude, item.latitude]}
-                                        />
-                                    </View>
-                                )
+                                if (index === 0) {
+                                    return (
+                                        <Marker coordinate={{
+                                            latitude: Number(item.latitude),
+                                            longitude: Number(item.longitude)
+                                        }} tracksViewChanges={false} key={index}>
+                                            <Image source={require("./assets/MapMarker.png")} style={{
+                                                height: 40,
+                                                width: 33,
+                                            }} />
+                                        </Marker>
+                                    )
+                                } else {
+                                    return (
+                                        <Marker coordinate={{
+                                            latitude: Number(item.latitude),
+                                            longitude: Number(item.longitude)
+                                        }} tracksViewChanges={false} key={index}>
+                                            <Image source={require("./assets/MechanicIcon.png")} style={{
+                                                height: 40,
+                                                width: 33,
+                                            }} />
+                                        </Marker>
+                                    )
+                                }
                             }) : null}
-                        </MapboxGL.MapView>
+                        </MapView>
                     </View>
                 </View>
                 <View style={{
@@ -103,10 +109,10 @@ const YourMechanics = () => {
                 }}>
                     <View style={styles.yourMechanicsHeaderView}>
                         <View style={styles.yourMechanicsPicContactView}>
-                            <Image source={require("./assets/Ellipse7227.png")} style={{ height: 50, width: 50 }} />
+                            <Image source={{ uri: `http://43.204.88.205${postMehcanicsDetails.profile_picture.split("/code")[1]}` }} style={{ height: 50, width: 50, borderRadius: 25 }} />
                             <View style={styles.contactUrMechanicsView}>
                                 <Text style={styles.txts}>Contact your mechanic</Text>
-                                <Text style={styles.txts}>{distance}km away ({time}mins)</Text>
+                                <Text style={styles.txts}>{postMehcanicsDetails.distance} away ({postMehcanicsDetails.duration})</Text>
                             </View>
                         </View>
                         <View>
@@ -176,7 +182,7 @@ const styles = StyleSheet.create({
     container: {
         height: 250,
         width: 350,
-        backgroundColor: "tomato",
+        // backgroundColor: "tomato",
         borderRadius: 10,
         overflow: 'hidden',
     },

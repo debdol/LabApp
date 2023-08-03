@@ -20,10 +20,10 @@ const MechanicsDetails = ({  route }) => {
     const [date,setDate] = useState();
     const [month,setMonth] = useState();
     const [year,setYear] = useState();
-    // const sendMechanicsData = ()=>{
-    //     getMechanicsDetails(route.params.item);
+    const sendMechanicsData = ()=>{
+        getMechanicsDetails(route.params.item);
         // console.log("params :" ,`http://43.204.88.205${route.params.item.profile_picture.split("/code")[1]}`);
-    // }
+    }
     useEffect(()=>{
         let dates = route.params.item.registered_on.split("-");
         let year = dates[2]
@@ -70,16 +70,16 @@ const MechanicsDetails = ({  route }) => {
                             </View>
                             <View style={styles.firstCardThirdRow}>
                                 <AntDesign name='clockcircle' style={styles.firstCardThirdRowClock} size={18} />
-                                <Text style={styles.firstCardThirdRowClock}>Working time: {route.params.item.working_time.from_time}am-{route.params.item.working_time.to_time}pm</Text>
+                                <Text style={styles.firstCardThirdRowClock}>Working time: {route.params.item.working_time.from_time}-{route.params.item.working_time.to_time}</Text>
                             </View>
                             <View style={styles.firstCardFourthRow}>
                                 <FontAwesome5 name='coins' style={{ color: "black" }} size={20} />
                                 <Text style={styles.firstCardThirdRowClock}>Rate per hour :</Text>
                                 <Text style={styles.firstCardFourthRowRate}>{route.params.item.rate}/hr</Text>
                             </View>
-                            {/* <TouchableOpacity style={styles.HireMeBtn} onPress={()=>{navigation.navigate("YourMechanics");sendMechanicsData();}}>
+                            <TouchableOpacity style={styles.HireMeBtn} onPress={()=>{navigation.navigate("YourMechanics");sendMechanicsData();}}>
                                 <Text style={styles.HireMeTxt}>Hire Me</Text>
-                            </TouchableOpacity> */}
+                            </TouchableOpacity>
                         </View>
                         {/* <View style={styles.secondCard}>
                             <View style={styles.secondCardBtnsView}>
