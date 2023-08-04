@@ -24,9 +24,9 @@ const SearchMechanics = () => {
                 <TouchableOpacity style={styles.useCurrenLBtn} onPress={() => navigation.navigate("InformationPage")}>
                     <Text style={styles.useCurrenLTxt}>Use current Location</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.inputLocationMBtn} onPress={() => navigation.navigate("ManuallyLocation")}>
+                {/* <TouchableOpacity style={styles.inputLocationMBtn} onPress={() => navigation.navigate("ManuallyLocation")}>
                     <Text style={styles.inputeLTxt}>Input Location Manually</Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
             </View>
             <View style={styles.page}>
                 <MapView
@@ -41,13 +41,9 @@ const SearchMechanics = () => {
                     // showsUserLocation={true}
                     zoomTapEnabled={true}
                     maxZoomLevel={25}
-                // userLocationPriority='high'
+                    userLocationPriority='high'
                 >
-                    <MapMarker coordinate={{ latitude: Number(postUserlat), longitude: Number(postUserLong) }} tracksViewChanges={true}>
-                        <Marker coordinate={{ latitude: Number(postUserlat), longitude: Number(postUserLong) }}>
-                            <Image source={require("./assets/MapMarker.png")} style={styles.markerImg} />
-                        </Marker>
-                    </MapMarker>
+                    <Marker coordinate={{ latitude: Number(postUserlat), longitude: Number(postUserLong) }} tracksViewChanges={true} image={require("./assets/MapMarker.png")} />
                 </MapView>
             </View >
         </View >

@@ -1,35 +1,40 @@
-import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native'
-import React, { useContext, useEffect, useState } from 'react'
+import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
+import React, { useContext, useEffect, useState } from 'react';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { StyleContext } from './App';
 import { useNavigation } from '@react-navigation/native';
 import call from "react-native-phone-call";
 import MapView, { PROVIDER_GOOGLE, Marker, Polyline } from 'react-native-maps';
+import axios from 'axios';
 
 const YourMechanics = () => {
     const navigation = useNavigation();
     const { postUserCarNumber, postUserLocationDetails, postUserService, postServiceRequestDetails, postMehcanicsDetails, postUserlat, postUserLong } = useContext(StyleContext);
-    const coordinatesExamples = [postMehcanicsDetails.location.longitude, postMehcanicsDetails.location.latitude];
-    const [mNumber, setMNumber] = useState(null);
+    const [mNumber, setMNumber] = useState();
+    const [reachTime, setReachTime] = useState();
+
     const lotationObject = [
         { latitude: postUserlat, longitude: postUserLong },
         { latitude: Number(postMehcanicsDetails.location.latitude), longitude: Number(postMehcanicsDetails.location.longitude) }
     ]
+
     useEffect(() => {
         setMNumber(postMehcanicsDetails.contact_number);
-        console.log("djjasdjhgs :",postMehcanicsDetails)
+        // console.log("postServiceRequestDetails :",postServiceRequestDetails);
+        axios.get("http://43.204.88.205:90/get-mechanic-reviews?mechanic_id=RSM458954&page=1&page_size=10")
+            .then((res) => console.log("reviews :", res))
+            .catch((err) => console.log(err))
     }, []);
 
     const callMechanic = () => {
         if (mNumber) {
-            console.log("call number :",mNumber);
+            console.log("call number :", mNumber);
             let args = {
                 number: mNumber, // String value with the number to call
-                prompt: false, // Optional boolean property. Determines if the user should be prompted prior to the call 
-                skipCanOpen: true // Skip the canOpenURL check
+                prompt: true, // Optional boolean property. Determines if the user should be prompted prior to the call 
+                skipCanOpen: false // Skip the canOpenURL check
             }
             call(args).catch(console.error)
-            console.log("huss bal");
         } else {
             console.log("hosse na ");
         }
@@ -72,41 +77,21 @@ const YourMechanics = () => {
                                         <Marker coordinate={{
                                             latitude: Number(item.latitude),
                                             longitude: Number(item.longitude)
-                                        }} tracksViewChanges={false} key={index}>
-                                            <Image source={require("./assets/MapMarker.png")} style={{
-                                                height: 40,
-                                                width: 33,
-                                            }} />
-                                        </Marker>
+                                        }} tracksViewChanges={false} key={index} image={require("./assets/MapMarker.png")} />
                                     )
                                 } else {
                                     return (
                                         <Marker coordinate={{
                                             latitude: Number(item.latitude),
                                             longitude: Number(item.longitude)
-                                        }} tracksViewChanges={false} key={index}>
-                                            <Image source={require("./assets/MechanicIcon.png")} style={{
-                                                height: 40,
-                                                width: 33,
-                                            }} />
-                                        </Marker>
+                                        }} tracksViewChanges={false} key={index} image={require("./assets/MechanicIcon.png")} />
                                     )
                                 }
                             }) : null}
                         </MapView>
                     </View>
                 </View>
-                <View style={{
-                    backgroundColor: "#FFF",
-                    padding: 10,
-                    borderWidth: 1,
-                    borderColor: "#E0EAEF",
-                    justifyContent: "center",
-                    width: 350,
-                    alignSelf: "center",
-                    borderRadius: 10,
-                    marginTop: "9%"
-                }}>
+                <View style={{ backgroundColor: "#FFF", padding: 10, borderWidth: 1, borderColor: "#E0EAEF", justifyContent: "center", width: 350, alignSelf: "center", borderRadius: 10, marginTop: "9%" }}>
                     <View style={styles.yourMechanicsHeaderView}>
                         <View style={styles.yourMechanicsPicContactView}>
                             <Image source={{ uri: `http://43.204.88.205${postMehcanicsDetails.profile_picture.split("/code")[1]}` }} style={{ height: 50, width: 50, borderRadius: 25 }} />

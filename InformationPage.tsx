@@ -57,7 +57,7 @@ const InformationPage = () => {
         }
       })
         .then((res) => {
-          // console.log("responce in requestdetails :", res.data.data[0].mechanic);
+          // console.log("responce in requestdetails :", res.data.data);
           getServiceRequestDetails(res.data.data[0].mechanic)
         })
         .catch((err) => console.log("error in requestdetails :", err))

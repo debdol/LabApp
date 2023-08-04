@@ -5,27 +5,21 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import { StyleContext } from './App';
-// import MapboxGL, { MarkerView } from "@rnmapbox/maps";
-import axios from 'axios';
-import MapView, { PROVIDER_GOOGLE, Marker, MapViewDirections, AnimatedRegion, MapCircle, MapMarker } from 'react-native-maps';
+import MapView, { PROVIDER_GOOGLE, Marker, MapCircle, } from 'react-native-maps';
 
 const Mechanicsss = () => {
     const navigation = useNavigation();
     const { postServiceRequestDetails, postUserlat, postUserLong } = useContext(StyleContext);
-    const [markers, setMarkers] = useState(null);
+    const [markers, setMarkers] = useState();
 
-    console.log("mechanics details :", postServiceRequestDetails);
     useEffect(() => {
         if (postServiceRequestDetails) {
             const temp = postServiceRequestDetails.map((item) => item.location);
-            // console.log("mD :",temp)
             setMarkers(temp);
         }
     }, [postServiceRequestDetails]);
-
+    
     const mechanicsList_Handler = ({ item, index }) => {
-        // mechanicsDetailsUpdation(item.location);
-        // console.log("distance :",distance)
         return (
             <View style={styles.machanicsNearMeMainContainer}>
                 <View style={styles.flatListPicAndLocationView}>
@@ -43,7 +37,7 @@ const Mechanicsss = () => {
                 </View>
                 <View>
                     <Text style={styles.AutomobileTxt}>Automobile Mechanic</Text>
-                    <Text style={{ width: "79%", color: "black" ,fontFamily:"Forza-Bold"}}>{item.distance} away ({item.duration})</Text>
+                    <Text style={{ width: "79%", color: "black", fontFamily: "Forza-Bold" }}>{item.distance} away ({item.duration})</Text>
                     <View style={styles.locationPinAndLocationName}>
                         <Entypo name='location-pin' style={{ fontSize: 20, color: "black" }} />
                         <Text style={{ fontSize: 16, color: "black", fontFamily: "Forza-Bold" }}>{item.address}</Text>
@@ -118,12 +112,7 @@ const Mechanicsss = () => {
                                 {markers ? (
                                     markers.map((item, index) => {
                                         return (
-                                            <MapMarker coordinate={{ latitude: Number(item.latitude), longitude: Number(item.longitude) }} tracksViewChanges={false} key={index}>
-                                                <Marker coordinate={{ latitude: Number(item.latitude), longitude: Number(item.longitude) }}
-                                                >
-                                                    <Image source={require("./assets/MechanicIcon.png")} style={styles.markerImg} />
-                                                </Marker>
-                                            </MapMarker>
+                                            <Marker coordinate={{ latitude: Number(item.latitude), longitude: Number(item.longitude) }} tracksViewChanges={false} key={index} image={require("./assets/MechanicIcon.png")} />
                                         )
                                     })
                                 ) : null}
@@ -233,10 +222,6 @@ const styles = StyleSheet.create({
         height: 317,
         width: 389,
         backgroundColor: "white",
-    },
-    markerImg: {
-        height: 40,
-        width: 33,
     },
 });
 
