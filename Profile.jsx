@@ -13,17 +13,18 @@ import { StyleContext } from './App';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import LoginMain from './LogInMain';
+import axios from 'axios';
 
 
 const Profile = () => {
   const navigation = useNavigation();
-  const { getMainPage, postUserName, postUserNumber, postUserAddress, postUserEmail, postUserCarModel, postUserCarNumber, getUserImage } = useContext(StyleContext);
+  const { getMainPage, getPageName, postUserName, postUserNumber, postUserAddress, postUserEmail, postUserCarModel, postUserCarNumber, getUserImage, postUserLog } = useContext(StyleContext);
   const [imagPath, setImagPath] = useState();
-
+  // console.log("tpken :",postUserLog);
   const logOutHandler = async () => {
     await AsyncStorage.removeItem("User_Token");
     getMainPage(<LoginMain />);
-
+    getPageName("Home");
   }
 
   const picPicker = () => {
@@ -34,6 +35,19 @@ const Profile = () => {
     }
     launchImageLibrary(options, response => {
       if (response.assets) {
+        const path = response.assets[0].fileName;
+        const type = response.assets[0].type;
+        const data = `profile_picture=${path};type=${type}`;
+        console.log("user Profile pic :", type);
+
+        // axios.put(`http://43.204.88.205:90/update_profile_picture`, data, {
+        //   headers: {
+        //     'Authorization': `Bearer ${postUserLog}`,
+        //     'Content-Type': 'application/json'
+        //   }
+        // })
+        //   .then((res) => console.log("responce in image :", res))
+        //   .catch((error) => console.log("error in image :", error));
         setImagPath(response.assets[0].uri);
         getUserImage(response.assets[0].uri);
       }
@@ -47,7 +61,7 @@ const Profile = () => {
         {imagPath ? (<ImageBackground style={styles.imgAndCameraView} source={{ uri: imagPath }} imageStyle={{ borderRadius: 50 }}>
           <AntDesign name='camera' size={20} style={styles.cameraStyle} onPress={picPicker} />
         </ImageBackground>) : (<View style={styles.picLessCameraStyleView}>
-          <Image source={require("./assets/profileAvtar.png")} style={styles.profileAvtar}/>
+          <Image source={require("./assets/profileAvtar.png")} style={styles.profileAvtar} />
           <AntDesign name='camera' size={20} style={styles.picLessCameraStyle} onPress={picPicker} />
         </View>)}
 
@@ -210,16 +224,16 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     borderColor: "#778899",
     marginBottom: 15,
-    position:"relative"
+    position: "relative"
   },
-  profileAvtar:{
-    height:100,
-    width:100,
+  profileAvtar: {
+    height: 100,
+    width: 100,
   },
   picLessCameraStyle: {
-    borderColor:"#EEEEEE",
-    borderWidth:1.5,
-    position:"absolute",
+    borderColor: "#EEEEEE",
+    borderWidth: 1.5,
+    position: "absolute",
     textAlign: "center",
     textAlignVertical: "center",
     color: "#FFFFFF",

@@ -72,8 +72,9 @@ const OtpPage = (props) => {
     const otpVarification = () => {
         if (ConcatOtp) {
             axios.get(`${baseUrl}otp-verification?contact_number=${storeNumber}&otp=${ConcatOtp}`)
-                .then((res) => {
-                    if (res.data.registered) {
+            .then((res) => {
+                    // console.log("trueee:",res.data)
+                    if (res.data.registered === true) {
                         AsyncStorage.setItem('User_Token', res.data.token);
                         getMainPage(<Loading/>);
                     } else {

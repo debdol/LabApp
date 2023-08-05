@@ -11,9 +11,10 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import axios from 'axios';
 import { StyleContext } from './App';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import AllStackNavigation from './AllStackNavigation';
 const RegisterPage = (props: any) => {
     const [token, setToken] = useState();
-    const { postUserLog, getUserLog, postUserlat, postUserLong } = useContext(StyleContext);
+    const { postUserLog, getMainPage, getUserLog, postUserlat, postUserLong } = useContext(StyleContext);
     //user data
     const [fullName, setFullName] = useState();
     const [email, setEmail] = useState();
@@ -25,20 +26,23 @@ const RegisterPage = (props: any) => {
     // console.log(typeof (longitude));
 
 
-    useEffect(() => {
-        getData();
-    }, [])
+
 
     const getData = async () => {
         try {
-            const value  = await AsyncStorage.getItem('varified_Token');
+            const value = await AsyncStorage.getItem('varified_Token');
             // console.log("token :", value);
             setToken(value);
         } catch (e) {
             console.log(e);
         }
     };
-    const submitHandler = () => {
+
+    useEffect(() => {
+        getData();
+    }, []);
+
+    const submitHandler = async () => {
         const datas = {
             name: fullName,
             car_number: carNumber,
@@ -50,7 +54,7 @@ const RegisterPage = (props: any) => {
             latitude: postUserlat,
             longitude: postUserLong
         }
-        // console.log('lat: ', postUserlat);
+        // console.log('token in registerPage: ', token);
         axios.post("http://43.204.88.205:90/registration", datas, {
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -58,13 +62,13 @@ const RegisterPage = (props: any) => {
             }
         })
             .then((res) => {
-                // console.log("token in regiterPage :",res.data.token);
-                getUserLog("true");
+                // console.log("token in regiterPage :",res);
+                getUserLog(res.data.token);
                 AsyncStorage.setItem('User_Token', res.data.token);
                 AsyncStorage.removeItem('varified_Token');
             })
             .catch((e) => {
-                console.log(e)
+                console.log("error in RegisterPage :", e)
             })
     }
     return (
@@ -87,7 +91,7 @@ const RegisterPage = (props: any) => {
                             borderRadius: 22,
                             color: "#242B2E"
                         }} />
-                        <TextInput placeholder='Full name' style={styles.fullNameI} onChangeText={(e:any) => setFullName(e)} />
+                        <TextInput placeholder='Full name' style={styles.fullNameI} onChangeText={(e: any) => setFullName(e)} />
                     </View>
 
                     <View style={styles.inputLogoConatiner}>
@@ -99,7 +103,7 @@ const RegisterPage = (props: any) => {
                             borderRadius: 22,
                             color: "#242B2E"
                         }} />
-                        <TextInput placeholder='Email' style={styles.fullNameI} onChangeText={(e:any) => setEmail(e)} />
+                        <TextInput placeholder='Email' style={styles.fullNameI} onChangeText={(e: any) => setEmail(e)} />
                     </View>
 
                     <View style={styles.inputLogoConatiner}>
@@ -112,7 +116,7 @@ const RegisterPage = (props: any) => {
                             borderRadius: 22,
                             color: "#242B2E"
                         }} />
-                        <TextInput placeholder='Address' style={styles.fullNameI} onChangeText={(e:any) => setAddress(e)} />
+                        <TextInput placeholder='Address' style={styles.fullNameI} onChangeText={(e: any) => setAddress(e)} />
                     </View>
 
                     <View style={styles.inputLogoConatiner}>
@@ -124,7 +128,7 @@ const RegisterPage = (props: any) => {
                             borderRadius: 22,
                             color: "#242B2E"
                         }} />
-                        <TextInput placeholder='Car Model' style={styles.fullNameI} onChangeText={(e:any) => setCarModel(e)} />
+                        <TextInput placeholder='Car Model' style={styles.fullNameI} onChangeText={(e: any) => setCarModel(e)} />
                     </View>
 
                     <View style={styles.inputLogoConatiner}>
@@ -136,7 +140,7 @@ const RegisterPage = (props: any) => {
                             borderRadius: 22,
                             color: "#242B2E"
                         }} />
-                        <TextInput placeholder='Car number' style={styles.fullNameI} onChangeText={(e:any) => setCarNumber(e)} />
+                        <TextInput placeholder='Car number' style={styles.fullNameI} onChangeText={(e: any) => setCarNumber(e)} />
                     </View>
 
                     <View style={styles.inputLogoConatiner}>
@@ -148,7 +152,7 @@ const RegisterPage = (props: any) => {
                             borderRadius: 22,
                             color: "#242B2E"
                         }} />
-                        <TextInput placeholder='Pin Code' style={styles.fullNameI} onChangeText={(e:any) => setPincode(e)} />
+                        <TextInput placeholder='Pin Code' style={styles.fullNameI} onChangeText={(e: any) => setPincode(e)} />
                     </View>
 
                     <View style={styles.inputLogoConatiner}>
@@ -160,7 +164,7 @@ const RegisterPage = (props: any) => {
                             borderRadius: 22,
                             color: "#242B2E"
                         }} />
-                        <TextInput placeholder='state' style={styles.fullNameI} onChangeText={(e:any) => setState(e)} />
+                        <TextInput placeholder='state' style={styles.fullNameI} onChangeText={(e: any) => setState(e)} />
                     </View>
                 </View>
                 <TouchableOpacity style={styles.nextBtn} onPress={() => {

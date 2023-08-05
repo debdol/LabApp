@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image, ImageBackground, ScrollView, SafeAreaView, StatusBar, TouchableOpacity, RefreshControl } from 'react-native'
+import { StyleSheet, Text, View, Image, ImageBackground, ScrollView, SafeAreaView, StatusBar, TouchableOpacity, RefreshControl, FlatList } from 'react-native'
 import React, { useContext, useEffect, useState, useCallback } from 'react'
 import Entypo from 'react-native-vector-icons/Entypo';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -10,14 +10,102 @@ import { useNavigation } from '@react-navigation/native';
 import { StyleContext } from './App';
 import { token } from './SearchMechanics';
 import axios from 'axios';
+import Loading from './Loading';
 
 const Home = () => {
-  const { postPageName, getPageName, postUserName, postUserCardValidity, postUsercard_number, postUserlat, postUserLong ,getUserLocationDetails} = useContext(StyleContext);
+  const { postPageName, getPageName, postUserName, postUserCardValidity, postUsercard_number, postUserlat, postUserLong, getUserLocationDetails, postUserLog } = useContext(StyleContext);
   const [refreshing, setRefreshing] = useState(false);
   const navigation = useNavigation();
   const [fullAddress, setFullAddress] = useState();
   const [placeName, setPlaceName] = useState(null);
   const [stateName, setStateName] = useState(null);
+  const [nearByMechanics, setNearByMechanics] = useState([]);
+
+
+  const nearByMechanicsApi_Handler = () => {
+    axios.get("http://43.204.88.205:90/nearby-mechanics", {
+      headers: {
+        'Authorization': `Bearer ${postUserLog}`,
+        'Content-Type': 'application/json'
+      }
+    })
+      .then((res) => {
+        // console.log("near by mechanics :", res.data.mechanics);
+        setNearByMechanics(res.data.mechanics);
+      })
+      .catch((err) => console.log("near by mechanics error:", err))
+  }
+
+  const nearByMechanicsList = ({ item, index }) => {
+    if (nearByMechanics) {
+      return (
+        <View style={styles.machanicsNearMeMainContainer}>
+          <View style={{
+            flexDirection: "row",
+            alignItems: "center",
+            // borderWidth:1,
+            width: "100%"
+          }}>
+            <Image source={{
+              uri: `http://43.204.88.205${item.profile_picture.split("/code")[1]}`
+            }} style={{ height: 50, width: 50, borderRadius: 25 }} />
+            <View style={{ marginLeft: 11 }}>
+              <Text style={{ color: "black", fontFamily: "Forza-Bold" }}>{item.m_name}</Text>
+              <View style={{ flexDirection: "row" }}>
+                <EvilIcons name='star' size={20} style={styles.fiveStar} />
+                <EvilIcons name='star' size={20} style={styles.fiveStar} />
+                <EvilIcons name='star' size={20} style={styles.fiveStar} />
+                <EvilIcons name='star' size={20} style={styles.fiveStar} />
+              </View>
+            </View>
+          </View>
+          <View>
+            <Text style={{ color: "#3D4759", fontWeight: "400", fontSize: 16, marginTop: 9, marginBottom: 4, fontFamily: "Forza-Bold" }}>Automobile Mechanic</Text>
+            <Text style={{ color: "#3D4759", marginBottom: 6, fontFamily: "Forza-Bold" }}>12km away (18mins)</Text>
+            <View style={{
+              flexDirection: "row",
+              alignItems: "center",
+              marginBottom: 5
+            }}>
+              <Entypo name='location-pin' style={{ fontSize: 20 }} />
+              <Text style={{ fontSize: 16, fontFamily: "Forza-Bold" }}>{item.address}</Text>
+            </View>
+            <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+              <View style={{
+                // borderWidth: 1,
+                flexDirection: "column",
+                justifyContent: "center", alignItems: "center",
+              }}>
+                <Text style={{ fontSize: 12, marginBottom: 9, color: "#3D4759", fontFamily: "Forza-Bold" }}>Working time</Text>
+                <Text style={{ backgroundColor: "#F2F9FF", padding: 9, borderRadius: 5, color: "#3D4759", fontFamily: "Forza-Bold", }}>{item.working_time.from_time}-{item.working_time.to_time}</Text>
+              </View>
+              <View style={{
+                // borderWidth: 1,
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                marginLeft: 9
+              }}>
+                <Text style={{ marginBottom: 9, fontSize: 12, color: "#3D4759", fontFamily: "Forza-Bold" }}>Rate</Text>
+                <Text style={{
+                  fontFamily: "Forza-Bold",
+                  width: 100,
+                  height: 37,
+                  borderRadius: 5,
+                  backgroundColor: "#EEA734",
+                  color: "white",
+                  textAlign: "center",
+                  padding: 9
+                }}>{item.rate}/Hr</Text>
+              </View>
+            </View>
+          </View>
+        </View>
+      )
+    } else {
+      <Loading />
+    }
+  }
 
   const getThePlaceName = () => {
     axios.get(`https://api.mapbox.com/geocoding/v5/mapbox.places/${postUserLong},${postUserlat}.json?access_token=${token}`)
@@ -43,6 +131,7 @@ const Home = () => {
 
   useEffect(() => {
     getThePlaceName();
+    nearByMechanicsApi_Handler();
   }, []);
 
   const onRefresh = useCallback(() => {
@@ -103,17 +192,20 @@ const Home = () => {
         <View>
           <View style={styles.mainContainer}>
             <View style={{
+              alignSelf: "center",
               width: 356,
               height: 185,
               backgroundColor: "#007AFF",
               borderRadius: 15,
               padding: 10,
-              justifyContent: "space-between",}}>
+              justifyContent: "space-between",
+            }}>
               <View style={{
                 padding: 9,
                 flexDirection: "row",
                 alignItems: "center",
-                justifyContent: "center"}}>
+                justifyContent: "center"
+              }}>
                 <Image source={require("./assets/Vector1.png")} resizeMode='cover' />
                 <Text style={{
                   marginLeft: 9,
@@ -165,6 +257,7 @@ const Home = () => {
               height: 185,
               padding: 14,
               marginTop: 19,
+              alignSelf: "center",
             }} imageStyle={{
               borderRadius: 16,
             }}>
@@ -194,12 +287,17 @@ const Home = () => {
                 </View>
               </View>
               <View style={{ alignItems: "center", }}>
-                <Text style={{
+                {postUsercard_number ? (<Text style={{
                   color: "#CAD5E2",
                   fontFamily: "Forza-Bold",
                   fontSize: 18,
                   marginTop: "9%",
-                }}>{postUsercard_number}</Text>
+                }}>{postUsercard_number}</Text>) : (<Text style={{
+                  color: "#CAD5E2",
+                  fontFamily: "Forza-Bold",
+                  fontSize: 18,
+                  marginTop: "9%",
+                }}>XXXX XXXX XXXX XXXX</Text>)}
               </View>
             </ImageBackground>
             <View style={styles.thirdMainContainer}>
@@ -243,254 +341,7 @@ const Home = () => {
 
             {/* MECHANICS NEAR ME starts here..................... */}
             <Text style={styles.mechanicsHeading}>Mechanics Near Me</Text>
-            <Text style={{ color: "black", fontFamily: "Forza-Bold", fontSize: 15 }}>Comming soon.....................</Text>
-
-            {/* <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-              <View style={styles.machanicsNearMeMainContainer}>
-                <View style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  // borderWidth:1,
-                  width: "100%"
-                }}>
-                  <Image source={{
-                    uri: "https://img.freepik.com/free-photo/car-mechanic-changing-wheels-car_1303-27465.jpg?w=2000"
-                  }} style={{ height: 50, width: 50, borderRadius: 25 }} />
-                  <View style={{ marginLeft: 11 }}>
-                    <Text style={{ color: "black", fontFamily: "Forza-Bold" }}>Manchester</Text>
-                    <View style={{ flexDirection: "row" }}>
-                      <EvilIcons name='star' size={20} style={styles.fiveStar} />
-                      <EvilIcons name='star' size={20} style={styles.fiveStar} />
-                      <EvilIcons name='star' size={20} style={styles.fiveStar} />
-                      <EvilIcons name='star' size={20} style={styles.fiveStar} />
-                    </View>
-                  </View>
-                </View>
-                <View>
-                  <Text style={{ color: "#3D4759", fontWeight: "400", fontSize: 16, marginTop: 9, marginBottom: 4, fontFamily: "Forza-Bold" }}>Automobile Mechanic</Text>
-                  <Text style={{ color: "#3D4759", marginBottom: 6, fontFamily: "Forza-Bold" }}>12km away (18mins)</Text>
-                  <View style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    marginBottom: 5
-                  }}>
-                    <Entypo name='location-pin' style={{ fontSize: 20 }} />
-                    <Text style={{ fontSize: 16, fontFamily: "Forza-Bold" }}>Gwagwalada</Text>
-                  </View>
-                  <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                    <View style={{
-                      // borderWidth: 1,
-                      flexDirection: "column",
-                      justifyContent: "center", alignItems: "center",
-                    }}>
-                      <Text style={{ fontSize: 12, marginBottom: 9, color: "#3D4759", fontFamily: "Forza-Bold" }}>Working time</Text>
-                      <Text style={{ backgroundColor: "#F2F9FF", padding: 9, borderRadius: 5, color: "#3D4759" }}>08am-10pm</Text>
-                    </View>
-                    <View style={{
-                      // borderWidth: 1,
-                      flexDirection: "column",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      marginLeft: 9
-                    }}>
-                      <Text style={{ marginBottom: 9, fontSize: 12, color: "#3D4759", fontFamily: "Forza-Bold" }}>Rate</Text>
-                      <Text style={{
-                        width: 100,
-                        height: 37,
-                        borderRadius: 5,
-                        backgroundColor: "#EEA734",
-                        color: "white",
-                        textAlign: "center",
-                        padding: 9
-                      }}>$20.00/Hr</Text>
-                    </View>
-                  </View>
-                </View>
-              </View>
-              <View style={styles.machanicsNearMeMainContainer}>
-                <View style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  // borderWidth:1,
-                  width: "100%"
-                }}>
-                  <Image source={{
-                    uri: "https://img.freepik.com/free-photo/car-mechanic-changing-wheels-car_1303-27465.jpg?w=2000"
-                  }} style={{ height: 50, width: 50, borderRadius: 25 }} />
-                  <View style={{ marginLeft: 11 }}>
-                    <Text style={{ color: "black", fontFamily: "Forza-Bold" }}>Manchester</Text>
-                    <View style={{ flexDirection: "row" }}>
-                      <EvilIcons name='star' size={20} style={styles.fiveStar} />
-                      <EvilIcons name='star' size={20} style={styles.fiveStar} />
-                      <EvilIcons name='star' size={20} style={styles.fiveStar} />
-                      <EvilIcons name='star' size={20} style={styles.fiveStar} />
-                    </View>
-                  </View>
-                </View>
-                <View>
-                  <Text style={{ color: "#3D4759", fontWeight: "400", fontSize: 16, marginTop: 9, marginBottom: 4, fontFamily: "Forza-Bold" }}>Automobile Mechanic</Text>
-                  <Text style={{ color: "#3D4759", marginBottom: 6, fontFamily: "Forza-Bold" }}>12km away (18mins)</Text>
-                  <View style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    marginBottom: 5
-                  }}>
-                    <Entypo name='location-pin' style={{ fontSize: 20 }} />
-                    <Text style={{ fontSize: 16, fontFamily: "Forza-Bold" }}>Gwagwalada</Text>
-                  </View>
-                  <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                    <View style={{
-                      // borderWidth: 1,
-                      flexDirection: "column",
-                      justifyContent: "center", alignItems: "center",
-                    }}>
-                      <Text style={{ fontSize: 12, marginBottom: 9, color: "#3D4759", fontFamily: "Forza-Bold" }}>Working time</Text>
-                      <Text style={{ backgroundColor: "#F2F9FF", padding: 9, borderRadius: 5, color: "#3D4759" }}>08am-10pm</Text>
-                    </View>
-                    <View style={{
-                      // borderWidth: 1,
-                      flexDirection: "column",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      marginLeft: 9
-                    }}>
-                      <Text style={{ marginBottom: 9, fontSize: 12, color: "#3D4759", fontFamily: "Forza-Bold" }}>Rate</Text>
-                      <Text style={{
-                        width: 100,
-                        height: 37,
-                        borderRadius: 5,
-                        backgroundColor: "#EEA734",
-                        color: "white",
-                        textAlign: "center",
-                        padding: 9
-                      }}>$20.00/Hr</Text>
-                    </View>
-                  </View>
-                </View>
-              </View>
-              <View style={styles.machanicsNearMeMainContainer}>
-                <View style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  // borderWidth:1,
-                  width: "100%"
-                }}>
-                  <Image source={{
-                    uri: "https://img.freepik.com/free-photo/car-mechanic-changing-wheels-car_1303-27465.jpg?w=2000"
-                  }} style={{ height: 50, width: 50, borderRadius: 25 }} />
-                  <View style={{ marginLeft: 11 }}>
-                    <Text style={{ color: "black", fontFamily: "Forza-Bold" }}>Manchester</Text>
-                    <View style={{ flexDirection: "row" }}>
-                      <EvilIcons name='star' size={20} style={styles.fiveStar} />
-                      <EvilIcons name='star' size={20} style={styles.fiveStar} />
-                      <EvilIcons name='star' size={20} style={styles.fiveStar} />
-                      <EvilIcons name='star' size={20} style={styles.fiveStar} />
-                    </View>
-                  </View>
-                </View>
-                <View>
-                  <Text style={{ color: "#3D4759", fontWeight: "400", fontSize: 16, marginTop: 9, marginBottom: 4, fontFamily: "Forza-Bold" }}>Automobile Mechanic</Text>
-                  <Text style={{ color: "#3D4759", marginBottom: 6, fontFamily: "Forza-Bold" }}>12km away (18mins)</Text>
-                  <View style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    marginBottom: 5
-                  }}>
-                    <Entypo name='location-pin' style={{ fontSize: 20 }} />
-                    <Text style={{ fontSize: 16, fontFamily: "Forza-Bold" }}>Gwagwalada</Text>
-                  </View>
-                  <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                    <View style={{
-                      // borderWidth: 1,
-                      flexDirection: "column",
-                      justifyContent: "center", alignItems: "center",
-                    }}>
-                      <Text style={{ fontSize: 12, marginBottom: 9, color: "#3D4759", fontFamily: "Forza-Bold" }}>Working time</Text>
-                      <Text style={{ backgroundColor: "#F2F9FF", padding: 9, borderRadius: 5, color: "#3D4759" }}>08am-10pm</Text>
-                    </View>
-                    <View style={{
-                      // borderWidth: 1,
-                      flexDirection: "column",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      marginLeft: 9
-                    }}>
-                      <Text style={{ marginBottom: 9, fontSize: 12, color: "#3D4759", fontFamily: "Forza-Bold" }}>Rate</Text>
-                      <Text style={{
-                        width: 100,
-                        height: 37,
-                        borderRadius: 5,
-                        backgroundColor: "#EEA734",
-                        color: "white",
-                        textAlign: "center",
-                        padding: 9
-                      }}>$20.00/Hr</Text>
-                    </View>
-                  </View>
-                </View>
-              </View>
-              <View style={styles.machanicsNearMeMainContainer}>
-                <View style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  // borderWidth:1,
-                  width: "100%"
-                }}>
-                  <Image source={{
-                    uri: "https://img.freepik.com/free-photo/car-mechanic-changing-wheels-car_1303-27465.jpg?w=2000"
-                  }} style={{ height: 50, width: 50, borderRadius: 25 }} />
-                  <View style={{ marginLeft: 11 }}>
-                    <Text style={{ color: "black", fontFamily: "Forza-Bold" }}>Manchester</Text>
-                    <View style={{ flexDirection: "row" }}>
-                      <EvilIcons name='star' size={20} style={styles.fiveStar} />
-                      <EvilIcons name='star' size={20} style={styles.fiveStar} />
-                      <EvilIcons name='star' size={20} style={styles.fiveStar} />
-                      <EvilIcons name='star' size={20} style={styles.fiveStar} />
-                    </View>
-                  </View>
-                </View>
-                <View>
-                  <Text style={{ color: "#3D4759", fontWeight: "400", fontSize: 16, marginTop: 9, marginBottom: 4, fontFamily: "Forza-Bold" }}>Automobile Mechanic</Text>
-                  <Text style={{ color: "#3D4759", marginBottom: 6, fontFamily: "Forza-Bold" }}>12km away (18mins)</Text>
-                  <View style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    marginBottom: 5
-                  }}>
-                    <Entypo name='location-pin' style={{ fontSize: 20 }} />
-                    <Text style={{ fontSize: 16, fontFamily: "Forza-Bold" }}>Gwagwalada</Text>
-                  </View>
-                  <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                    <View style={{
-                      // borderWidth: 1,
-                      flexDirection: "column",
-                      justifyContent: "center", alignItems: "center",
-                    }}>
-                      <Text style={{ fontSize: 12, marginBottom: 9, color: "#3D4759", fontFamily: "Forza-Bold" }}>Working time</Text>
-                      <Text style={{ backgroundColor: "#F2F9FF", padding: 9, borderRadius: 5, color: "#3D4759" }}>08am-10pm</Text>
-                    </View>
-                    <View style={{
-                      // borderWidth: 1,
-                      flexDirection: "column",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      marginLeft: 9
-                    }}>
-                      <Text style={{ marginBottom: 9, fontSize: 12, color: "#3D4759", fontFamily: "Forza-Bold" }}>Rate</Text>
-                      <Text style={{
-                        width: 100,
-                        height: 37,
-                        borderRadius: 5,
-                        backgroundColor: "#EEA734",
-                        color: "white",
-                        textAlign: "center",
-                        padding: 9
-                      }}>$20.00/Hr</Text>
-                    </View>
-                  </View>
-                </View>
-              </View>
-            </ScrollView> */}
+            <FlatList data={nearByMechanics} keyExtractor={(item) => item._id} renderItem={({ item, index }) => nearByMechanicsList({ item, index })} horizontal />
 
             {/* POPULAR OFFER START ................................*/}
             <Text style={styles.popularOfferHeading}>Popular offer</Text>
@@ -732,10 +583,11 @@ const styles = StyleSheet.create({
   },
   mainContainer: {
     padding: "2%",
-    alignSelf:"center",
+    // alignSelf: "center",
     marginBottom: "20%",
   },
   thirdMainContainer: {
+    alignSelf: "center",
     flexDirection: "column",
     justifyContent: "space-between",
     backgroundColor: "#F4B755",
@@ -774,7 +626,7 @@ const styles = StyleSheet.create({
     padding: 10,
     flexDirection: "column",
     justifyContent: "space-evenly",
-    alignItems: "flex-start",
+    // alignItems: "flex-start",
     borderRadius: 9
   },
   fiveStar: {

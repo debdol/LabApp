@@ -22,7 +22,6 @@ const InformationPage = () => {
   useEffect(() => {
     axios.get("http://43.204.88.205:90/service-types")
       .then((res) => {
-        // console.log("resPonce of service :", problems);
         setProblems(res.data.data.map((item: any) => item.name))
       })
       .catch((err) => console.log("error :", err))
@@ -57,8 +56,8 @@ const InformationPage = () => {
         }
       })
         .then((res) => {
-          // console.log("responce in requestdetails :", res.data.data);
-          getServiceRequestDetails(res.data.data[0].mechanic)
+          console.log("responce in requestdetails :", res.data.data);
+          getServiceRequestDetails(res.data.data[0].mechanic);
         })
         .catch((err) => console.log("error in requestdetails :", err))
     };
