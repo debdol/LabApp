@@ -9,6 +9,7 @@ import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import { useNavigation } from '@react-navigation/native';
 import { StyleContext } from './App';
 import axios from 'axios';
+import { creatServiceRequest, openServiceRequestDetails, serviceTypes } from './APIs';
 const InformationPage = () => {
   const { postUserCars, postUserLog, postUserlat, postUserLong, getServiceRequestDetails, getUserService } = useContext(StyleContext);
 
@@ -18,16 +19,7 @@ const InformationPage = () => {
   const [serviceCode, setServiceCode] = useState();
   const [problems, setProblems] = useState([]);
 
-
-  useEffect(() => {
-    axios.get("http://43.204.88.205:90/service-types")
-      .then((res) => {
-        setProblems(res.data.data.map((item: any) => item.name))
-      })
-      .catch((err) => console.log("error :", err))
-  }, [])
   const multipleLocation = () => {
-    // console.log(postUserLong);
     const serviceData = {
       car_manufacturer: "alto",
       car_model: postUserCars[0].car_model,
@@ -37,7 +29,7 @@ const InformationPage = () => {
       message: ureMsg,
       service_type_code: [serviceCode],
     }
-    // axios.post("http://43.204.88.205:90/create-service-request", serviceData, {
+    // axios.post(creatServiceRequest, serviceData, {
     //   headers: {
     //     'Authorization': `Bearer ${postUserLog}`,
     //     'Content-Type': 'application/json'
@@ -47,21 +39,31 @@ const InformationPage = () => {
     //     console.log("res in create service :", res.data.mechanics)
     //   })
     //   .catch((err) => console.log("err in create service :", err));
+
     if (serviceData.message) {
       navigation.navigate("Mechanicsss");
-      axios.get("http://43.204.88.205:90/open-service-request-details", {
+      axios.get(openServiceRequestDetails, {
         headers: {
           'Authorization': `Bearer ${postUserLog}`,
           'Content-Type': 'application/json'
         }
       })
         .then((res) => {
-          console.log("responce in requestdetails :", res.data.data);
-          getServiceRequestDetails(res.data.data[0].mechanic);
+          // console.log("responce in requestdetails :", res.data.data);
+          getServiceRequestDetails(res.data.data);
         })
         .catch((err) => console.log("error in requestdetails :", err))
     };
   }
+
+
+  useEffect(() => {
+    axios.get(serviceTypes)
+      .then((res) => {
+        setProblems(res.data.data.map(item => item.name))
+      })
+      .catch((err) => console.log("error :", err));
+  }, []);
 
   return (
     <SafeAreaView>
@@ -168,9 +170,12 @@ const InformationPage = () => {
             rowTextStyle={styles.dropdown1RowTxtStyle}
           />
           <Text style={styles.whatsWrong}>What is wrong with the vehicle?</Text>
-          <TextInput placeholder='Write your message' style={styles.footerInput} onChangeText={(e: any) => setUreMsg(e)} />
+          <TextInput placeholder='Write your message' style={styles.footerInput} onChangeText={e => setUreMsg(e)} />
         </View>
-        <TouchableOpacity style={styles.searchMehcanicsBtn} onPress={() => multipleLocation()}>
+        <TouchableOpacity style={styles.searchMehcanicsBtn} onPress={() => {
+          multipleLocation();
+          // setOpenServiceRequestDetailsController('false')
+        }}>
           <Text style={styles.searchMehcanicsBtnTxt}>Search Mechanics</Text>
         </TouchableOpacity>
       </ScrollView>

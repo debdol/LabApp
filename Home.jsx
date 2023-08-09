@@ -8,22 +8,29 @@ import Octicons from 'react-native-vector-icons/Octicons';
 
 import { useNavigation } from '@react-navigation/native';
 import { StyleContext } from './App';
-import { token } from './SearchMechanics';
 import axios from 'axios';
 import Loading from './Loading';
+import { nearByMechanicss, openServiceRequestDetails, } from './APIs';
 
 const Home = () => {
+  const navigation = useNavigation();
   const { postPageName, getPageName, postUserName, postUserCardValidity, postUsercard_number, postUserlat, postUserLong, getUserLocationDetails, postUserLog } = useContext(StyleContext);
   const [refreshing, setRefreshing] = useState(false);
-  const navigation = useNavigation();
   const [fullAddress, setFullAddress] = useState();
   const [placeName, setPlaceName] = useState(null);
   const [stateName, setStateName] = useState(null);
   const [nearByMechanics, setNearByMechanics] = useState([]);
+  const [fullAddressControllerVariable, setFullAddressControllerVariable] = useState(false);
+
+
+
+  const showFullAddress = () => {
+    setFullAddressControllerVariable(!fullAddressControllerVariable);
+  }
 
 
   const nearByMechanicsApi_Handler = () => {
-    axios.get("http://43.204.88.205:90/nearby-mechanics", {
+    axios.get(nearByMechanicss, {
       headers: {
         'Authorization': `Bearer ${postUserLog}`,
         'Content-Type': 'application/json'
@@ -108,29 +115,41 @@ const Home = () => {
   }
 
   const getThePlaceName = () => {
-    axios.get(`https://api.mapbox.com/geocoding/v5/mapbox.places/${postUserLong},${postUserlat}.json?access_token=${token}`)
-      .then((res) => {
-        console.log("res :", res.data.features[0].place_name);
-        setFullAddress(res.data.features[0].place_name.split(","));
-        // console.log(res.data.features[0].place_name.split(","));
-        getUserLocationDetails(res.data.features[0].place_name.split(","));
-        console.log("fullAddress :", fullAddress);
-      })
-      .catch((err) => console.log("error in map:", err))
-  }
-
-  useEffect(() => {
-    if (fullAddress) {
-      setPlaceName(fullAddress[0]);
-      setStateName(fullAddress[3]);
+    if (postUserlat && postUserLong) {
+      axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${postUserlat},${postUserLong}&key=`)
+        .then((res) => {
+          // console.log("responce in geoCoding :", res.data.results[4].formatted_address.split(",")[3]);
+          if (res) {
+            setFullAddress(res.data.results[4].formatted_address.split(","));
+            setPlaceName(res.data.results[4].formatted_address.split(",")[3]);
+            setStateName(res.data.results[4].formatted_address.split(",")[4]);
+          }
+        })
+        .catch((error) => { console.log("error of homePage in geoCoding :", error) })
     } else {
       setPlaceName("place");
       setStateName("state");
     }
-  }, [fullAddress]);
+  }
 
   useEffect(() => {
     getThePlaceName();
+    console.log("postUserLong:", postUserLong);
+    if (postUserLog) {
+      axios.get(openServiceRequestDetails, {
+        headers: {
+          'Authorization': `Bearer ${postUserLog}`,
+          'Content-Type': 'application/json'
+        }
+      })
+        .then((res) => {
+          // console.log("res in user data in homePage :", res.data.data[0]);
+          if (res.data.data[0].status === "active") {
+            navigation.navigate("YourMechanics", { acceptedMDetails: res.data.data[0] })
+          }
+        })
+        .catch((error) => { "error in user data in homePage :", error })
+    }
     nearByMechanicsApi_Handler();
   }, []);
 
@@ -155,17 +174,24 @@ const Home = () => {
               color: "black",
               fontFamily: "Forza-Bold"
             }}>your location</Text>
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <Text style={{
-                color: "#3D4759",
-                fontSize: 12,
-                fontWeight: "500",
-                letterSpacing: 0.5,
-                fontFamily: "Forza-Bold",
-              }} ellipsizeMode='tail' numberOfLines={1}>{placeName},</Text>
-              <Text style={{ fontFamily: "Forza-Bold", fontSize: 12, color: "#3D4759", }}>{stateName}</Text>
-              <AntDesign name="caretdown" style={{ color: "#201E1E", textAlignVertical: "center", padding: 2 }} />
-            </View>
+
+            {fullAddressControllerVariable ?
+              (<TouchableOpacity onPress={() => showFullAddress()} style={{ flexDirection: "row", alignItems: "center" }}>
+                <Text style={{
+                  color: "#3D4759", fontSize: 12, fontWeight: "500", letterSpacing: 0.5, fontFamily: "Forza-Bold",
+                }} ellipsizeMode='tail' numberOfLines={1}>{placeName},</Text>
+                <Text style={{ fontFamily: "Forza-Bold", fontSize: 12, color: "#3D4759", }}>{stateName}</Text>
+                <AntDesign name="caretup" style={{ color: "#201E1E", textAlignVertical: "center", padding: 2 }} />
+              </TouchableOpacity>)
+              :
+              (<TouchableOpacity onPress={() => showFullAddress()} style={{ flexDirection: "row", alignItems: "center" }}>
+                <Text style={{
+                  color: "#3D4759", fontSize: 12, fontWeight: "500", letterSpacing: 0.5, fontFamily: "Forza-Bold",
+                }} ellipsizeMode='tail' numberOfLines={1}>{placeName},</Text>
+                <Text style={{ fontFamily: "Forza-Bold", fontSize: 12, color: "#3D4759", }}>{stateName}</Text>
+                <AntDesign name="caretdown" style={{ color: "#201E1E", textAlignVertical: "center", padding: 2 }} />
+              </TouchableOpacity>)}
+
           </View>
         </View>
         <View style={{
@@ -186,6 +212,7 @@ const Home = () => {
           }}></Text>
         </View>
       </View>
+      {fullAddressControllerVariable ? <Text style={styles.fullAddressStyle}>{fullAddress}</Text> : null}
       <ScrollView showsVerticalScrollIndicator={false}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { onRefresh(); getThePlaceName() }} />}>
         {/* BODY .................................. */}
@@ -552,7 +579,7 @@ const Home = () => {
           <Text style={{ color: "white", fontSize: 17 }}>tracking</Text>
         </View>
       </TouchableOpacity> */}
-    </SafeAreaView>
+    </SafeAreaView >
   )
 }
 
@@ -580,6 +607,18 @@ const styles = StyleSheet.create({
     top: "19%",
     left: "17.87%",
     color: "#FFA514"
+  },
+  fullAddressStyle: {
+    position: "absolute",
+    top: "9%",
+    zIndex: 2,
+    backgroundColor: "#FFFFFF",
+    width: "60%",
+    right: "35%",
+    padding: 9,
+    borderRadius: 10,
+    fontFamily: "Forza-Bold",
+    fontSize: 10
   },
   mainContainer: {
     padding: "2%",

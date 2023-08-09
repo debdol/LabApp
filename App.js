@@ -9,6 +9,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import Loading from './Loading';
 import { enableLatestRenderer } from 'react-native-maps';
+import { userData } from './APIs';
 
 enableLatestRenderer();
 
@@ -26,7 +27,7 @@ export default function App() {
   const [userCarNumber, setUserCarNumber] = useState();
   const [userCars, setUserCars] = useState([]);
   const [validityOfCard, setValidityOfCard] = useState();
-  const [userCardNumber, setUserCardNumber] = useState();
+  // const [userCardNumber, setUserCardNumber] = useState();
   const [userState, setUserState] = useState();
   const [userPinCode, setUserPinCode] = useState();
   const [userImage, setUserImage] = useState();
@@ -34,7 +35,6 @@ export default function App() {
   const [locationDetails, setLocationDetails] = useState();
   const [userService, setUserService] = useState();
   const [mechanicsDetails, setmechanicsDetails] = useState();
-
 
   const [mainPage, setMainPage] = useState(<Loading />);
 
@@ -57,7 +57,7 @@ export default function App() {
   useEffect(() => {
     if (Userlog) {
       setMainPage(<Loading />)
-      axios.get('http://43.204.88.205:90/user-data', {
+      axios.get(userData, {
         headers: {
           'Authorization': `Bearer ${Userlog}`,
           'Content-Type': 'application/json'
@@ -150,14 +150,13 @@ export default function App() {
   const mechanicsDetails_handler = (value) => {
     setmechanicsDetails(value);
   }
+
   const getLocation = async () => {
     Geolocation.getCurrentPosition(
       (position) => {
         // console.log(position);
         setlatData(position.coords.latitude);
         setLongData(position.coords.longitude);
-        // let address = Location.reverseGeocodeAsync(position.coords);
-        // console.log(address)
       },
       (error) => {
         // See error code charts below.
@@ -217,7 +216,7 @@ export default function App() {
       postUserlat: latData,
       postUserLong: longData,
       postUserCardValidity: validityOfCard,
-      postUsercard_number: userCardNumber,
+      // postUsercard_number: userCardNumber,
       postUserImage: userImage,
       postServiceRequestDetails: serviceRequestDetails,
       postUserLocationDetails: locationDetails,

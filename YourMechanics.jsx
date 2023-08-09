@@ -7,24 +7,32 @@ import call from "react-native-phone-call";
 import MapView, { PROVIDER_GOOGLE, Marker, Polyline } from 'react-native-maps';
 import axios from 'axios';
 
-const YourMechanics = () => {
+const YourMechanics = ({ route }) => {
     const navigation = useNavigation();
-    const { postUserCarNumber, postUserLocationDetails, postUserService, postServiceRequestDetails, postMehcanicsDetails, postUserlat, postUserLong } = useContext(StyleContext);
+    const { postUserCarNumber, postUserLocationDetails, postUserService, postUserlat, postUserLong } = useContext(StyleContext);
     const [mNumber, setMNumber] = useState();
     const [reachTime, setReachTime] = useState();
 
     const lotationObject = [
         { latitude: postUserlat, longitude: postUserLong },
-        { latitude: Number(postMehcanicsDetails.location.latitude), longitude: Number(postMehcanicsDetails.location.longitude) }
+        { latitude: Number(route.params.acceptedMDetails.m_location.latitude), longitude: Number(route.params.acceptedMDetails.m_location.longitude) }
     ]
 
+    // useEffect(() => {
+    //     if (route.params.acceptedMDetails) {
+    //         setMNumber(route.params.acceptedMDetails.contact_number);
+    //         // console.log("postServiceRequestDetails :", route.params.acceptedMDetails.);
+    //     }
+    // }, [route.params.acceptedMDetails]);
+    const addMinutes = (date, minutes) => {
+        date.setMinutes(date.getMinutes() + minutes);
+        return (date);
+    }
+
     useEffect(() => {
-        setMNumber(postMehcanicsDetails.contact_number);
-        // console.log("postServiceRequestDetails :",postServiceRequestDetails);
-        axios.get("http://43.204.88.205:90/get-mechanic-reviews?mechanic_id=RSM458954&page=1&page_size=10")
-            .then((res) => console.log("reviews :", res))
-            .catch((err) => console.log(err))
-    }, []);
+        const min = addMinutes(new Date(), 10);
+        console.log("minutes :", min);
+    }, [])
 
     const callMechanic = () => {
         if (mNumber) {
@@ -69,7 +77,7 @@ const YourMechanics = () => {
                                     lotationObject[1]
                                 ]}
                                 strokeColor="#007AFF"
-                                strokeWidth={2}
+                                strokeWidth={1.5}
                             />
                             {lotationObject ? lotationObject.map((item, index) => {
                                 if (index === 0) {
@@ -91,13 +99,13 @@ const YourMechanics = () => {
                         </MapView>
                     </View>
                 </View>
-                <View style={{ backgroundColor: "#FFF", padding: 10, borderWidth: 1, borderColor: "#E0EAEF", justifyContent: "center", width: 350, alignSelf: "center", borderRadius: 10, marginTop: "9%" }}>
+                <View style={{ backgroundColor: "#FFF", padding: 10, borderWidth: 1, borderColor: "#E0EAEF", justifyContent: "center", width: 350, alignSelf: "center", borderRadius: 10, marginTop: "4%" }}>
                     <View style={styles.yourMechanicsHeaderView}>
                         <View style={styles.yourMechanicsPicContactView}>
-                            <Image source={{ uri: `http://43.204.88.205${postMehcanicsDetails.profile_picture.split("/code")[1]}` }} style={{ height: 50, width: 50, borderRadius: 25 }} />
+                            {/* <Image source={{ uri: `http://43.204.88.205${route.params.acceptedMDetails.profile_picture.split("/code")[1]}` }} style={{ height: 50, width: 50, borderRadius: 25 }} /> */}
                             <View style={styles.contactUrMechanicsView}>
                                 <Text style={styles.txts}>Contact your mechanic</Text>
-                                <Text style={styles.txts}>{postMehcanicsDetails.distance} away ({postMehcanicsDetails.duration})</Text>
+                                <Text style={styles.txts}>{route.params.acceptedMDetails.m_distance} away ({route.params.acceptedMDetails.m_duration})</Text>
                             </View>
                         </View>
                         <View>
@@ -105,16 +113,17 @@ const YourMechanics = () => {
                                 <Text style={[styles.callBtnTxt, { color: "#FFFFFF" }]}>Call now</Text>
                             </TouchableOpacity>
                         </View>
+                        <Text style={{ fontFamily: "Forza-Bold", alignSelf: "center", color: "#505056", letterSpacing: 1, fontSize: 15 }}>Your OTP : {route.params.acceptedMDetails.otp}</Text>
                     </View>
-                    <View>
-                        <Text style={{ marginBottom: 10, fontSize: 18, color: "#505056", fontFamily: "Forza-Bold" }}>Order details</Text>
+                    <View style={{ padding: "2%" }}>
+                        <Text style={{ fontSize: 18, color: "#505056", fontFamily: "Forza-Bold" }}>Order details</Text>
                         <View style={styles.orderNumberView}>
-                            <Text style={[styles.txts, styles.txtsKey]}>Order number : </Text>
-                            <Text style={[styles.txts, styles.txtsResult]}>#ASDF-AASDF</Text>
+                            <Text style={[styles.txts, styles.txtsKey]}>Order number :  </Text>
+                            <Text style={[styles.txts, styles.txtsResult]}>{route.params.acceptedMDetails.service_code}</Text>
                         </View>
                         <View style={styles.orderNumberView}>
                             <Text style={[styles.txts, styles.txtsKey]}>Your location : </Text>
-                            <Text style={[styles.txts, styles.txtsResult]}>{postUserLocationDetails[0]} ,{postUserLocationDetails[4]}</Text>
+                            {/* <Text style={[styles.txts, styles.txtsResult]}>{postUserLocationDetails[3]},{postUserLocationDetails[4]}</Text> */}
                         </View>
                         <View style={styles.orderNumberView}>
                             <Text style={[styles.txts, styles.txtsKey]}>Car name : </Text>
@@ -122,15 +131,15 @@ const YourMechanics = () => {
                         </View>
                         <View style={styles.orderNumberView}>
                             <Text style={[styles.txts, styles.txtsKey]}>Car no : </Text>
-                            <Text style={[styles.txts, styles.txtsResult]}>{postUserCarNumber}</Text>
+                            <Text style={[styles.txts, styles.txtsResult]}>{route.params.acceptedMDetails.car_number}</Text>
                         </View>
                         <View style={styles.orderNumberView}>
                             <Text style={[styles.txts, styles.txtsKey]}>Repair : </Text>
-                            <Text style={[styles.txts, styles.txtsResult]}>{postUserService}</Text>
+                            <Text style={[styles.txts, styles.txtsResult]}>{route.params.acceptedMDetails.service_types[0].service_name}</Text>
                         </View>
                         <View style={styles.orderNumberView}>
                             <Text style={[styles.txts, styles.txtsKey]}>Mechanic charge :</Text>
-                            <Text style={[styles.txts, styles.txtsResult]}>{postMehcanicsDetails.rate}$/hr</Text>
+                            <Text style={[styles.txts, styles.txtsResult]}>{route.params.acceptedMDetails.m_rate}/hr</Text>
                         </View>
                     </View>
                 </View>
@@ -185,7 +194,7 @@ const styles = StyleSheet.create({
         fontFamily: "Forza-Bold",
         color: "#505056",
         fontSize: 15,
-        marginBottom: "10%"
+        marginBottom: "5%"
     },
     yourMechanicsHeaderView: {
         padding: 5,
@@ -228,7 +237,7 @@ const styles = StyleSheet.create({
         color: "#505056",
     },
     txtsResult: {
-        color: "#3D4759"
+        color: "#3D4759",
     }
 })
 export default YourMechanics;

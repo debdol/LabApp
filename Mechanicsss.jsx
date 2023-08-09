@@ -11,14 +11,30 @@ const Mechanicsss = () => {
     const navigation = useNavigation();
     const { postServiceRequestDetails, postUserlat, postUserLong } = useContext(StyleContext);
     const [markers, setMarkers] = useState();
+    // console.log("postServiceRequestDetails :", postServiceRequestDetails[0].status);
+    const [mechanicsDetails, setMechanicsDetails] = useState();
+
+    useEffect(() => {
+        if (mechanicsDetails) {
+            let temp = mechanicsDetails.map((item, index) => item.location);
+            setMarkers(temp);
+        }
+    }, [mechanicsDetails])
 
     useEffect(() => {
         if (postServiceRequestDetails) {
-            const temp = postServiceRequestDetails.map((item) => item.location);
-            setMarkers(temp);
+            if (postServiceRequestDetails[0].status === "accepted") {
+                navigation.navigate("YourMechanics",{acceptedMDetails : postServiceRequestDetails[0]});
+                // console.log("postServiceRequestDetails :", postServiceRequestDetails[0]);
+            }
+            else {
+                setMechanicsDetails(postServiceRequestDetails[0].mechanic);
+                // navigation.navigate("YourMechanics", { item: postServiceRequestDetails.data[0] })
+                console.log("postServiceRequestDetails :", postServiceRequestDetails[0].status);
+            }
         }
     }, [postServiceRequestDetails]);
-    
+
     const mechanicsList_Handler = ({ item, index }) => {
         return (
             <View style={styles.machanicsNearMeMainContainer}>
@@ -78,7 +94,7 @@ const Mechanicsss = () => {
     }
     return (
         <View>
-            {postServiceRequestDetails ? (
+            {mechanicsDetails ? (
                 <>
                     <View style={styles.page}>
                         <View style={styles.headingView}>
@@ -120,7 +136,7 @@ const Mechanicsss = () => {
                         </View >
                     </View>
                     <View style={{ position: "absolute", zIndex: 2, top: 544, backgroundColor: "rgba(52, 52, 52, 0.8)", width: "100%", paddingVertical: 9 }}>
-                        <FlatList data={postServiceRequestDetails} renderItem={({ item, index }) => mechanicsList_Handler({ item, index })} keyExtractor={(item, index) => index} horizontal />
+                        <FlatList data={mechanicsDetails} renderItem={({ item, index }) => mechanicsList_Handler({ item, index })} keyExtractor={(item, index) => index} horizontal />
                     </View>
                 </>
             ) : (<ActivityIndicator size="large" color="#0000ff" style={{ alignItems: "center", marginTop: 350 }} />)}

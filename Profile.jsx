@@ -14,13 +14,14 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import LoginMain from './LogInMain';
 import axios from 'axios';
+import { updateProfilePic } from './APIs';
 
 
 const Profile = () => {
   const navigation = useNavigation();
   const { getMainPage, getPageName, postUserName, postUserNumber, postUserAddress, postUserEmail, postUserCarModel, postUserCarNumber, getUserImage, postUserLog } = useContext(StyleContext);
   const [imagPath, setImagPath] = useState();
-  // console.log("tpken :",postUserLog);
+  // console.log("tpken :", postUserLog);
   const logOutHandler = async () => {
     await AsyncStorage.removeItem("User_Token");
     getMainPage(<LoginMain />);
@@ -40,14 +41,14 @@ const Profile = () => {
         const data = `profile_picture=${path};type=${type}`;
         console.log("user Profile pic :", type);
 
-        // axios.put(`http://43.204.88.205:90/update_profile_picture`, data, {
-        //   headers: {
-        //     'Authorization': `Bearer ${postUserLog}`,
-        //     'Content-Type': 'application/json'
-        //   }
-        // })
-        //   .then((res) => console.log("responce in image :", res))
-        //   .catch((error) => console.log("error in image :", error));
+        axios.put(updateProfilePic, data, {
+          headers: {
+            'Authorization': `Bearer ${postUserLog}`,
+            'Content-Type': 'application/json'
+          }
+        })
+          .then((res) => console.log("responce in image :", res))
+          .catch((error) => console.log("error in image :", error));
         setImagPath(response.assets[0].uri);
         getUserImage(response.assets[0].uri);
       }
