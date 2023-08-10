@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { Component, useContext, useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ImageBackground, Image, TouchableOpacity, SafeAreaView, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, ImageBackground, Image, TouchableOpacity, SafeAreaView, ScrollView, FlatList } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Feather from 'react-native-vector-icons/Feather';
@@ -12,40 +12,48 @@ import Reviews from './MehcanicsAboutSpecializationReviews/Reviews';
 import Specialization from './MehcanicsAboutSpecializationReviews/Specialization';
 
 import { StyleContext } from './App';
+import axios from 'axios';
 
-const MechanicsDetails = ({  route }) => {
-    const {postMehcanicsCharge,getMechanicsDetails} = useContext(StyleContext)
+const MechanicsDetails = ({ route }) => {
+    const { postMehcanicsCharge, getMechanicsDetails, postServiceRequestDetails } = useContext(StyleContext)
     const [optionPage, setOptionPage] = useState("About");
     const navigation = useNavigation();
-    const [date,setDate] = useState();
-    const [month,setMonth] = useState();
-    const [year,setYear] = useState();
-    const sendMechanicsData = ()=>{
-        getMechanicsDetails(route.params.item);
-        // console.log("params :" ,`http://43.204.88.205${route.params.item.profile_picture.split("/code")[1]}`);
-    }
-    useEffect(()=>{
+    const [date, setDate] = useState();
+    const [month, setMonth] = useState();
+    const [year, setYear] = useState();
+    const [serviceTypes, setServiceTypes] = useState();
+
+    // console.log("postServiceRequestDetails :", postServiceRequestDetails[0].service_types);
+    useEffect(() => {
         let dates = route.params.item.registered_on.split("-");
         let year = dates[2]
         let onlyYear = year.split(" ");
         setDate(dates[0]);
         setMonth(dates[1]);
         setYear(onlyYear[0]);
-    },[route])
+    }, [route])
+
+    useEffect(() => {
+        axios.get("http://43.204.88.205:90/service-types")
+            .then((res) => {
+                setServiceTypes(res.data.data);
+            })
+            .catch((error) => console.log("error in service in mechanicsDetails :", error))
+    }, [])
     return (
         <SafeAreaView>
-            <ScrollView>
+            <ScrollView showsVerticalScrollIndicator={false}>
                 <View style={styles.container}>
                     <ImageBackground source={require("./assets/Rectangle42319.png")} style={styles.headerImgBackGround}>
                         <View style={styles.headingView}>
-                            <AntDesign name='left' size={29} style={styles.headingIcon} onPress={()=>navigation.goBack()}/>
+                            <AntDesign name='left' size={29} style={styles.headingIcon} onPress={() => navigation.goBack()} />
                             <Text style={styles.headingTxt}>Mechanics details</Text>
                         </View>
                     </ImageBackground>
                     <View style={{}}>
                         <View style={styles.firstCard}>
                             <View style={styles.firstCardFirstRow}>
-                                <Image source={{uri:`http://43.204.88.205${route.params.item.profile_picture.split("/code")[1]}`}} style={styles.mechanicsPic} />
+                                <Image source={{ uri: `http://43.204.88.205${route.params.item.profile_picture.split("/code")[1]}` }} style={styles.mechanicsPic} />
                                 <View style={styles.firstCardFirstRowNameView}>
                                     <Text style={styles.firstCardFirstRowNameTxt}>{route.params.item.m_name}</Text>
                                     <Text style={styles.firstCardFirstRowNameTxt}>Automobile Mechanic</Text>
@@ -77,9 +85,6 @@ const MechanicsDetails = ({  route }) => {
                                 <Text style={styles.firstCardThirdRowClock}>Rate per hour :</Text>
                                 <Text style={styles.firstCardFourthRowRate}>{route.params.item.rate}/hr</Text>
                             </View>
-                            <TouchableOpacity style={styles.HireMeBtn} onPress={()=>{navigation.navigate("YourMechanics");sendMechanicsData();}}>
-                                <Text style={styles.HireMeTxt}>Hire Me</Text>
-                            </TouchableOpacity>
                         </View>
                         {/* <View style={styles.secondCard}>
                             <View style={styles.secondCardBtnsView}>
@@ -95,27 +100,7 @@ const MechanicsDetails = ({  route }) => {
                             </View>
                             {(optionPage == "About") ? (<About />) : (optionPage == "Reviews") ? (<Reviews />) : (optionPage == "Specialization") ? (<Specialization />) : null}
                         </View> */}
-                        {/* <View style={styles.thirdCard}>
-                            <Text style={styles.thirdCardHeader}>Specialization</Text>
-                            <View>
-                                <View style={styles.thirdCardHeaderFirstRowView}>
-                                    <Text style={styles.thirdCardHeaderFirstRowTxt}>Experties</Text>
-                                    <Feather name='info' size={16} style={styles.thirdCardHeaderFirstRowIcon} />
-                                </View>
-                                <View style={styles.thirdCardHeaderSecondRowView}>
-                                    <Text style={styles.thirdCardHeaderSecondRowTxt}>Fitter Machinist</Text>
-                                    <Text style={styles.thirdCardHeaderSecondRowTxt}>Steam Washer</Text>
-                                </View>
-                                <View style={styles.thirdCardHeaderSecondRowView}>
-                                    <Text style={styles.thirdCardHeaderSecondRowTxt}>Radiator Repairer</Text>
-                                    <Text style={styles.thirdCardHeaderSecondRowTxt}>Locksmith</Text>
-                                </View>
-                                <View style={styles.thirdCardHeaderSecondRowView}>
-                                    <Text style={styles.thirdCardHeaderSecondRowTxt}>Rewire</Text>
-                                    <Text style={styles.thirdCardHeaderSecondRowTxt}>Spray painter</Text>
-                                </View>
-                            </View>
-                        </View> */}
+
                         {/* <View style={styles.fourthCardView}>
                             <Text>All Reviews(102)</Text>
                             <View style={styles.fourthCardFirstChilCardView}>
@@ -144,6 +129,33 @@ const MechanicsDetails = ({  route }) => {
                         </View> */}
                     </View>
                 </View>
+                {/* scrollView end here */}
+                <View style={styles.thirdCard}>
+                    <Text style={styles.thirdCardHeader}>Specialization</Text>
+                    <View>
+                        <View style={styles.thirdCardHeaderFirstRowView}>
+                            <Text style={styles.thirdCardHeaderFirstRowTxt}>Experties</Text>
+                            <Feather name='info' size={16} style={styles.thirdCardHeaderFirstRowIcon} />
+                        </View>
+                        <FlatList data={route.params.item.specialization} keyExtractor={(item, index) => index} renderItem={(item, index) => {
+                            <View style={styles.thirdCardHeaderSecondRowView} key={index}>
+                                <Text style={styles.thirdCardHeaderSecondRowTxt}>{item}</Text>
+                            </View>
+                        }} />
+                    </View>
+                </View>
+                <View style={styles.thirdCard}>
+                    <Text style={[styles.thirdCardHeader, { borderBottomWidth: 1, borderBottomColor: "#E0EAEF" }]}>Service Charge</Text>
+                    <FlatList data={serviceTypes} renderItem={(item, index) => {
+                        let lowwerCaseName = item.item.name.charAt(0).toUpperCase() + item.item.name.slice(1);
+                        return (
+                            <View style={{ flexDirection: "row", justifyContent: "space-between", borderBottomWidth: 1, borderBottomColor: "#E0EAEF", padding: 10 }}>
+                                <Text style={{ color: "black", fontFamily: "Forza-Bold", color: "#505056" }}>{lowwerCaseName}</Text>
+                                <Text style={{ color: "#FFA514", fontFamily: "Forza-Bold" }}>{item.item.price}/hr</Text>
+                            </View>
+                        )
+                    }} />
+                </View>
             </ScrollView>
         </SafeAreaView>
     );
@@ -163,18 +175,18 @@ const styles = StyleSheet.create({
         alignItems: "center",
         backgroundColor: "#444444",
         height: 60,
-        opacity: 0.6
+        opacity: 0.6,
     },
     headingTxt: {
         color: "#FFFFFF",
-        fontFamily:"Forza-Black"
+        fontFamily: "Forza-Black"
     },
     headingIcon: {
         color: "#FFFFFF",
         right: 110
     },
     firstCard: {
-        marginTop:22,
+        marginTop: 22,
         borderRadius: 10,
         borderWidth: 1,
         borderColor: "#E0EAEF",
@@ -191,16 +203,16 @@ const styles = StyleSheet.create({
         gap: 9
     },
     mechanicsPic: {
-        height:60,
-        width:60,
-        borderRadius:30
+        height: 60,
+        width: 60,
+        borderRadius: 30
     },
     firstCardFirstRowNameView: {
         flexDirection: "column"
     },
     firstCardFirstRowNameTxt: {
         color: "black",
-        fontFamily:"Forza-Bold"
+        fontFamily: "Forza-Bold"
     },
     firstCardSecondRow: {
         flexDirection: "row",
@@ -214,7 +226,7 @@ const styles = StyleSheet.create({
     },
     firstCardSecondRowRatingTxt: {
         color: "black",
-        fontFamily:"Forza-Bold"
+        fontFamily: "Forza-Bold"
     },
     firstCardThirdRow: {
         flexDirection: "row",
@@ -225,7 +237,7 @@ const styles = StyleSheet.create({
     },
     firstCardThirdRowClock: {
         color: "black",
-        fontFamily:"Forza-Bold"
+        fontFamily: "Forza-Bold"
     },
     firstCardFourthRow: {
         flexDirection: "row",
@@ -234,22 +246,7 @@ const styles = StyleSheet.create({
     },
     firstCardFourthRowRate: {
         color: "#EEA734",
-        fontFamily:"Forza-Bold"
-    },
-    HireMeBtn: {
-        backgroundColor: "#007AFF",
-        width: 260,
-        height: 44,
-        borderRadius: 44,
-        marginTop: 12,
-        alignItems: "center",
-        justifyContent: "center",
-        alignSelf: "center"
-    },
-    HireMeTxt: {
-        color: "white",
-        fontFamily:"Forza-Bold",
-        fontSize: 14
+        fontFamily: "Forza-Bold"
     },
     secondCard: {
         flexDirection: "column",
@@ -280,16 +277,16 @@ const styles = StyleSheet.create({
         fontWeight: "500"
     },
     thirdCard: {
+        marginTop: 15,
         flexDirection: "column",
         borderRadius: 10,
         borderWidth: 1,
         borderColor: "#E0EAEF",
-        width: 340,
-        height: 280,
+        width: 350,
         alignSelf: "center",
         paddingHorizontal: 9,
         padding: 9,
-        backgroundColor: "#FFFFFF"
+        backgroundColor: "#FFFFFF",
     },
     thirdCardHeader: {
         color: "#3D4759",
@@ -297,7 +294,8 @@ const styles = StyleSheet.create({
         fontWeight: "500",
         borderBottomWidth: 1,
         borderBottomColor: "#E0EAEF",
-        marginBottom: 9
+        marginBottom: 9,
+        fontFamily: "Forza-Bold"
     },
     thirdCardHeaderFirstRowView: {
         flexDirection: "row",
@@ -309,6 +307,7 @@ const styles = StyleSheet.create({
         color: "#505056",
         fontSize: 16,
         fontWeight: "600",
+        fontFamily: "Forza-Bold"
     },
     thirdCardHeaderFirstRowIcon: {
         color: "black"
@@ -328,7 +327,8 @@ const styles = StyleSheet.create({
         textAlign: "center",
         textAlignVertical: "center",
         borderRadius: 20,
-        fontSize: 12
+        fontSize: 12,
+        fontFamily: "Forza-Bold"
     },
     fourthCardView: {
         flexDirection: "column",
@@ -350,12 +350,12 @@ const styles = StyleSheet.create({
     },
     fourthCardFirstChildFirstRowView: {
         flexDirection: "row",
-        justifyContent:"space-between"
+        justifyContent: "space-between"
     },
     mechanicImg: {
 
     },
-    fiveStarAndNameView:{
+    fiveStarAndNameView: {
 
     },
     name: {

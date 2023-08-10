@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View, Image, FlatList, PermissionsAndroid } from 'react-native'
 import React, { useContext, useEffect, useState, createContext } from 'react'
-import Geolocation from 'react-native-geolocation-service';
+// import Geolocation from 'react-native-geolocation-service';
 import SplashScreen from 'react-native-splash-screen';
 import AllStackNavigation from './AllStackNavigation';
 import LoginMain from './LogInMain';
@@ -15,8 +15,8 @@ enableLatestRenderer();
 
 export default function App() {
   const [pageName, setPageName] = useState("Home");
-  const [latData, setlatData] = useState(0);
-  const [longData, setLongData] = useState(0);
+  const [latData, setlatData] = useState(null);
+  const [longData, setLongData] = useState(null);
   const [Userlog, setUserlog] = useState(null);
 
   const [userName, setUserName] = useState();
@@ -27,7 +27,7 @@ export default function App() {
   const [userCarNumber, setUserCarNumber] = useState();
   const [userCars, setUserCars] = useState([]);
   const [validityOfCard, setValidityOfCard] = useState();
-  // const [userCardNumber, setUserCardNumber] = useState();
+  const [userCardNumber, setUserCardNumber] = useState();
   const [userState, setUserState] = useState();
   const [userPinCode, setUserPinCode] = useState();
   const [userImage, setUserImage] = useState();
@@ -53,7 +53,6 @@ export default function App() {
     logcall();
   }, []);
 
-
   useEffect(() => {
     if (Userlog) {
       setMainPage(<Loading />)
@@ -75,15 +74,15 @@ export default function App() {
           setUserState(res.data.data.state);
           setUserPinCode(res.data.data.pin_code);
 
-
-          // const cardNumber = res.data.data.card_number;
-          // console.log('card number :',res)
-          // const firstFourNum = cardNumber[0] + cardNumber[1] + cardNumber[2] + cardNumber[3];
-          // const secondFourNum = cardNumber[4] + cardNumber[5] + cardNumber[6] + cardNumber[7];
-          // const thirdFourNum = cardNumber[8] + cardNumber[9] + cardNumber[10] + cardNumber[11];
-          // const fourthFourNum = cardNumber[12] + cardNumber[13] + cardNumber[14] + cardNumber[15];
-          // const totalMerged_Num = firstFourNum + "  " + secondFourNum + "  " + thirdFourNum + "  " + fourthFourNum;
-          // setUserCardNumber(totalMerged_Num);
+          if (res.data.data.card_number) {
+            const cardNumber = res.data.data.card_number;
+            const firstFourNum = cardNumber[0] + cardNumber[1] + cardNumber[2] + cardNumber[3];
+            const secondFourNum = cardNumber[4] + cardNumber[5] + cardNumber[6] + cardNumber[7];
+            const thirdFourNum = cardNumber[8] + cardNumber[9] + cardNumber[10] + cardNumber[11];
+            const fourthFourNum = cardNumber[12] + cardNumber[13] + cardNumber[14] + cardNumber[15];
+            const totalMerged_Num = firstFourNum + "  " + secondFourNum + "  " + thirdFourNum + "  " + fourthFourNum;
+            setUserCardNumber(totalMerged_Num);
+          }
 
           const date = res.data.data.registered_on;
           const month = date[3] + date[4];
@@ -151,21 +150,6 @@ export default function App() {
     setmechanicsDetails(value);
   }
 
-  const getLocation = async () => {
-    Geolocation.getCurrentPosition(
-      (position) => {
-        // console.log(position);
-        setlatData(position.coords.latitude);
-        setLongData(position.coords.longitude);
-      },
-      (error) => {
-        // See error code charts below.
-        console.log(error.code, error.message);
-      },
-      { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
-    );
-  }
-
   const locationPermission = async () => {
     try {
       const granted = await PermissionsAndroid.request(
@@ -182,7 +166,7 @@ export default function App() {
       );
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
         console.log('You can use the location');
-        getLocation();
+        // getLocation();
       } else {
         console.log('Location permission denied');
       }

@@ -11,7 +11,7 @@ const Mechanicsss = () => {
     const navigation = useNavigation();
     const { postServiceRequestDetails, postUserlat, postUserLong } = useContext(StyleContext);
     const [markers, setMarkers] = useState();
-    // console.log("postServiceRequestDetails :", postServiceRequestDetails[0].status);
+    // console.log("postServiceRequestDetailssss :", postServiceRequestDetails[0]);
     const [mechanicsDetails, setMechanicsDetails] = useState();
 
     useEffect(() => {
@@ -24,14 +24,15 @@ const Mechanicsss = () => {
     useEffect(() => {
         if (postServiceRequestDetails) {
             if (postServiceRequestDetails[0].status === "accepted") {
-                navigation.navigate("YourMechanics",{acceptedMDetails : postServiceRequestDetails[0]});
+                navigation.navigate("YourMechanics", { acceptedMDetails: postServiceRequestDetails[0] });
                 // console.log("postServiceRequestDetails :", postServiceRequestDetails[0]);
             }
             else {
                 setMechanicsDetails(postServiceRequestDetails[0].mechanic);
-                // navigation.navigate("YourMechanics", { item: postServiceRequestDetails.data[0] })
-                console.log("postServiceRequestDetails :", postServiceRequestDetails[0].status);
+                // console.log("postServiceRequestDetails :", postServiceRequestDetails[0].status);
             }
+            // setMechanicsDetails(postServiceRequestDetails[0].mechanic);
+            // console.log("postServiceRequestDetails :", postServiceRequestDetails);
         }
     }, [postServiceRequestDetails]);
 
@@ -64,7 +65,7 @@ const Mechanicsss = () => {
                             justifyContent: "center", alignItems: "center",
                         }}>
                             <Text style={{ fontSize: 12, marginBottom: 9, color: "#3D4759", fontFamily: "Forza-Bold" }}>Working time</Text>
-                            <Text style={{ backgroundColor: "#F2F9FF", borderRadius: 5, color: "#3D4759", width: 90, height: 40, textAlignVertical: "center", textAlign: "center" }}>{item.working_time.from_time}-{item.working_time.to_time}</Text>
+                            <Text style={{ backgroundColor: "#F2F9FF", borderRadius: 5, color: "#3D4759", width: 90, height: 40, textAlignVertical: "center", textAlign: "center", fontFamily: "Forza-Bold" }}>{item.working_time.from_time}-{item.working_time.to_time}</Text>
                         </View>
                         <View style={{
                             // borderWidth: 1,

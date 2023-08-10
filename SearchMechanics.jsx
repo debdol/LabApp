@@ -6,7 +6,7 @@ import { StyleContext } from './App';
 import MapView, { PROVIDER_GOOGLE, Marker, MapMarker, } from 'react-native-maps';
 // export const token = "pk.eyJ1Ijoic2FuZ3JhbS1ta2oiLCJhIjoiY2xqNDR1N2R3MHMycjNkbzAwbTd4eWtpcCJ9.6C-telOrK-86LmYXGu3FVA";
 const SearchMechanics = () => {
-    const { postUserlat, postUserLong } = useContext(StyleContext);
+    const { postUserlat, postUserLong} = useContext(StyleContext);
     const navigation = useNavigation();
 
     return (

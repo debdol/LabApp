@@ -1,10 +1,10 @@
 export const baseUrl = "http://43.204.88.205:90/";
 export const logInUrl = `${baseUrl}login?contact_number=`;
 export const editProfileUrl = `${baseUrl}update_user?`;
-export const addCarUrl = "http://43.204.88.205:90/add_car";
-export const updateProfilePic = "http://43.204.88.205:90/update_profile_picture";
-export const openServiceRequestDetails = "http://43.204.88.205:90/open-service-request-details";
-export const nearByMechanicss = "http://43.204.88.205:90/nearby-mechanics";
-export const serviceTypes = "http://43.204.88.205:90/service-types";
-export const creatServiceRequest = "http://43.204.88.205:90/create-service-request";
-export const userData = "http://43.204.88.205:90/user-data";
+export const addCarUrl = `${baseUrl}add_car`;
+export const updateProfilePic = `${baseUrl}update_profile_picture`;
+export const openServiceRequestDetails = `${baseUrl}open-service-request-details`;
+export const nearByMechanicss = `${baseUrl}nearby-mechanics`;
+export const serviceTypes = `${baseUrl}service-types`;
+export const creatServiceRequest = `${baseUrl}create-service-request`;
+export const userData = `${baseUrl}user-data`;
