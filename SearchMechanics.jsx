@@ -6,14 +6,14 @@ import { StyleContext } from './App';
 import MapView, { PROVIDER_GOOGLE, Marker, MapMarker, } from 'react-native-maps';
 // export const token = "pk.eyJ1Ijoic2FuZ3JhbS1ta2oiLCJhIjoiY2xqNDR1N2R3MHMycjNkbzAwbTd4eWtpcCJ9.6C-telOrK-86LmYXGu3FVA";
 const SearchMechanics = () => {
-    const { postUserlat, postUserLong} = useContext(StyleContext);
+    const { postUserlat, postUserLong, getPageName } = useContext(StyleContext);
     const navigation = useNavigation();
 
     return (
         <View>
             <View style={styles.txt}>
                 <View style={styles.headingView}>
-                    <TouchableOpacity onPress={() => navigation.goBack()}>
+                    <TouchableOpacity onPress={() => { navigation.goBack(); getPageName("Home") }}>
                         <AntDesign name='left' size={29} style={{ color: "black", marginLeft: 3 }} />
                     </TouchableOpacity>
                     <Text style={{ color: "black", marginLeft: 83, fontFamily: "Forza-Bold", fontSize: 17 }}>Search mechanics</Text>
@@ -28,7 +28,7 @@ const SearchMechanics = () => {
                     <Text style={styles.inputeLTxt}>Input Location Manually</Text>
                 </TouchableOpacity> */}
             </View>
-            <View style={styles.page}>
+            {postUserlat ? <View style={styles.page}>
                 <MapView
                     provider={PROVIDER_GOOGLE}
                     style={{ width: "100%", height: "80%" }}
@@ -45,7 +45,7 @@ const SearchMechanics = () => {
                 >
                     <Marker coordinate={{ latitude: Number(postUserlat), longitude: Number(postUserLong) }} tracksViewChanges={true} image={require("./assets/MapMarker.png")} />
                 </MapView>
-            </View >
+            </View > : null}
         </View >
     )
 }

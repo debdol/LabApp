@@ -11,7 +11,7 @@ const Mechanicsss = () => {
     const navigation = useNavigation();
     const { postServiceRequestDetails, postUserlat, postUserLong } = useContext(StyleContext);
     const [markers, setMarkers] = useState();
-    // console.log("postServiceRequestDetailssss :", postServiceRequestDetails[0]);
+    console.log("postServiceRequestDetailssss :", postServiceRequestDetails);
     const [mechanicsDetails, setMechanicsDetails] = useState();
 
     useEffect(() => {
@@ -114,8 +114,7 @@ const Mechanicsss = () => {
                                 }}
                                 showsUserLocation
                                 followUserLocation
-                                zoomTapEnabled={true}
-                            >
+                                zoomTapEnabled={true}>
                                 <MapCircle
                                     center={{
                                         latitude: postUserlat,

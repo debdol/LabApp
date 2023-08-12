@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image, ImageBackground, ScrollView, SafeAreaView, StatusBar, TouchableOpacity, RefreshControl, FlatList } from 'react-native'
+import { StyleSheet, Text, View, Image, ImageBackground, ScrollView, SafeAreaView, StatusBar, TouchableOpacity, RefreshControl, FlatList, Alert } from 'react-native'
 import React, { useContext, useEffect, useState, useCallback } from 'react'
 import Entypo from 'react-native-vector-icons/Entypo';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -15,7 +15,7 @@ import { nearByMechanicss, openServiceRequestDetails, } from './APIs';
 
 const Home = () => {
   const navigation = useNavigation();
-  const { postPageName, getPageName, postUserName, postUserCardValidity, postUsercard_number, getUserLocationDetails, postUserLog, getUserlat, getUserLong } = useContext(StyleContext);
+  const { getPageName, postUserName, postUserCardValidity, postUsercard_number, getUserLocationDetails, postUserLog, getUserlat, getUserLong } = useContext(StyleContext);
   const [refreshing, setRefreshing] = useState(false);
   const [fullAddress, setFullAddress] = useState();
   const [placeName, setPlaceName] = useState(null);
@@ -24,6 +24,19 @@ const Home = () => {
   const [fullAddressControllerVariable, setFullAddressControllerVariable] = useState(false);
   const [userLatitude, setUserLatitude] = useState();
   const [userLongitude, setUserLongitude] = useState();
+  const [gotLatLongIndicator, setGotLatLongIndicator] = useState(false);
+
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      // The screen is focused
+      // Call any action
+      getPageName("Home");
+    });
+
+    // Return the function to unsubscribe from the event so it gets removed on unmount
+    return unsubscribe;
+  }, [navigation]);
 
   const getLocation = () => {
     Geolocation.getCurrentPosition(
@@ -43,6 +56,7 @@ const Home = () => {
   }
 
   useEffect(() => {
+    // getPageName("Home");
     getLocation();
   }, [])
 
@@ -138,13 +152,13 @@ const Home = () => {
 
   const getThePlaceName = () => {
     if (userLatitude && userLongitude) {
-      // console.log("postUserLong:", userLongitude);
-      axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${userLatitude},${userLongitude}&key=`)
+      axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${userLatitude},${userLongitude}&key=AIzaSyD03qUlsL_zZueP3nn1sFXwQOBwDRKGl-Y`)
         .then((res) => {
           // console.log("responce in geoCoding :", res.data.results[4].formatted_address.split(",")[3]);
           setFullAddress(res.data.results[4].formatted_address);
           setPlaceName(res.data.results[4].formatted_address.split(",")[3]);
           setStateName(res.data.results[4].formatted_address.split(",")[4]);
+          setGotLatLongIndicator(true);
         })
         .catch((error) => { console.log("error of homePage in geoCoding :", error) })
     } else {
@@ -158,7 +172,6 @@ const Home = () => {
   }, [userLongitude]);
 
   useEffect(() => {
-    // console.log("postUserLog :", postUserLog);
     if (postUserLog) {
       axios.get(openServiceRequestDetails, {
         headers: {
@@ -167,10 +180,9 @@ const Home = () => {
         }
       })
         .then((res) => {
-          // console.log("res in user data in homePage :", res.data);
-          if (res.data.data[0].status === "accepted") {
-            navigation.navigate("YourMechanics", { acceptedMDetails: res.data.data[0] })
-            // console.log(res.data.data[0])
+          if (res.data.data[0].status === "accepted" && gotLatLongIndicator === true) {
+            navigation.navigate("YourMechanics", { acceptedMDetails: res.data.data[0] });
+            getPageName("Mechanic");
           }
         })
         .catch((error) => { "error in user data in homePage :", error })
@@ -182,7 +194,7 @@ const Home = () => {
     setRefreshing(true);
     setTimeout(() => {
       setRefreshing(false);
-    }, 1000);
+    }, 2000);
   }, []);
 
   return (
@@ -216,7 +228,6 @@ const Home = () => {
                 <Text style={{ fontFamily: "Forza-Bold", fontSize: 12, color: "#3D4759", }}>{stateName}</Text>
                 <AntDesign name="caretdown" style={{ color: "#201E1E", textAlignVertical: "center", padding: 2 }} />
               </TouchableOpacity>)}
-
           </View>
         </View>
         <View style={{
@@ -277,8 +288,12 @@ const Home = () => {
               marginBottom: 9,
               height: 72,
             }} onPress={() => {
-              navigation.navigate("HomeStackScreen");
-              // getPageName("Mechanic");
+              if (gotLatLongIndicator === true) {
+                navigation.navigate("HomeStackScreen");
+                getPageName("Mechanic");
+              } else {
+                Alert.alert("After getting your location click this button");
+              }
             }}>
               <Text style={{
                 textAlign: "center",
@@ -396,7 +411,7 @@ const Home = () => {
 
           {/* MECHANICS NEAR ME starts here..................... */}
           <Text style={styles.mechanicsHeading}>Mechanics Near Me</Text>
-          <FlatList data={nearByMechanics} keyExtractor={(item) => item._id} renderItem={({ item, index }) => nearByMechanicsList({ item, index })} horizontal showsHorizontalScrollIndicator={false}/>
+          <FlatList data={nearByMechanics} keyExtractor={(item) => item._id} renderItem={({ item, index }) => nearByMechanicsList({ item, index })} horizontal showsHorizontalScrollIndicator={false} />
 
           {/* POPULAR OFFER START ................................*/}
           <Text style={styles.popularOfferHeading}>Popular offer</Text>
@@ -645,8 +660,8 @@ const styles = StyleSheet.create({
     padding: 9,
     borderWidth: 2,
     borderColor: "#D2D6E1",
-    borderTopRightRadius: 15,
-    borderBottomRightRadius: 15,
+    borderTopRightRadius: 22,
+    borderBottomRightRadius: 22,
     borderBottomLeftRadius: 22,
     fontFamily: "Forza-Bold",
     fontSize: 10,

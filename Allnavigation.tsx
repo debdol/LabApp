@@ -86,8 +86,8 @@ const Allnavigation = () => {
                 headerShown: false,
                 tabBarButton: () => (
                     <TouchableOpacity onPress={() => {
-                        // navigation.navigate("HomeStackScreen");
-                        // getPageName("Mechanic")
+                        navigation.navigate("HomeStackScreen");
+                        getPageName("Mechanic")
                     }} style={postPageName == "Mechanic" ? styles.tabBtnContainer : styles.tabBtnContainerNonClicked}>
                         <View style={styles.btnContainerView}>
                             <Feather name="shopping-cart" size={20} style={postPageName == "Mechanic" ? styles.tabBtnIconClicked : styles.tabBtnIconNonClicked} />
@@ -101,8 +101,8 @@ const Allnavigation = () => {
                 headerShown: false,
                 tabBarButton: () => (
                     <TouchableOpacity onPress={() => {
-                        // navigation.navigate("Cart");
-                        // getPageName("Cart")
+                        navigation.navigate("Cart");
+                        getPageName("Cart")
                     }} style={postPageName == "Cart" ? styles.tabBtnContainer : styles.tabBtnContainerNonClicked}>
                         <View style={styles.btnContainerView}>
                             <Feather name="shopping-cart" size={20} style={postPageName == "Cart" ? styles.tabBtnIconClicked : styles.tabBtnIconNonClicked} />

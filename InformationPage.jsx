@@ -18,6 +18,7 @@ const InformationPage = () => {
   const [ureMsg, setUreMsg] = useState();
   const [serviceCode, setServiceCode] = useState();
   const [problems, setProblems] = useState([]);
+  const [serviceRequestData , setServiceRequestData] = useState();
 
   const multipleLocation = () => {
     const serviceData = {
@@ -29,18 +30,19 @@ const InformationPage = () => {
       message: ureMsg,
       service_type_code: [serviceCode],
     }
-    // axios.post(creatServiceRequest, serviceData, {
-    //   headers: {
-    //     'Authorization': `Bearer ${postUserLog}`,
-    //     'Content-Type': 'application/json'
-    //   }
-    // })
-    //   .then((res) => {
-    //     console.log("res in create service :", res.data.mechanics)
-    //   })
-    //   .catch((err) => console.log("err in create service :", err));
+    axios.post(creatServiceRequest, serviceData, {
+      headers: {
+        'Authorization': `Bearer ${postUserLog}`,
+        'Content-Type': 'application/json'
+      }
+    })
+      .then((res) => {
+        console.log("res in create service :", res)
+        setServiceRequestData(true);
+      })
+      .catch((err) => console.log("err in create service :", err));
 
-    if (serviceData.message) {
+    if (serviceData.message && serviceRequestData === true) {
       navigation.navigate("Mechanicsss");
       axios.get(openServiceRequestDetails, {
         headers: {

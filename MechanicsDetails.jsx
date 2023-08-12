@@ -141,20 +141,20 @@ const MechanicsDetails = ({ route }) => {
                             <View style={styles.thirdCardHeaderSecondRowView} key={index}>
                                 <Text style={styles.thirdCardHeaderSecondRowTxt}>{item}</Text>
                             </View>
-                        }} />
+                        }} nestedScrollEnabled />
                     </View>
                 </View>
                 <View style={styles.thirdCard}>
                     <Text style={[styles.thirdCardHeader, { borderBottomWidth: 1, borderBottomColor: "#E0EAEF" }]}>Service Charge</Text>
                     <FlatList data={serviceTypes} renderItem={(item, index) => {
-                        let lowwerCaseName = item.item.name.charAt(0).toUpperCase() + item.item.name.slice(1);
+                        let lowwerAndHigherCaseName = item.item.name.charAt(0).toUpperCase() + item.item.name.slice(1);
                         return (
                             <View style={{ flexDirection: "row", justifyContent: "space-between", borderBottomWidth: 1, borderBottomColor: "#E0EAEF", padding: 10 }}>
-                                <Text style={{ color: "black", fontFamily: "Forza-Bold", color: "#505056" }}>{lowwerCaseName}</Text>
-                                <Text style={{ color: "#FFA514", fontFamily: "Forza-Bold" }}>{item.item.price}/hr</Text>
+                                <Text style={{ color: "black", fontFamily: "Forza-Bold", color: "#505056", fontSize: 17 }}>{lowwerAndHigherCaseName}</Text>
+                                {/* <Text style={{ color: "#FFA514", fontFamily: "Forza-Bold" }}>{item.item.price}/hr</Text> */}
                             </View>
                         )
-                    }} />
+                    }} nestedScrollEnabled />
                 </View>
             </ScrollView>
         </SafeAreaView>
