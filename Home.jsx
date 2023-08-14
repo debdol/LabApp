@@ -38,6 +38,7 @@ const Home = () => {
     return unsubscribe;
   }, [navigation]);
 
+// Get user Lat and Long ................................
   const getLocation = () => {
     Geolocation.getCurrentPosition(
       (position) => {
@@ -56,7 +57,6 @@ const Home = () => {
   }
 
   useEffect(() => {
-    // getPageName("Home");
     getLocation();
   }, [])
 
@@ -149,10 +149,10 @@ const Home = () => {
       <Loading />
     }
   }
-
+  //Get the location name o user............................................
   const getThePlaceName = () => {
     if (userLatitude && userLongitude) {
-      axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${userLatitude},${userLongitude}&key=AIzaSyD03qUlsL_zZueP3nn1sFXwQOBwDRKGl-Y`)
+      axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${userLatitude},${userLongitude}&key=`)
         .then((res) => {
           // console.log("responce in geoCoding :", res.data.results[4].formatted_address.split(",")[3]);
           setFullAddress(res.data.results[4].formatted_address);
@@ -171,6 +171,7 @@ const Home = () => {
     getThePlaceName();
   }, [userLongitude]);
 
+//Call the openService Request Detail end point .................................................
   useEffect(() => {
     if (postUserLog) {
       axios.get(openServiceRequestDetails, {
@@ -204,7 +205,7 @@ const Home = () => {
           <View style={styles.locationContainer}>
             <Entypo name='location-pin' style={styles.locationI} size={24} />
           </View>
-          <View style={{}}>
+          <TouchableOpacity onPress={() => showFullAddress()}>
             <Text style={{
               fontWeight: "400",
               fontSize: 12,
@@ -213,23 +214,24 @@ const Home = () => {
             }}>your location</Text>
 
             {fullAddressControllerVariable ?
-              (<TouchableOpacity onPress={() => showFullAddress()} style={{ flexDirection: "row", alignItems: "center" }}>
+              (<Text style={{ flexDirection: "row", alignItems: "center" }}>
                 <Text style={{
                   color: "#3D4759", fontSize: 12, fontWeight: "500", letterSpacing: 0.5, fontFamily: "Forza-Bold",
                 }} ellipsizeMode='tail' numberOfLines={1}>{placeName},</Text>
                 <Text style={{ fontFamily: "Forza-Bold", fontSize: 12, color: "#3D4759", }}>{stateName}</Text>
                 <AntDesign name="caretup" style={{ color: "#201E1E", textAlignVertical: "center", padding: 2 }} />
-              </TouchableOpacity>)
+              </Text>)
               :
-              (<TouchableOpacity onPress={() => showFullAddress()} style={{ flexDirection: "row", alignItems: "center" }}>
+              (<Text style={{ flexDirection: "row", alignItems: "center" }}>
                 <Text style={{
                   color: "#3D4759", fontSize: 12, fontWeight: "500", letterSpacing: 0.5, fontFamily: "Forza-Bold",
                 }} ellipsizeMode='tail' numberOfLines={1}>{placeName},</Text>
                 <Text style={{ fontFamily: "Forza-Bold", fontSize: 12, color: "#3D4759", }}>{stateName}</Text>
                 <AntDesign name="caretdown" style={{ color: "#201E1E", textAlignVertical: "center", padding: 2 }} />
-              </TouchableOpacity>)}
-          </View>
+              </Text>)}
+          </TouchableOpacity>
         </View>
+
         <View style={{
           display: "flex",
           justifyContent: "center",
@@ -244,7 +246,6 @@ const Home = () => {
             borderRadius: 6,
             left: 16,
             top: 6,
-
           }}></Text>
         </View>
       </View>

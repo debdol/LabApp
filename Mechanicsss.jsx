@@ -11,7 +11,7 @@ const Mechanicsss = () => {
     const navigation = useNavigation();
     const { postServiceRequestDetails, postUserlat, postUserLong } = useContext(StyleContext);
     const [markers, setMarkers] = useState();
-    console.log("postServiceRequestDetailssss :", postServiceRequestDetails);
+    // console.log("postServiceRequestDetailssss :", postServiceRequestDetails);
     const [mechanicsDetails, setMechanicsDetails] = useState();
 
     useEffect(() => {

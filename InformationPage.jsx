@@ -1,4 +1,4 @@
-import { Image, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, View, TouchableOpacity } from 'react-native'
+import { Image, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, View, TouchableOpacity, Alert, Modal, Pressable } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -11,14 +11,16 @@ import { StyleContext } from './App';
 import axios from 'axios';
 import { creatServiceRequest, openServiceRequestDetails, serviceTypes } from './APIs';
 const InformationPage = () => {
-  const { postUserCars, postUserLog, postUserlat, postUserLong, getServiceRequestDetails, getUserService } = useContext(StyleContext);
+  const { postUserCars, postUserLog, postUserlat, postUserLong, getServiceRequestDetails, getUserService, postUserService } = useContext(StyleContext);
 
   const navigation = useNavigation();
+  const [modalVisible, setModalVisible] = useState(false);
   const [checkBtn, setCheckBtn] = useState(true);
   const [ureMsg, setUreMsg] = useState();
   const [serviceCode, setServiceCode] = useState();
   const [problems, setProblems] = useState([]);
-  const [serviceRequestData , setServiceRequestData] = useState();
+  const [serviceRequestData, setServiceRequestData] = useState();
+  const [serviceRequestStatus, setServiceRequestStatus] = useState();
 
   const multipleLocation = () => {
     const serviceData = {
@@ -30,19 +32,33 @@ const InformationPage = () => {
       message: ureMsg,
       service_type_code: [serviceCode],
     }
-    axios.post(creatServiceRequest, serviceData, {
-      headers: {
-        'Authorization': `Bearer ${postUserLog}`,
-        'Content-Type': 'application/json'
-      }
-    })
-      .then((res) => {
-        console.log("res in create service :", res)
-        setServiceRequestData(true);
-      })
-      .catch((err) => console.log("err in create service :", err));
 
-    if (serviceData.message && serviceRequestData === true) {
+    //Creating  your service request.....................................
+    if (serviceData.message && postUserService) {
+      axios.post(creatServiceRequest, serviceData, {
+        headers: {
+          'Authorization': `Bearer ${postUserLog}`,
+          'Content-Type': 'application/json'
+        }
+      })
+        .then((res) => {
+          if (res.data.message) {
+            setServiceRequestStatus(res.data.message);
+            setModalVisible(true);
+            setServiceRequestData(true);
+          } else {
+            Alert.alert("pls,create your service request");
+          }
+        })
+        .catch((err) => console.log("err in create service :", err));
+    } else {
+      Alert.alert("plz,fill up the neccessary field");
+    }
+  }
+
+  //Get your service request data...........................................
+  useEffect(() => {
+    if (serviceRequestData) {
       navigation.navigate("Mechanicsss");
       axios.get(openServiceRequestDetails, {
         headers: {
@@ -53,16 +69,17 @@ const InformationPage = () => {
         .then((res) => {
           // console.log("responce in requestdetails :", res.data.data);
           getServiceRequestDetails(res.data.data);
+          setServiceRequestData(false);
         })
         .catch((err) => console.log("error in requestdetails :", err))
     };
-  }
+  }, [serviceRequestData]);
 
-
+  //making an array with your serviceTypes..................................
   useEffect(() => {
     axios.get(serviceTypes)
       .then((res) => {
-        setProblems(res.data.data.map(item => item.name))
+        setProblems(res.data.data.map(item => item.name.charAt(0).toUpperCase() + item.name.slice(1)))
       })
       .catch((err) => console.log("error :", err));
   }, []);
@@ -180,6 +197,33 @@ const InformationPage = () => {
         }}>
           <Text style={styles.searchMehcanicsBtnTxt}>Search Mechanics</Text>
         </TouchableOpacity>
+        {/* Showing service Request Status ...................... */}
+        {serviceRequestStatus ? <View style={styles.centeredView}>
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={modalVisible}
+            onRequestClose={() => {
+              Alert.alert('Modal has been closed.');
+              setModalVisible(!modalVisible);
+            }}>
+            <View style={styles.centeredView}>
+              <View style={styles.modalView}>
+                <Text style={styles.modalText}>{serviceRequestStatus}</Text>
+                <Pressable
+                  style={[styles.button, styles.buttonClose]}
+                  onPress={() => setModalVisible(!modalVisible)}>
+                  <Text style={styles.textStyle}>Hide Modal</Text>
+                </Pressable>
+              </View>
+            </View>
+          </Modal>
+          <Pressable
+            style={[styles.button, styles.buttonOpen]}
+            onPress={() => setModalVisible(true)}>
+            <Text style={styles.textStyle}>Show Modal</Text>
+          </Pressable>
+        </View> : null}
       </ScrollView>
     </SafeAreaView>
   )
@@ -350,5 +394,49 @@ const styles = StyleSheet.create({
   dropdown1DropdownStyle: { backgroundColor: '#EFEFEF', borderRadius: 16 },
   dropdown1RowStyle: { backgroundColor: '#EFEFEF', borderBottomColor: '#C5C5C5' },
   dropdown1RowTxtStyle: { color: '#444', textAlign: 'left', fontFamily: "Forza-Bold" },
+
+  //modal style..........................
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  button: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+  },
+  buttonOpen: {
+    backgroundColor: '#F194FF',
+  },
+  buttonClose: {
+    backgroundColor: '#2196F3',
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'center',
+    color:"Black"
+  },
 })
 export default InformationPage;

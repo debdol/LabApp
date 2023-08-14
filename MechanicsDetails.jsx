@@ -10,12 +10,10 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import About from './MehcanicsAboutSpecializationReviews/About';
 import Reviews from './MehcanicsAboutSpecializationReviews/Reviews';
 import Specialization from './MehcanicsAboutSpecializationReviews/Specialization';
-
-import { StyleContext } from './App';
 import axios from 'axios';
+import Loading from './Loading';
 
 const MechanicsDetails = ({ route }) => {
-    const { postMehcanicsCharge, getMechanicsDetails, postServiceRequestDetails } = useContext(StyleContext)
     const [optionPage, setOptionPage] = useState("About");
     const navigation = useNavigation();
     const [date, setDate] = useState();
@@ -42,7 +40,7 @@ const MechanicsDetails = ({ route }) => {
     }, [])
     return (
         <SafeAreaView>
-            <ScrollView showsVerticalScrollIndicator={false}>
+            {serviceTypes ? <ScrollView showsVerticalScrollIndicator={false} nestedScrollEnabled={true}>
                 <View style={styles.container}>
                     <ImageBackground source={require("./assets/Rectangle42319.png")} style={styles.headerImgBackGround}>
                         <View style={styles.headingView}>
@@ -129,7 +127,6 @@ const MechanicsDetails = ({ route }) => {
                         </View> */}
                     </View>
                 </View>
-                {/* scrollView end here */}
                 <View style={styles.thirdCard}>
                     <Text style={styles.thirdCardHeader}>Specialization</Text>
                     <View>
@@ -137,26 +134,25 @@ const MechanicsDetails = ({ route }) => {
                             <Text style={styles.thirdCardHeaderFirstRowTxt}>Experties</Text>
                             <Feather name='info' size={16} style={styles.thirdCardHeaderFirstRowIcon} />
                         </View>
-                        <FlatList data={route.params.item.specialization} keyExtractor={(item, index) => index} renderItem={(item, index) => {
+                        {route.params.item.specialization.map((item, index) => {
                             <View style={styles.thirdCardHeaderSecondRowView} key={index}>
                                 <Text style={styles.thirdCardHeaderSecondRowTxt}>{item}</Text>
                             </View>
-                        }} nestedScrollEnabled />
+                        })}
                     </View>
                 </View>
                 <View style={styles.thirdCard}>
                     <Text style={[styles.thirdCardHeader, { borderBottomWidth: 1, borderBottomColor: "#E0EAEF" }]}>Service Charge</Text>
-                    <FlatList data={serviceTypes} renderItem={(item, index) => {
-                        let lowwerAndHigherCaseName = item.item.name.charAt(0).toUpperCase() + item.item.name.slice(1);
+                    {serviceTypes.map((item, index) => {
+                        let lowwerAndHigherCaseName = item.name.charAt(0).toUpperCase() + item.name.slice(1);
                         return (
                             <View style={{ flexDirection: "row", justifyContent: "space-between", borderBottomWidth: 1, borderBottomColor: "#E0EAEF", padding: 10 }}>
                                 <Text style={{ color: "black", fontFamily: "Forza-Bold", color: "#505056", fontSize: 17 }}>{lowwerAndHigherCaseName}</Text>
-                                {/* <Text style={{ color: "#FFA514", fontFamily: "Forza-Bold" }}>{item.item.price}/hr</Text> */}
                             </View>
                         )
-                    }} nestedScrollEnabled />
+                    })}
                 </View>
-            </ScrollView>
+            </ScrollView> : <Loading />}
         </SafeAreaView>
     );
 };

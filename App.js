@@ -38,7 +38,7 @@ export default function App() {
 
   const [mainPage, setMainPage] = useState(<Loading />);
 
-
+  // Set User Token if there is any.........................
   async function logcall() {
     if (await AsyncStorage.getItem('User_Token')) {
       setUserlog(await AsyncStorage.getItem('User_Token'));
@@ -53,6 +53,7 @@ export default function App() {
     logcall();
   }, []);
 
+  //call userData end point to get the user data............................
   useEffect(() => {
     if (Userlog) {
       setMainPage(<Loading />)
@@ -200,7 +201,7 @@ export default function App() {
       postUserlat: latData,
       postUserLong: longData,
       postUserCardValidity: validityOfCard,
-      // postUsercard_number: userCardNumber,
+      postUsercard_number: userCardNumber,
       postUserImage: userImage,
       postServiceRequestDetails: serviceRequestDetails,
       postUserLocationDetails: locationDetails,
