@@ -14,24 +14,26 @@ import SearchMechanics from './SearchMechanics';
 import { StyleContext } from './App';
 import InformationPage from './InformationPage';
 import EditProfile from './EditProfile';
+import axios from 'axios';
+import { openServiceRequestDetails } from './APIs';
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
-export const  HomeStackScreen =()=> {
+export const HomeStackScreen = () => {
     return (
         <Stack.Navigator>
             {/* <Stack.Screen name="Mechanic" component={Mechanic} options={(() => ({
                 headerShown: false
             }))} /> */}
             <Stack.Screen name="SearchMechanics" component={SearchMechanics} options={(() => ({
-                headerShown:false
+                headerShown: false
             }))} />
             <Stack.Screen name="InformationPage" component={InformationPage} options={(() => ({
                 headerTitleAlign: "center",
-                headerTitle:"Information", 
-                headerTitleStyle:{
-                    fontFamily:"Forza-Bold",
-                    letterSpacing:1
-                }  
+                headerTitle: "Information",
+                headerTitleStyle: {
+                    fontFamily: "Forza-Bold",
+                    letterSpacing: 1
+                }
             }))} />
 
         </Stack.Navigator>
@@ -43,19 +45,19 @@ const ProfileStackScreen = () => {
         <Stack.Navigator>
             <Stack.Screen name="Profile" component={Profile} options={(() => ({
                 headerTitleAlign: "center",
-                headerShown:false
+                headerShown: false
             }))} />
             <Stack.Screen name="EditProfile" component={EditProfile} options={(() => ({
                 headerShown: true,
-                headerTitleAlign:"center",
-                headerTitle:"Edit Profile"
+                headerTitleAlign: "center",
+                headerTitle: "Edit Profile"
             }))} />
         </Stack.Navigator>
     )
 }
 
 const Allnavigation = () => {
-    const { postPageName, getPageName } = useContext(StyleContext);
+    const { postPageName, getPageName, postUserLog } = useContext(StyleContext);
 
     // console.log("pageNameinAllnavigation:", postPageName);
     return (
@@ -101,8 +103,23 @@ const Allnavigation = () => {
                 headerShown: false,
                 tabBarButton: () => (
                     <TouchableOpacity onPress={() => {
-                        navigation.navigate("Cart");
-                        getPageName("Cart")
+                        if (postUserLog) {
+                            axios.get(openServiceRequestDetails, {
+                                headers: {
+                                    'Authorization': `Bearer ${postUserLog}`,
+                                    'Content-Type': 'application/json'
+                                }
+                            })
+                                .then((res) => {
+                                    if (res.data.data.length !== 0) {
+                                        if (res.data.data[0].status === "initiated") {
+                                            navigation.navigate("Cart", { acceptedMDetails: res.data.data[0] });
+                                            getPageName("Cart")
+                                        }
+                                    }
+                                })
+                                .catch((error) => { console.log("error in user data in cart :", error) })
+                        }
                     }} style={postPageName == "Cart" ? styles.tabBtnContainer : styles.tabBtnContainerNonClicked}>
                         <View style={styles.btnContainerView}>
                             <Feather name="shopping-cart" size={20} style={postPageName == "Cart" ? styles.tabBtnIconClicked : styles.tabBtnIconNonClicked} />
@@ -111,6 +128,7 @@ const Allnavigation = () => {
                     </TouchableOpacity>
                 ),
             }))} />
+
             <Tab.Screen name="History" component={History} options={(({ navigation }) => ({
                 headerShown: false,
                 tabBarButton: () => (

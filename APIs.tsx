@@ -8,3 +8,4 @@ export const nearByMechanicss = `${baseUrl}nearby-mechanics`;
 export const serviceTypes = `${baseUrl}service-types`;
 export const creatServiceRequest = `${baseUrl}create-service-request`;
 export const userData = `${baseUrl}user-data`;
+export const calculateTotalAmount = `${baseUrl}calculate-total-amount?service_request_id=`

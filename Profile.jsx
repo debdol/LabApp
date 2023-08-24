@@ -39,7 +39,7 @@ const Profile = () => {
         const path = response.assets[0].fileName;
         const type = response.assets[0].type;
         const data = `profile_picture=${path};type=${type}`;
-        console.log("user Profile pic :", type);
+        // console.log("user Profile pic :", type);
 
         axios.put(updateProfilePic, data, {
           headers: {

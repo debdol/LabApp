@@ -1,12 +1,34 @@
 import { Image, StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Entypo from 'react-native-vector-icons/Entypo';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 
 import LinearGradient from 'react-native-linear-gradient';
-const Cart = () => {
+import axios from 'axios';
+import { StyleContext } from './App';
+import { calculateTotalAmount } from './APIs';
+import Loading from './Loading';
+const Cart = ({ route }: any) => {
+  const { postServiceRequestDetails, postUserlat, postUserLong, getPageName, postUserLog } = useContext(StyleContext);
+  const [totalAmount, setTotalAmount] = useState();
+
+  // console.log("postServiceRequestDetails in cart :", route.params.acceptedMDetails);
+  useEffect(() => {
+    if (route.params.acceptedMDetails) {
+      axios.get(`${calculateTotalAmount}${route.params.acceptedMDetails._id}`, {
+        headers: {
+          'Authorization': `Bearer ${postUserLog}`,
+          'Content-Type': 'application/json'
+        }
+      })
+        .then((res) => {
+          setTotalAmount(res.data.data[0].total_amount);
+        })
+        .catch((error) => console.log("error in total amount :", error))
+    }
+  }, [route.params.acceptedMDetails])
   return (
     <View>
       <View style={styles.mainContainer}>
@@ -18,23 +40,23 @@ const Cart = () => {
           <Text style={styles.totalBalanceTxt}>Total Balance</Text>
           <View style={styles.totalBalanceNumberView}>
             <LinearGradient colors={["#313335", "#646668"]}>
-              <Text style={styles.totalBalanceFirstNumber}>1,565</Text>
+              <Text style={styles.totalBalanceFirstNumber}>{totalAmount}</Text>
             </LinearGradient>
             <Text style={styles.totalBalanceDot}>.</Text>
             <LinearGradient colors={["#313335", "#646668"]}>
-              <Text style={styles.totalBalanceFirstNumber}>35</Text>
+              <Text style={styles.totalBalanceFirstNumber}>00</Text>
             </LinearGradient>
             <Fontisto name='inr' size={12} style={styles.inrIcon} />
           </View>
         </View>
         <Text style={styles.serviceChargeHeading}>Service Charge</Text>
-        <View style={styles.flatTierMainView}>
+        {/* <View style={styles.flatTierMainView}>
           <View style={styles.flatTierChildContainer}>
             <View style={styles.flatTierTitlePriceView}>
               <Text style={styles.flatTierTxt}>Flat Tier</Text>
               <View style={styles.flatTierPriceView}>
                 <Text style={styles.price}>150</Text>
-                <Fontisto name='inr' size={12} style={[styles.price,{fontSize:11}]} />
+                <Fontisto name='inr' size={12} style={[styles.price, { fontSize: 11 }]} />
                 <Text style={styles.price}>/hr</Text>
               </View>
             </View>
@@ -70,17 +92,17 @@ const Cart = () => {
               </View>
             </View>
           </View>
-        </View>
+        </View> */}
         <View style={styles.lowFuelMainView}>
           <View style={styles.imgTxtView}>
             <View style={{ padding: 9, backgroundColor: "#E0E6ED", borderRadius: 14, }}>
               <Image source={require("./assets/gas-pump1(traced).png")} style={styles.fuelImg} />
             </View>
             <View style={styles.lowFuelView}>
-              <Text style={styles.lowFuelTxt}>Low Fuel</Text>
+              <Text style={styles.lowFuelTxt}>{route.params.acceptedMDetails.service_types[0].service_name}</Text>
               <View style={styles.lowFuelPriceIconView}>
-                <Text style={styles.lowFuelPriceTxt}>150</Text>
-                <FontAwesome name='inr' style={[styles.lowFuelPriceTxt,{fontSize:14}]} />
+                <Text style={styles.lowFuelPriceTxt}>{route.params.acceptedMDetails.service_types[0].price}</Text>
+                <FontAwesome name='inr' style={[styles.lowFuelPriceTxt, { fontSize: 14 }]} />
                 <Text style={styles.lowFuelPriceTxt}>Fix price</Text>
               </View>
             </View>
@@ -92,7 +114,7 @@ const Cart = () => {
         <View style={styles.totalPriceView}>
           <Text style={styles.totalPriceTxt}>Total</Text>
           <View style={{ flexDirection: "row", alignItems: "center", gap: 7 }}>
-            <Text style={styles.totalPrice}>1,565.35</Text>
+            <Text style={styles.totalPrice}>{totalAmount}</Text>
             <FontAwesome name='inr' style={styles.totalPrice} />
           </View>
         </View>
@@ -113,7 +135,7 @@ const styles = StyleSheet.create({
   },
   headerView: {
     // borderWidth:1,
-    marginBottom:23,
+    marginBottom: 23,
     flexDirection: "row",
     justifyContent: "space-around",
     alignItems: 'center',
@@ -128,7 +150,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "600",
     letterSpacing: 1,
-    fontFamily:"Forza-Bold",
+    fontFamily: "Forza-Bold",
   },
   headerIcon: {
     // borderWidth:1
@@ -137,7 +159,7 @@ const styles = StyleSheet.create({
     color: "black"
   },
   totalBalanceView: {
-    marginBottom:23,
+    marginBottom: 23,
     flexDirection: "column",
     backgroundColor: "#FFCD7D",
     borderRadius: 15,
@@ -150,7 +172,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
     fontSize: 20,
     marginBottom: 10,
-    fontFamily:"Forza-Bold",
+    fontFamily: "Forza-Bold",
   },
   totalBalanceNumberView: {
     // borderWidth:1,
@@ -179,14 +201,14 @@ const styles = StyleSheet.create({
     alignSelf: "center"
   },
   serviceChargeHeading: {
-    marginBottom:23,
+    marginBottom: 23,
     color: "#3D4759",
     // fontWeight: "700",
     fontSize: 26,
-    fontFamily:"Forza-Black",
+    fontFamily: "Forza-Black",
   },
   flatTierMainView: {
-    marginBottom:23,
+    marginBottom: 23,
     borderWidth: 1,
     borderColor: "#EFF1F6",
     padding: 19,
@@ -196,7 +218,7 @@ const styles = StyleSheet.create({
   },
   flatTierChildContainer: {
     // borderWidth:1,
-    marginBottom:9,
+    marginBottom: 9,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center"
@@ -219,7 +241,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     fontSize: 24,
     letterSpacing: 1,
-    fontFamily:"Forza-Bold",
+    fontFamily: "Forza-Bold",
   },
   pauseIcon: {
     height: 50,
@@ -240,7 +262,7 @@ const styles = StyleSheet.create({
     color: "black",
     fontWeight: "600",
     fontSize: 16,
-    fontFamily:"Forza-Bold",
+    fontFamily: "Forza-Bold",
   },
   billView: {
     flexDirection: "row",
@@ -270,7 +292,7 @@ const styles = StyleSheet.create({
     color: "black",
     fontSize: 12,
     fontWeight: "600",
-    fontFamily:"Forza-Bold",
+    fontFamily: "Forza-Bold",
   },
   timrAndDoubleDotView: {
     flexDirection: "row",
@@ -319,7 +341,7 @@ const styles = StyleSheet.create({
     color: "black",
     fontSize: 20,
     fontWeight: "600",
-    fontFamily:"Forza-Bold",
+    fontFamily: "Forza-Bold",
   },
   lowFuelPriceIconView: {
     flexDirection: "row",
@@ -334,14 +356,15 @@ const styles = StyleSheet.create({
   },
   footerView: {
     borderTopWidth: 1,
-    borderTopLeftRadius:22,
-    borderTopRightRadius:22,
+    borderTopLeftRadius: 22,
+    borderTopRightRadius: 22,
     borderColor: "#EBEBEB",
     justifyContent: "space-evenly",
     flexDirection: "row",
     paddingVertical: 15,
-    gap:9,
+    gap: 9,
     // padding:19,
+    marginTop:"51%",
     backgroundColor: "#FFFFFF"
   },
   totalPriceView: {
@@ -368,9 +391,9 @@ const styles = StyleSheet.create({
   },
   checkOutBtnTxt: {
     color: "#FFFFFF",
-    fontSize:18 ,
+    fontSize: 18,
     marginLeft: 34,
-    fontFamily:"Forza-Bold",
+    fontFamily: "Forza-Bold",
   },
   checkOutBtnIcon: {
     backgroundColor: "#FFFFFF",

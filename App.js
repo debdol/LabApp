@@ -64,7 +64,7 @@ export default function App() {
         }
       })
         .then((res) => {
-          // console.log("responce in appjs :", res.data.data.cars[0].state);
+          // console.log("responce in appjs :", res.data.data);
           setUserCars(res.data.data.cars);
           setUserName(res.data.data.name);
           setUserNumber(res.data.data.contact_number);

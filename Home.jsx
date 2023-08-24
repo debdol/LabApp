@@ -38,7 +38,7 @@ const Home = () => {
     return unsubscribe;
   }, [navigation]);
 
-// Get user Lat and Long ................................
+  // Get user Lat and Long ................................
   const getLocation = () => {
     Geolocation.getCurrentPosition(
       (position) => {
@@ -80,6 +80,7 @@ const Home = () => {
   }
 
   const nearByMechanicsList = ({ item, index }) => {
+    // console.log("user Dtaa :",item)
     if (nearByMechanics) {
       return (
         <View style={styles.machanicsNearMeMainContainer}>
@@ -89,9 +90,12 @@ const Home = () => {
             // borderWidth:1,
             width: "100%"
           }}>
-            <Image source={{
+            {item.profile_picture === null ? <Image source={{
+              uri: "https://media.istockphoto.com/id/1165311626/photo/mechanic-using-a-ratchet-wrench.jpg?s=612x612&w=0&k=20&c=D4XCHr8BeR44hdJXS_Tp-9djQ7jWDKKkBWSKaqhuqK8="
+            }} style={{ height: 50, width: 50, borderRadius: 25 }} /> : <Image source={{
               uri: `http://43.204.88.205${item.profile_picture.split("/code")[1]}`
-            }} style={{ height: 50, width: 50, borderRadius: 25 }} />
+            }} style={{ height: 50, width: 50, borderRadius: 25 }} />}
+
             <View style={{ marginLeft: 11 }}>
               <Text style={{ color: "black", fontFamily: "Forza-Bold" }}>{item.m_name}</Text>
               <View style={{ flexDirection: "row" }}>
@@ -149,15 +153,16 @@ const Home = () => {
       <Loading />
     }
   }
-  //Get the location name o user............................................
+  //Get the location name of user............................................
   const getThePlaceName = () => {
     if (userLatitude && userLongitude) {
-      axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${userLatitude},${userLongitude}&key=`)
+      axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${userLatitude},${userLongitude}&key=AIzaSyD03qUlsL_zZueP3nn1sFXwQOBwDRKGl-Y`)
         .then((res) => {
           // console.log("responce in geoCoding :", res.data.results[4].formatted_address.split(",")[3]);
           setFullAddress(res.data.results[4].formatted_address);
           setPlaceName(res.data.results[4].formatted_address.split(",")[3]);
           setStateName(res.data.results[4].formatted_address.split(",")[4]);
+          getUserLocationDetails(res.data.results[4].formatted_address);
           setGotLatLongIndicator(true);
         })
         .catch((error) => { console.log("error of homePage in geoCoding :", error) })
@@ -171,7 +176,7 @@ const Home = () => {
     getThePlaceName();
   }, [userLongitude]);
 
-//Call the openService Request Detail end point .................................................
+  //Call the openService Request Detail end point for checking status.................................................
   useEffect(() => {
     if (postUserLog) {
       axios.get(openServiceRequestDetails, {
@@ -181,13 +186,26 @@ const Home = () => {
         }
       })
         .then((res) => {
-          if (res.data.data[0].status === "accepted" && gotLatLongIndicator === true) {
-            navigation.navigate("YourMechanics", { acceptedMDetails: res.data.data[0] });
-            getPageName("Mechanic");
+          if (res.data.data.length !== 0) {
+            if (res.data.data[0].status === "accepted" && gotLatLongIndicator === true) {
+              navigation.navigate("YourMechanics", { acceptedMDetails: res.data.data[0] });
+              getPageName("Mechanic");
+            } else if (res.data.data[0].status === "initiated") {
+              navigation.navigate("Cart", { acceptedMDetails: res.data.data[0] });
+              getPageName("Cart")
+            }
           }
         })
-        .catch((error) => { "error in user data in homePage :", error })
+        .catch((error) => { console.log("error in user data in homePage :", error) })
     }
+  }, [gotLatLongIndicator]);
+
+  // setInterval(() => {
+  //   setGotLatLongIndicator(!gotLatLongIndicator);
+  //   console.log("serviceRequestData",gotLatLongIndicator)
+  // }, 10000);
+
+  useEffect(() => {
     nearByMechanicsApi_Handler();
   }, []);
 

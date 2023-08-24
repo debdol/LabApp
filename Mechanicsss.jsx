@@ -9,9 +9,8 @@ import MapView, { PROVIDER_GOOGLE, Marker, MapCircle, } from 'react-native-maps'
 
 const Mechanicsss = () => {
     const navigation = useNavigation();
-    const { postServiceRequestDetails, postUserlat, postUserLong } = useContext(StyleContext);
+    const { postServiceRequestDetails, postUserlat, postUserLong, getPageName } = useContext(StyleContext);
     const [markers, setMarkers] = useState();
-    // console.log("postServiceRequestDetailssss :", postServiceRequestDetails);
     const [mechanicsDetails, setMechanicsDetails] = useState();
 
     useEffect(() => {
@@ -25,22 +24,21 @@ const Mechanicsss = () => {
         if (postServiceRequestDetails) {
             if (postServiceRequestDetails[0].status === "accepted") {
                 navigation.navigate("YourMechanics", { acceptedMDetails: postServiceRequestDetails[0] });
-                // console.log("postServiceRequestDetails :", postServiceRequestDetails[0]);
+            } else if (postServiceRequestDetails[0].status === "initiated") {
+                navigation.navigate("Cart", { acceptedMDetails: postServiceRequestDetails[0] });
+                getPageName("Cart")
             }
             else {
                 setMechanicsDetails(postServiceRequestDetails[0].mechanic);
-                // console.log("postServiceRequestDetails :", postServiceRequestDetails[0].status);
             }
-            // setMechanicsDetails(postServiceRequestDetails[0].mechanic);
-            // console.log("postServiceRequestDetails :", postServiceRequestDetails);
         }
     }, [postServiceRequestDetails]);
 
     const mechanicsList_Handler = ({ item, index }) => {
         return (
-            <View style={styles.machanicsNearMeMainContainer}>
+            <View style={styles.machanicsNearMeMainContainer} key={index}>
                 <View style={styles.flatListPicAndLocationView}>
-                    <Image source={{ uri: `http://43.204.88.205${item.profile_picture.split("/code")[1]}` }} style={styles.mechanicImg} />
+                    {item.profile_picture ? <Image source={{ uri: `http://43.204.88.205${item.profile_picture.split("/code")[1]}` }} style={styles.mechanicImg} /> : null}
                     <View style={{ marginLeft: 11 }}>
                         <Text style={{ color: "black", fontFamily: "Forza-Bold" }}>{item.m_name}</Text>
                         <View style={{ flexDirection: "row" }}>

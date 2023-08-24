@@ -20,9 +20,9 @@ const InformationPage = () => {
   const [serviceCode, setServiceCode] = useState();
   const [problems, setProblems] = useState([]);
   const [serviceRequestData, setServiceRequestData] = useState();
-  const [serviceRequestStatus, setServiceRequestStatus] = useState();
+  // console.log(postUserService);
 
-  const multipleLocation = () => {
+  const searchMechanics = () => {
     const serviceData = {
       car_manufacturer: "alto",
       car_model: postUserCars[0].car_model,
@@ -43,11 +43,9 @@ const InformationPage = () => {
       })
         .then((res) => {
           if (res.data.message) {
-            setServiceRequestStatus(res.data.message);
-            setModalVisible(true);
             setServiceRequestData(true);
           } else {
-            Alert.alert("pls,create your service request");
+            setModalVisible(true);
           }
         })
         .catch((err) => console.log("err in create service :", err));
@@ -74,6 +72,7 @@ const InformationPage = () => {
         .catch((err) => console.log("error in requestdetails :", err))
     };
   }, [serviceRequestData]);
+
 
   //making an array with your serviceTypes..................................
   useEffect(() => {
@@ -192,13 +191,13 @@ const InformationPage = () => {
           <TextInput placeholder='Write your message' style={styles.footerInput} onChangeText={e => setUreMsg(e)} />
         </View>
         <TouchableOpacity style={styles.searchMehcanicsBtn} onPress={() => {
-          multipleLocation();
+          searchMechanics();
           // setOpenServiceRequestDetailsController('false')
         }}>
           <Text style={styles.searchMehcanicsBtnTxt}>Search Mechanics</Text>
         </TouchableOpacity>
         {/* Showing service Request Status ...................... */}
-        {serviceRequestStatus ? <View style={styles.centeredView}>
+        <View style={styles.centeredView}>
           <Modal
             animationType="slide"
             transparent={true}
@@ -209,21 +208,16 @@ const InformationPage = () => {
             }}>
             <View style={styles.centeredView}>
               <View style={styles.modalView}>
-                <Text style={styles.modalText}>{serviceRequestStatus}</Text>
+                <Text style={styles.modalText}> heyyy!!! your service request has created</Text>
                 <Pressable
                   style={[styles.button, styles.buttonClose]}
                   onPress={() => setModalVisible(!modalVisible)}>
-                  <Text style={styles.textStyle}>Hide Modal</Text>
+                  <Text style={styles.textStyle}>Exit</Text>
                 </Pressable>
               </View>
             </View>
           </Modal>
-          <Pressable
-            style={[styles.button, styles.buttonOpen]}
-            onPress={() => setModalVisible(true)}>
-            <Text style={styles.textStyle}>Show Modal</Text>
-          </Pressable>
-        </View> : null}
+        </View>
       </ScrollView>
     </SafeAreaView>
   )
@@ -422,9 +416,6 @@ const styles = StyleSheet.create({
     padding: 10,
     elevation: 2,
   },
-  buttonOpen: {
-    backgroundColor: '#F194FF',
-  },
   buttonClose: {
     backgroundColor: '#2196F3',
   },
@@ -436,7 +427,9 @@ const styles = StyleSheet.create({
   modalText: {
     marginBottom: 15,
     textAlign: 'center',
-    color:"Black"
+    color: "black",
+    fontFamily: "Forza-Bold",
+    fontSize: 16
   },
 })
 export default InformationPage;

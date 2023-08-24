@@ -12,43 +12,44 @@ const SearchMechanics = () => {
 
     return (
         <>
-            {postUserlat ? <View>
-                <View style={styles.txt}>
-                    <View style={styles.headingView}>
-                        <TouchableOpacity onPress={() => { navigation.goBack(); getPageName("Home") }}>
-                            <AntDesign name='left' size={29} style={{ color: "black", marginLeft: 3 }} />
+            {postUserlat && postUserLong ?
+                <View>
+                    <View style={styles.txt}>
+                        <View style={styles.headingView}>
+                            <TouchableOpacity onPress={() => { navigation.goBack(); getPageName("Home") }}>
+                                <AntDesign name='left' size={29} style={{ color: "black", marginLeft: 3 }} />
+                            </TouchableOpacity>
+                            <Text style={{ color: "black", marginLeft: 83, fontFamily: "Forza-Bold", fontSize: 17 }}>Search mechanics</Text>
+                        </View>
+                        <Image source={require("./assets/planet-earth.png")} style={styles.earthImg} />
+                        <Text style={styles.whereIsTheCarTxt}>Where is the car?</Text>
+                        <Text style={styles.kindlyLet}>Kindly let know the car’s location so that we can fine technicians within the area</Text>
+                        <TouchableOpacity style={styles.useCurrenLBtn} onPress={() => navigation.navigate("InformationPage")}>
+                            <Text style={styles.useCurrenLTxt}>Use current Location</Text>
                         </TouchableOpacity>
-                        <Text style={{ color: "black", marginLeft: 83, fontFamily: "Forza-Bold", fontSize: 17 }}>Search mechanics</Text>
-                    </View>
-                    <Image source={require("./assets/planet-earth.png")} style={styles.earthImg} />
-                    <Text style={styles.whereIsTheCarTxt}>Where is the car?</Text>
-                    <Text style={styles.kindlyLet}>Kindly let know the car’s location so that we can fine technicians within the area</Text>
-                    <TouchableOpacity style={styles.useCurrenLBtn} onPress={() => navigation.navigate("InformationPage")}>
-                        <Text style={styles.useCurrenLTxt}>Use current Location</Text>
-                    </TouchableOpacity>
-                    {/* <TouchableOpacity style={styles.inputLocationMBtn} onPress={() => navigation.navigate("ManuallyLocation")}>
+                        {/* <TouchableOpacity style={styles.inputLocationMBtn} onPress={() => navigation.navigate("ManuallyLocation")}>
                     <Text style={styles.inputeLTxt}>Input Location Manually</Text>
                 </TouchableOpacity> */}
-                </View>
-                <View style={styles.page}>
-                    <MapView
-                        provider={PROVIDER_GOOGLE}
-                        style={{ width: "100%", height: "80%" }}
-                        initialRegion={{
-                            latitude: postUserlat,
-                            longitude: postUserLong,
-                            latitudeDelta: 0.0922,
-                            longitudeDelta: 0.0421,
-                        }}
-                        // showsUserLocation={true}
-                        zoomTapEnabled={true}
-                        maxZoomLevel={25}
-                        userLocationPriority='high'
-                    >
-                        <Marker coordinate={{ latitude: Number(postUserlat), longitude: Number(postUserLong) }} tracksViewChanges={true} image={require("./assets/MapMarker.png")} />
-                    </MapView>
-                </View >
-            </View > : <Loading/>}
+                    </View>
+                    <View style={styles.page}>
+                        <MapView
+                            provider={PROVIDER_GOOGLE}
+                            style={{ width: "100%", height: "80%" }}
+                            initialRegion={{
+                                latitude: postUserlat,
+                                longitude: postUserLong,
+                                latitudeDelta: 0.0922,
+                                longitudeDelta: 0.0421,
+                            }}
+                            // showsUserLocation={true}
+                            zoomTapEnabled={true}
+                            maxZoomLevel={25}
+                            userLocationPriority='high'
+                        >
+                            <Marker coordinate={{ latitude: Number(postUserlat), longitude: Number(postUserLong) }} tracksViewChanges={true} image={require("./assets/MapMarker.png")} />
+                        </MapView>
+                    </View >
+                </View > : <Loading />}
         </>
     )
 }

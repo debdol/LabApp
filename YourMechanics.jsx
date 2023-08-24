@@ -18,12 +18,12 @@ const YourMechanics = ({ route }) => {
         { latitude: Number(route.params.acceptedMDetails.m_location.latitude), longitude: Number(route.params.acceptedMDetails.m_location.longitude) }
     ]
 
-    // useEffect(() => {
-    //     if (route.params.acceptedMDetails) {
-    //         setMNumber(route.params.acceptedMDetails.contact_number);
-    //         // console.log("postServiceRequestDetails :", route.params.acceptedMDetails.);
-    //     }
-    // }, [route.params.acceptedMDetails]);
+    useEffect(() => {
+        if (route.params.acceptedMDetails) {
+            setMNumber(route.params.acceptedMDetails.m_contact);
+            // console.log("postServiceRequestDetails :", route.params.acceptedMDetails);
+        }
+    }, [route.params.acceptedMDetails]);
     const addMinutes = (date, minutes) => {
         date.setMinutes(date.getMinutes() + minutes);
         return (date);
@@ -31,7 +31,7 @@ const YourMechanics = ({ route }) => {
 
     useEffect(() => {
         const min = addMinutes(new Date(), 10);
-        console.log("minutes :", min);
+        // console.log("minutes :", min);
     }, [])
 
     const callMechanic = () => {
@@ -44,7 +44,7 @@ const YourMechanics = ({ route }) => {
             }
             call(args).catch(console.error)
         } else {
-            console.log("hosse na ");
+            console.log("calling is not done ");
         }
     }
 
@@ -57,7 +57,7 @@ const YourMechanics = ({ route }) => {
             <View style={{ padding: 19 }}>
                 <View style={styles.reachingTimeView}>
                     <Text style={styles.reachingTimeHeading}>Mechanic will reach you in time</Text>
-                    <Text style={styles.reachingTime}>18:00-18:10</Text>
+                    <Text style={styles.reachingTime}>{route.params.acceptedMDetails.m_duration}</Text>
                 </View>
                 <View style={styles.page}>
                     <View style={styles.container}>
@@ -102,7 +102,7 @@ const YourMechanics = ({ route }) => {
                 <View style={{ backgroundColor: "#FFF", padding: 10, borderWidth: 1, borderColor: "#E0EAEF", justifyContent: "center", width: 350, alignSelf: "center", borderRadius: 10, marginTop: "4%" }}>
                     <View style={styles.yourMechanicsHeaderView}>
                         <View style={styles.yourMechanicsPicContactView}>
-                            {/* <Image source={{ uri: `http://43.204.88.205${route.params.acceptedMDetails.profile_picture.split("/code")[1]}` }} style={{ height: 50, width: 50, borderRadius: 25 }} /> */}
+                            {route.params.acceptedMDetails.m_image ? <Image source={{ uri: `http://43.204.88.205${route.params.acceptedMDetails.m_image.split("/code")[1]}` }} style={{ height: 50, width: 50, borderRadius: 25 }} /> : null}
                             <View style={styles.contactUrMechanicsView}>
                                 <Text style={styles.txts}>Contact your mechanic</Text>
                                 <Text style={styles.txts}>{route.params.acceptedMDetails.m_distance} away ({route.params.acceptedMDetails.m_duration})</Text>
@@ -123,7 +123,7 @@ const YourMechanics = ({ route }) => {
                         </View>
                         <View style={styles.orderNumberView}>
                             <Text style={[styles.txts, styles.txtsKey]}>Your location : </Text>
-                            {/* <Text style={[styles.txts, styles.txtsResult]}>{postUserLocationDetails[3]},{postUserLocationDetails[4]}</Text> */}
+                            <Text style={[styles.txts, styles.txtsResult]}>{postUserLocationDetails.split(",")[2]},{postUserLocationDetails.split(",")[4]}</Text>
                         </View>
                         <View style={styles.orderNumberView}>
                             <Text style={[styles.txts, styles.txtsKey]}>Car name : </Text>
@@ -160,11 +160,12 @@ const styles = StyleSheet.create({
     headingTxt: {
         color: "#3D4759",
         fontFamily: "Forza-Black",
-        fontSize: 19
+        fontSize: 19,
+        alignItems:"center",
     },
     headingIcon: {
         color: "black",
-        right: 90
+        right: 88
     },
     page: {
         // flex: 1,

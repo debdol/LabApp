@@ -51,7 +51,7 @@ const MechanicsDetails = ({ route }) => {
                     <View style={{}}>
                         <View style={styles.firstCard}>
                             <View style={styles.firstCardFirstRow}>
-                                <Image source={{ uri: `http://43.204.88.205${route.params.item.profile_picture.split("/code")[1]}` }} style={styles.mechanicsPic} />
+                                {route.params.item.profile_picture ? <Image source={{ uri: `http://43.204.88.205${route.params.item.profile_picture.split("/code")[1]}` }} style={styles.mechanicsPic} /> : null}
                                 <View style={styles.firstCardFirstRowNameView}>
                                     <Text style={styles.firstCardFirstRowNameTxt}>{route.params.item.m_name}</Text>
                                     <Text style={styles.firstCardFirstRowNameTxt}>Automobile Mechanic</Text>
@@ -146,7 +146,7 @@ const MechanicsDetails = ({ route }) => {
                     {serviceTypes.map((item, index) => {
                         let lowwerAndHigherCaseName = item.name.charAt(0).toUpperCase() + item.name.slice(1);
                         return (
-                            <View style={{ flexDirection: "row", justifyContent: "space-between", borderBottomWidth: 1, borderBottomColor: "#E0EAEF", padding: 10 }}>
+                            <View style={{ flexDirection: "row", justifyContent: "space-between", borderBottomWidth: 1, borderBottomColor: "#E0EAEF", padding: 10 }} key={index}>
                                 <Text style={{ color: "black", fontFamily: "Forza-Bold", color: "#505056", fontSize: 17 }}>{lowwerAndHigherCaseName}</Text>
                             </View>
                         )
