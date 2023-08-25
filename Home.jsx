@@ -196,7 +196,7 @@ const Home = () => {
             }
           }
         })
-        .catch((error) => { console.log("error in user data in homePage :", error) })
+        .catch((error) => { console.log("error in user data in cart :", error) })
     }
   }, [gotLatLongIndicator]);
 

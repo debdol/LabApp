@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Text, View } from 'react-native'
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import Entypo from 'react-native-vector-icons/Entypo';
 import Fontisto from 'react-native-vector-icons/Fontisto';
@@ -8,14 +8,16 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import LinearGradient from 'react-native-linear-gradient';
 import axios from 'axios';
 import { StyleContext } from './App';
-import { calculateTotalAmount } from './APIs';
+import { calculateTotalAmount, serviceTypes } from './APIs';
 import Loading from './Loading';
-const Cart = ({ route }: any) => {
+const Cart = ({ route }) => {
   const { postServiceRequestDetails, postUserlat, postUserLong, getPageName, postUserLog } = useContext(StyleContext);
   const [totalAmount, setTotalAmount] = useState();
+  const [problems, setProblems] = useState();
+  const [showServiceTypes, setShowServiceTypes] = useState(false);
 
-  // console.log("postServiceRequestDetails in cart :", route.params.acceptedMDetails);
   useEffect(() => {
+    // console.log("postServiceRequestDetails in cart :", problems);
     if (route.params.acceptedMDetails) {
       axios.get(`${calculateTotalAmount}${route.params.acceptedMDetails._id}`, {
         headers: {
@@ -24,18 +26,41 @@ const Cart = ({ route }: any) => {
         }
       })
         .then((res) => {
+          // console.log("total amount in cart :", res.data.data)
           setTotalAmount(res.data.data[0].total_amount);
         })
         .catch((error) => console.log("error in total amount :", error))
     }
   }, [route.params.acceptedMDetails])
+
+  //making an array with your serviceTypes..................................
+  useEffect(() => {
+    axios.get(serviceTypes)
+      .then((res) => {
+        setProblems(res.data.data.map(item => item.name.charAt(0).toUpperCase() + item.name.slice(1)))
+      })
+      .catch((err) => console.log("error :", err));
+  }, []);
   return (
     <View>
       <View style={styles.mainContainer}>
-        <View style={styles.headerView}>
-          <Text style={styles.headerTxt}>View Service Charge List</Text>
-          <Entypo size={30} name='chevron-small-down' style={styles.headerIcon} />
-        </View>
+        {showServiceTypes ?
+          <TouchableOpacity style={styles.headerView} onPress={() => setShowServiceTypes(!showServiceTypes)}>
+            <Text style={styles.headerTxt}>View Service Charge List</Text>
+            <Entypo size={30} name='chevron-small-down' style={styles.headerIcon} />
+          </TouchableOpacity>
+          :
+          <View>
+            <TouchableOpacity style={styles.headerView} onPress={() => setShowServiceTypes(!showServiceTypes)}>
+              <Text style={styles.headerTxt}>View Service Charge List</Text>
+              <Entypo size={30} name='chevron-small-up' style={styles.headerIcon} />
+            </TouchableOpacity>
+          </View>
+        }
+        {showServiceTypes ?
+          <View style={styles.chartsStyle}>
+            {problems ? problems.map((item, index) => (<Text key={index} style={styles.chartsTextStyle}>{item}</Text>)) : null}
+          </View> : null}
         <View style={styles.totalBalanceView}>
           <Text style={styles.totalBalanceTxt}>Total Balance</Text>
           <View style={styles.totalBalanceNumberView}>
@@ -50,28 +75,26 @@ const Cart = ({ route }: any) => {
           </View>
         </View>
         <Text style={styles.serviceChargeHeading}>Service Charge</Text>
-        {/* <View style={styles.flatTierMainView}>
-          <View style={styles.flatTierChildContainer}>
-            <View style={styles.flatTierTitlePriceView}>
-              <Text style={styles.flatTierTxt}>Flat Tier</Text>
-              <View style={styles.flatTierPriceView}>
-                <Text style={styles.price}>150</Text>
-                <Fontisto name='inr' size={12} style={[styles.price, { fontSize: 11 }]} />
-                <Text style={styles.price}>/hr</Text>
+        {route.params.acceptedMDetails.service_types[0].status === "active" ?
+          (<View style={styles.flatTierMainView}>
+            <View style={styles.flatTierChildContainer}>
+              <View style={styles.flatTierTitlePriceView}>
+                <Text style={styles.flatTierTxt}>{route.params.acceptedMDetails.service_types[0].service_name.charAt(0).toUpperCase() + route.params.acceptedMDetails.service_types[0].service_name.slice(1)}</Text>
+                <View style={styles.flatTierPriceView}>
+                  <Text style={styles.price}>{route.params.acceptedMDetails.service_types[0].price}</Text>
+                  <Fontisto name='inr' size={12} style={[styles.price, { fontSize: 11 }]} />
+                </View>
               </View>
+              <FontAwesome name='pause' size={15} style={styles.pauseIcon} />
             </View>
-            <FontAwesome name='pause' size={15} style={styles.pauseIcon} />
-          </View>
-          <View style={styles.bill_Hours_min_secView}>
-            <View style={{}}>
-              <Text style={styles.billTxt}>Bill</Text>
-              <View style={styles.billView}>
-                <Text style={styles.billFirstPrice}>570</Text>
-                <Text style={styles.billDot}>.</Text>
-                <Text style={styles.billFirstPrice}>34</Text>
+            <View style={styles.bill_Hours_min_secView}>
+              <View style={{}}>
+                <Text style={styles.billTxt}>Bill</Text>
+                <View style={styles.billView}>
+                  <Text style={styles.billFirstPrice}>{route.params.acceptedMDetails.service_types[0].price}</Text>
+                </View>
               </View>
-            </View>
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              {/* <View style={{ flexDirection: "row", alignItems: "center" }}>
               <View style={styles.hrView}>
                 <Text style={styles.billHourTxt}>Hours</Text>
                 <View style={styles.timrAndDoubleDotView}>
@@ -90,25 +113,28 @@ const Cart = ({ route }: any) => {
                 <Text style={styles.billHourTxt}>Seconds</Text>
                 <Text style={styles.billHour}>13</Text>
               </View>
+            </View> */}
             </View>
-          </View>
-        </View> */}
-        <View style={styles.lowFuelMainView}>
-          <View style={styles.imgTxtView}>
-            <View style={{ padding: 9, backgroundColor: "#E0E6ED", borderRadius: 14, }}>
-              <Image source={require("./assets/gas-pump1(traced).png")} style={styles.fuelImg} />
-            </View>
-            <View style={styles.lowFuelView}>
-              <Text style={styles.lowFuelTxt}>{route.params.acceptedMDetails.service_types[0].service_name}</Text>
-              <View style={styles.lowFuelPriceIconView}>
-                <Text style={styles.lowFuelPriceTxt}>{route.params.acceptedMDetails.service_types[0].price}</Text>
-                <FontAwesome name='inr' style={[styles.lowFuelPriceTxt, { fontSize: 14 }]} />
-                <Text style={styles.lowFuelPriceTxt}>Fix price</Text>
+          </View>) :
+          route.params.acceptedMDetails.service_types[0].status === "completed" ?
+            (<View style={styles.lowFuelMainView}>
+              <View style={styles.imgTxtView}>
+                <View style={{ padding: 9, backgroundColor: "#E0E6ED", borderRadius: 14, }}>
+                  <Image source={require("./assets/gas-pump1(traced).png")} style={styles.fuelImg} />
+                </View>
+                <View style={styles.lowFuelView}>
+                  <Text style={styles.lowFuelTxt}>{route.params.acceptedMDetails.service_types[0].service_name.charAt(0).toUpperCase() + route.params.acceptedMDetails.service_types[0].service_name.slice(1)}</Text>
+                  <View style={styles.lowFuelPriceIconView}>
+                    <Text style={styles.lowFuelPriceTxt}>{route.params.acceptedMDetails.service_types[0].price}</Text>
+                    <FontAwesome name='inr' style={[styles.lowFuelPriceTxt, { fontSize: 14 }]} />
+                    <Text style={styles.lowFuelPriceTxt}>Fix price</Text>
+                  </View>
+                </View>
               </View>
-            </View>
-          </View>
-          <Image source={require('./assets/Vector.png')} style={{ marginRight: 11 }} />
-        </View>
+              <Image source={require('./assets/Vector.png')} style={{ marginRight: 11 }} />
+            </View>)
+            : null
+        }
       </View>
       <View style={styles.footerView}>
         <View style={styles.totalPriceView}>
@@ -157,6 +183,26 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFA514",
     borderRadius: 90,
     color: "black"
+  },
+  chartsStyle: {
+    borderWidth: 1,
+    borderColor: "#E0EAEF",
+    position: "absolute",
+    zIndex: 6,
+    top: "18%",
+    width: "80%",
+    height: "29%",
+    alignSelf: "center",
+    backgroundColor: "#FFFFFF",
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 10,
+    elevation: 2
+  },
+  chartsTextStyle: {
+    fontFamily: "Forza-Bold",
+    fontSize: 19,
+    color: "#3D4759",
   },
   totalBalanceView: {
     marginBottom: 23,
@@ -234,7 +280,7 @@ const styles = StyleSheet.create({
     color: "#FFA514",
     fontSize: 18,
     letterSpacing: 0.5,
-    fontWeight: "600"
+    fontFamily:"Forza-Bold"
   },
   flatTierTxt: {
     color: "#505056",
@@ -273,16 +319,10 @@ const styles = StyleSheet.create({
     color: "#3D4759",
     backgroundColor: "#FFA514",
     borderRadius: 5,
-    fontWeight: "500",
+    fontFamily:"Forza-Bold",
     fontSize: 22,
     paddingHorizontal: 6,
     paddingVertical: 2
-  },
-  billDot: {
-    backgroundColor: "black",
-    borderRadius: 3,
-    height: 6,
-    width: 6,
   },
   hrView: {
     flexDirection: "column",
@@ -364,7 +404,7 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     gap: 9,
     // padding:19,
-    marginTop:"51%",
+    marginTop: 105,
     backgroundColor: "#FFFFFF"
   },
   totalPriceView: {
@@ -373,12 +413,12 @@ const styles = StyleSheet.create({
   totalPriceTxt: {
     color: "black",
     fontSize: 18,
-    fontWeight: "600"
+    fontFamily:"Forza-Bold"
   },
   totalPrice: {
     color: "black",
     fontSize: 24,
-    fontWeight: "700",
+    fontFamily:"Forza-Bold"
   },
   checkOutBtnView: {
     backgroundColor: "#007AFF",
