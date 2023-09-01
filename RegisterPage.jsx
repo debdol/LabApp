@@ -62,7 +62,7 @@ const RegisterPage = (props: any) => {
             }
         })
             .then((res) => {
-                // console.log("token in regiterPage :",res);
+                // console.log("token in regiterPage :",
                 getUserLog(res.data.token);
                 AsyncStorage.setItem('User_Token', res.data.token);
                 AsyncStorage.removeItem('varified_Token');
@@ -91,7 +91,7 @@ const RegisterPage = (props: any) => {
                             borderRadius: 22,
                             color: "#242B2E"
                         }} />
-                        <TextInput placeholder='Full name' style={styles.fullNameI} onChangeText={(e: any) => setFullName(e)} />
+                        <TextInput placeholder='Full name' style={styles.fullNameI} onChangeText={(e) => setFullName(e)} />
                     </View>
 
                     <View style={styles.inputLogoConatiner}>
@@ -103,7 +103,7 @@ const RegisterPage = (props: any) => {
                             borderRadius: 22,
                             color: "#242B2E"
                         }} />
-                        <TextInput placeholder='Email' style={styles.fullNameI} onChangeText={(e: any) => setEmail(e)} />
+                        <TextInput placeholder='Email' style={styles.fullNameI} onChangeText={(e) => setEmail(e)} />
                     </View>
 
                     <View style={styles.inputLogoConatiner}>
@@ -116,7 +116,7 @@ const RegisterPage = (props: any) => {
                             borderRadius: 22,
                             color: "#242B2E"
                         }} />
-                        <TextInput placeholder='Address' style={styles.fullNameI} onChangeText={(e: any) => setAddress(e)} />
+                        <TextInput placeholder='Address' style={styles.fullNameI} onChangeText={(e) => setAddress(e)} />
                     </View>
 
                     <View style={styles.inputLogoConatiner}>
@@ -128,7 +128,7 @@ const RegisterPage = (props: any) => {
                             borderRadius: 22,
                             color: "#242B2E"
                         }} />
-                        <TextInput placeholder='Car Model' style={styles.fullNameI} onChangeText={(e: any) => setCarModel(e)} />
+                        <TextInput placeholder='Car Model' style={styles.fullNameI} onChangeText={(e) => setCarModel(e)} />
                     </View>
 
                     <View style={styles.inputLogoConatiner}>
@@ -140,7 +140,7 @@ const RegisterPage = (props: any) => {
                             borderRadius: 22,
                             color: "#242B2E"
                         }} />
-                        <TextInput placeholder='Car number' style={styles.fullNameI} onChangeText={(e: any) => setCarNumber(e)} />
+                        <TextInput placeholder='Car number' style={styles.fullNameI} onChangeText={(e) => setCarNumber(e)} />
                     </View>
 
                     <View style={styles.inputLogoConatiner}>
@@ -152,7 +152,7 @@ const RegisterPage = (props: any) => {
                             borderRadius: 22,
                             color: "#242B2E"
                         }} />
-                        <TextInput placeholder='Pin Code' style={styles.fullNameI} onChangeText={(e: any) => setPincode(e)} />
+                        <TextInput placeholder='Pin Code' style={styles.fullNameI} onChangeText={(e) => setPincode(e)} />
                     </View>
 
                     <View style={styles.inputLogoConatiner}>
@@ -164,7 +164,7 @@ const RegisterPage = (props: any) => {
                             borderRadius: 22,
                             color: "#242B2E"
                         }} />
-                        <TextInput placeholder='state' style={styles.fullNameI} onChangeText={(e: any) => setState(e)} />
+                        <TextInput placeholder='state' style={styles.fullNameI} onChangeText={(e) => setState(e)} />
                     </View>
                 </View>
                 <TouchableOpacity style={styles.nextBtn} onPress={() => {

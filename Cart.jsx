@@ -23,7 +23,7 @@ const Cart = ({ route }) => {
   useEffect(() => {
     if (paymentUrl) {
       Linking.openURL(paymentUrl);
-      console.log("payment URL :", paymentUrl)
+      // console.log("payment URL :", paymentUrl)
     }
   }, [paymentUrl]);
 
@@ -94,7 +94,7 @@ const Cart = ({ route }) => {
         setProblems(res.data.data.map(item => item.name.charAt(0).toUpperCase() + item.name.slice(1)))
       })
       .catch((err) => console.log("error :", err));
-    console.log("data check :", route.params.acceptedMDetails)
+    console.log("data check in cart page:", route.params.acceptedMDetails)
   }, []);
 
 

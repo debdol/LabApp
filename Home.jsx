@@ -203,7 +203,7 @@ const Home = () => {
 
   // setInterval(() => {
   //   setGotLatLongIndicator(!gotLatLongIndicator);
-  //   console.log("serviceRequestData",gotLatLongIndicator)
+  //   // console.log("serviceRequestData",gotLatLongIndicator)
   // }, 10000);
 
   useEffect(() => {
@@ -231,7 +231,7 @@ const Home = () => {
               color: "black",
               fontFamily: "Forza-Bold"
             }}>your location</Text>
-
+            
             {fullAddressControllerVariable ?
               (<Text style={{ flexDirection: "row", alignItems: "center" }}>
                 <Text style={{

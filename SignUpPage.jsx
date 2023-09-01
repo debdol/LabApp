@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TextInput, TouchableOpacity, View, Image } from 'react-native'
+import { StyleSheet, Text, TextInput, TouchableOpacity, View, Image, Alert } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import axios from 'axios';
@@ -14,9 +14,11 @@ const SignUpPage = (props) => {
             props.userNumber(inputNumber);
             axios.get(`${baseUrl}login?contact_number=${inputNumber}&device_fcm='eQONCIs3Rku474Chexzonu:APA91bE7cxUy6G9OC4NArxsfALglRFVF6cMyA7XY--ZCVvFJd8qlRWGoT0jXIifw93czKBN5XKjkcjigeDFzKocgKAPzchTmNGnpz6rNiSiCw2I6Her0nGjXVuYxjfjJthrnSTAC4zzP'`)
                 .then((res) => {
-                    console.log("Data in signUpPage: ", res.data);
+                    //Hemant add check feature to this login API
                     if (res.data) {
                         props.pagename("otp");
+                    } else {
+                        Alert.alert("pls,enter valid number");
                     }
                 })
                 .catch((error) => console.log(error));
@@ -49,7 +51,7 @@ const SignUpPage = (props) => {
                         {({ handleChange, handleSubmit, errors, touched, values, }) => (
                             <View>
                                 <View style={styles.nineOneInputView}>
-                                    <Text style={{ fontWeight: "400", marginLeft: 22, fontSize: 19, color: "black", fontFamily: "Forza-Bold" }}>+91</Text>
+                                    <Text style={{ fontWeight: "400", marginLeft: 22, fontSize: 15, color: "black", fontFamily: "Forza-Bold" }}>+91</Text>
                                     <TextInput style={styles.inputStyle} keyboardType='number-pad' onChangeText={handleChange('phoneNumber')} placeholder='write your phone number' maxLength={10} value={values.phoneNumber} />
                                 </View>
                                 {errors.phoneNumber && touched.phoneNumber ? (<Text style={{ color: "red", marginBottom: 9, fontFamily: "Forza-Bold" }}>{errors.phoneNumber}</Text>) : null}
@@ -70,7 +72,6 @@ const SignUpPage = (props) => {
                                         }} />
                                     </View>
                                 </TouchableOpacity>
-
                             </View>
                         )}
                     </Formik>
@@ -90,7 +91,7 @@ const styles = StyleSheet.create({
         padding: 4,
         color: "#0D0D0D",
         letterSpacing: 1,
-        fontSize: 19,
+        fontSize: 15,
         fontFamily: "Forza-Bold",
         // backgroundColor: "#D7E2F0",
         // borderWidth: 1,

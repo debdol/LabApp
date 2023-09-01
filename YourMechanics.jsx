@@ -88,9 +88,9 @@ const YourMechanics = ({ route }) => {
                             <TouchableOpacity style={styles.callBtn} onPress={() => {Linking.openURL(`tel:${mNumber}`)}}>
                                 <Text style={[styles.callBtnTxt, { color: "#FFFFFF" }]}>Call now</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity style={styles.smsBtn} onPress={() => {Linking.openURL(`sms:${mNumber}`)}}>
+                            {/* <TouchableOpacity style={styles.smsBtn} onPress={() => {Linking.openURL(`sms:${mNumber}`)}}>
                                 <MaterialIcons name='sms' style={[styles.callBtnTxt, { color: "#FFFFFF", }]} size={40}/>
-                            </TouchableOpacity>
+                            </TouchableOpacity> */}
                         </View>
                         <Text style={{ fontFamily: "Forza-Bold", alignSelf: "center", color: "#505056", letterSpacing: 1, fontSize: 15 }}>Your OTP : {route.params.acceptedMDetails.otp}</Text>
                     </View>
