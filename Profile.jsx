@@ -38,16 +38,17 @@ const Profile = () => {
       if (response.assets) {
         const path = response.assets[0].fileName;
         const type = response.assets[0].type;
-        const data = new FormData();
-        data.append('profile_picture', path)
-        data.append('type', type)
+        // console.log("Path: ", path, "Type", type)
+        let data = new FormData();
+        data.append('images', response.assets[0], path)
         // const data = `profile_picture=@${path};type=${type}`;
-        console.log("user Profile pic :", data);
+        // console.log("user Profile pic :", response.assets[0]);
 
-        axios.put(updateProfilePic, data, {
+        axios.put( updateProfilePic, data, {
           headers: {
             'Authorization': `Bearer ${postUserLog}`,
-            'Content-Type': 'multipart/form-data'
+            'Content-Type': 'multipart/form-data',
+            'accept': 'application/json'
           }
         })
           .then((res) => console.log("responce in image :", res))
@@ -62,12 +63,9 @@ const Profile = () => {
       <ScrollView style={styles.mainView} showsVerticalScrollIndicator={false}>
         <Text style={styles.heading}>Profile</Text>
 
-        {imagPath ? (<ImageBackground style={styles.imgAndCameraView} source={{ uri: imagPath }} imageStyle={{ borderRadius: 50 }}>
+        <ImageBackground style={styles.imgAndCameraView} source={imagPath ? { uri: imagPath } : require("./assets/profileAvtar.png")} imageStyle={{ borderRadius: 50 }}>
           <AntDesign name='camera' size={20} style={styles.cameraStyle} onPress={picPicker} />
-        </ImageBackground>) : (<View style={styles.picLessCameraStyleView}>
-          <Image source={require("./assets/profileAvtar.png")} style={styles.profileAvtar} />
-          <AntDesign name='camera' size={20} style={styles.picLessCameraStyle} onPress={picPicker} />
-        </View>)}
+        </ImageBackground>
 
         <View style={styles.editProfileIconTxtView}>
           <TouchableOpacity style={styles.editProfileBtn} onPress={() => navigation.navigate("EditProfile")}>
@@ -221,7 +219,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     textAlignVertical: "center",
     top: 59,
-    left: 40
+    left: 33
   },
   picLessCameraStyleView: {
     alignSelf: "center",
