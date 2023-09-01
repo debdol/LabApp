@@ -13,6 +13,7 @@ import axios from 'axios';
 import Loading from './Loading';
 import { nearByMechanicss, openServiceRequestDetails, } from './APIs';
 
+
 const Home = () => {
   const navigation = useNavigation();
   const { getPageName, postUserName, postUserCardValidity, postUsercard_number, getUserLocationDetails, postUserLog, getUserlat, getUserLong } = useContext(StyleContext);
@@ -156,7 +157,7 @@ const Home = () => {
   //Get the location name of user............................................
   const getThePlaceName = () => {
     if (userLatitude && userLongitude) {
-      axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${userLatitude},${userLongitude}&key=`)
+      axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${userLatitude},${userLongitude}&key=AIzaSyD03qUlsL_zZueP3nn1sFXwQOBwDRKGl-Y`)
         .then((res) => {
           // console.log("responce in geoCoding :", res.data.results[4].formatted_address.split(",")[3]);
           setFullAddress(res.data.results[4].formatted_address);
@@ -190,7 +191,7 @@ const Home = () => {
             if (res.data.data[0].status === "accepted" && gotLatLongIndicator === true) {
               navigation.navigate("YourMechanics", { acceptedMDetails: res.data.data[0] });
               getPageName("Mechanic");
-            } else if (res.data.data[0].status === "initiated") {
+            } else if (res.data.data[0].status === "initiated" && gotLatLongIndicator === true) {
               navigation.navigate("Cart", { acceptedMDetails: res.data.data[0] });
               getPageName("Cart")
             }

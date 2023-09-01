@@ -1,23 +1,78 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Image, StyleSheet, Text, TouchableOpacity, View, Linking, Alert } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import Entypo from 'react-native-vector-icons/Entypo';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 
+import sha256 from 'sha256';
 import LinearGradient from 'react-native-linear-gradient';
 import axios from 'axios';
 import { StyleContext } from './App';
 import { calculateTotalAmount, serviceTypes } from './APIs';
+const Buffer = require("buffer").Buffer;
 import Loading from './Loading';
+
 const Cart = ({ route }) => {
   const { postServiceRequestDetails, postUserlat, postUserLong, getPageName, postUserLog } = useContext(StyleContext);
   const [totalAmount, setTotalAmount] = useState();
   const [problems, setProblems] = useState();
+  const [paymentUrl, setPaymentUrl] = useState();
   const [showServiceTypes, setShowServiceTypes] = useState(false);
 
   useEffect(() => {
-    // console.log("postServiceRequestDetails in cart :", problems);
+    if (paymentUrl) {
+      Linking.openURL(paymentUrl);
+      console.log("payment URL :", paymentUrl)
+    }
+  }, [paymentUrl]);
+
+  //payment function .....................................
+  const payMentHandeler = async () => {
+    const saltKey = '892f68a5-f75e-40ce-96cc-0a71a5b2abc7';
+    if (totalAmount) {
+      const payload = {
+        "merchantId": "ROADUAT",
+        "merchantTransactionId": "MT7850590068188104",
+        "merchantUserId": "MUID123",
+        "amount": 100 * totalAmount,
+        "redirectUrl": "roadserve://.MainActivity",
+        "redirectMode": "POST",
+        "callbackUrl": "roadserve://.MainActivity",
+        "mobileNumber": "9999999999",
+        "paymentInstrument": {
+          "type": "PAY_PAGE"
+        }
+      }
+      let encodedAuth = new Buffer(JSON.stringify(payload)).toString("base64");
+      let shaValue = sha256(encodedAuth + "/pg/v1/pay" + saltKey) + "###" + 1;
+
+      const options = {
+        method: 'POST',
+        url: 'https://api-preprod.phonepe.com/apis/pg-sandbox/pg/v1/pay',
+        headers: {
+          accept: 'application/json',
+          'Content-Type': 'application/json',
+          'X-VERIFY': shaValue
+        },
+        data: { request: encodedAuth }
+      };
+
+      axios
+        .request(options)
+        .then((response) => {
+          console.log(response.data.data.instrumentResponse.redirectInfo.url);
+          setPaymentUrl(response.data.data.instrumentResponse.redirectInfo.url);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    } else {
+      Alert.alert("full amount API does not work  for this time ")
+    }
+  }
+
+  useEffect(() => {
     if (route.params.acceptedMDetails) {
       axios.get(`${calculateTotalAmount}${route.params.acceptedMDetails._id}`, {
         headers: {
@@ -26,7 +81,6 @@ const Cart = ({ route }) => {
         }
       })
         .then((res) => {
-          // console.log("total amount in cart :", res.data.data)
           setTotalAmount(res.data.data[0].total_amount);
         })
         .catch((error) => console.log("error in total amount :", error))
@@ -40,9 +94,12 @@ const Cart = ({ route }) => {
         setProblems(res.data.data.map(item => item.name.charAt(0).toUpperCase() + item.name.slice(1)))
       })
       .catch((err) => console.log("error :", err));
+    console.log("data check :", route.params.acceptedMDetails)
   }, []);
+
+
   return (
-    <View>
+    <View style={styles.container}>
       <View style={styles.mainContainer}>
         <TouchableOpacity style={styles.headerView} onPress={() => setShowServiceTypes(!showServiceTypes)}>
           <Text style={styles.headerTxt}>View Service Charge List</Text>
@@ -135,10 +192,12 @@ const Cart = ({ route }) => {
             <FontAwesome name='inr' style={styles.totalPrice} />
           </View>
         </View>
-        <View style={styles.checkOutBtnView}>
-          <Text style={styles.checkOutBtnTxt}>Checkout</Text>
-          <AntDesign name='right' style={styles.checkOutBtnIcon} size={26} />
-        </View>
+        <TouchableOpacity onPress={payMentHandeler}>
+          <View style={styles.checkOutBtnView}>
+            <Text style={styles.checkOutBtnTxt}>Checkout</Text>
+            <AntDesign name='right' style={styles.checkOutBtnIcon} size={26} />
+          </View>
+        </TouchableOpacity>
       </View>
     </View>
   )
@@ -146,6 +205,10 @@ const Cart = ({ route }) => {
 
 
 const styles = StyleSheet.create({
+  container: {
+    position: "relative",
+    height: "100%"
+  },
   mainContainer: {
     padding: 16,
     flexDirection: "column",
@@ -386,6 +449,10 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
   footerView: {
+    position: "absolute",
+    bottom: 0,
+    alignSelf: "center",
+    width: "100%",
     borderTopWidth: 1,
     borderTopLeftRadius: 22,
     borderTopRightRadius: 22,
@@ -395,7 +462,6 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     gap: 9,
     // padding:19,
-    marginTop: 105,
     backgroundColor: "#FFFFFF"
   },
   totalPriceView: {
