@@ -44,19 +44,10 @@ const Cart = ({ route }) => {
   return (
     <View>
       <View style={styles.mainContainer}>
-        {showServiceTypes ?
-          <TouchableOpacity style={styles.headerView} onPress={() => setShowServiceTypes(!showServiceTypes)}>
-            <Text style={styles.headerTxt}>View Service Charge List</Text>
-            <Entypo size={30} name='chevron-small-down' style={styles.headerIcon} />
-          </TouchableOpacity>
-          :
-          <View>
-            <TouchableOpacity style={styles.headerView} onPress={() => setShowServiceTypes(!showServiceTypes)}>
-              <Text style={styles.headerTxt}>View Service Charge List</Text>
-              <Entypo size={30} name='chevron-small-up' style={styles.headerIcon} />
-            </TouchableOpacity>
-          </View>
-        }
+        <TouchableOpacity style={styles.headerView} onPress={() => setShowServiceTypes(!showServiceTypes)}>
+          <Text style={styles.headerTxt}>View Service Charge List</Text>
+          {showServiceTypes ? <Entypo size={30} name='chevron-small-down' style={styles.headerIcon} /> : <Entypo size={30} name='chevron-small-up' style={styles.headerIcon} />}
+        </TouchableOpacity>
         {showServiceTypes ?
           <View style={styles.chartsStyle}>
             {problems ? problems.map((item, index) => (<Text key={index} style={styles.chartsTextStyle}>{item}</Text>)) : null}
@@ -280,7 +271,7 @@ const styles = StyleSheet.create({
     color: "#FFA514",
     fontSize: 18,
     letterSpacing: 0.5,
-    fontFamily:"Forza-Bold"
+    fontFamily: "Forza-Bold"
   },
   flatTierTxt: {
     color: "#505056",
@@ -319,7 +310,7 @@ const styles = StyleSheet.create({
     color: "#3D4759",
     backgroundColor: "#FFA514",
     borderRadius: 5,
-    fontFamily:"Forza-Bold",
+    fontFamily: "Forza-Bold",
     fontSize: 22,
     paddingHorizontal: 6,
     paddingVertical: 2
@@ -413,12 +404,12 @@ const styles = StyleSheet.create({
   totalPriceTxt: {
     color: "black",
     fontSize: 18,
-    fontFamily:"Forza-Bold"
+    fontFamily: "Forza-Bold"
   },
   totalPrice: {
     color: "black",
     fontSize: 24,
-    fontFamily:"Forza-Bold"
+    fontFamily: "Forza-Bold"
   },
   checkOutBtnView: {
     backgroundColor: "#007AFF",

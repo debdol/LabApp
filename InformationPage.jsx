@@ -20,7 +20,7 @@ const InformationPage = () => {
   const [serviceCode, setServiceCode] = useState();
   const [problems, setProblems] = useState([]);
   const [serviceRequestData, setServiceRequestData] = useState();
-  // console.log(postUserService);
+  // console.log("postUserService", postUserService);
 
   const searchMechanics = () => {
     const serviceData = {

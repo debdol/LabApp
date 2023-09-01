@@ -1,9 +1,9 @@
-import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Image ,Linking} from 'react-native';
 import React, { useContext, useEffect, useState } from 'react';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { StyleContext } from './App';
 import { useNavigation } from '@react-navigation/native';
-import call from "react-native-phone-call";
 import MapView, { PROVIDER_GOOGLE, Marker, Polyline } from 'react-native-maps';
 import axios from 'axios';
 
@@ -11,7 +11,6 @@ const YourMechanics = ({ route }) => {
     const navigation = useNavigation();
     const { postUserCarNumber, postUserLocationDetails, postUserService, postUserlat, postUserLong } = useContext(StyleContext);
     const [mNumber, setMNumber] = useState();
-    const [reachTime, setReachTime] = useState();
 
     const lotationObject = [
         { latitude: postUserlat, longitude: postUserLong },
@@ -24,29 +23,6 @@ const YourMechanics = ({ route }) => {
             // console.log("postServiceRequestDetails :", route.params.acceptedMDetails);
         }
     }, [route.params.acceptedMDetails]);
-    const addMinutes = (date, minutes) => {
-        date.setMinutes(date.getMinutes() + minutes);
-        return (date);
-    }
-
-    useEffect(() => {
-        const min = addMinutes(new Date(), 10);
-        // console.log("minutes :", min);
-    }, [])
-
-    const callMechanic = () => {
-        if (mNumber) {
-            console.log("call number :", mNumber);
-            let args = {
-                number: mNumber, // String value with the number to call
-                prompt: true, // Optional boolean property. Determines if the user should be prompted prior to the call 
-                skipCanOpen: false // Skip the canOpenURL check
-            }
-            call(args).catch(console.error)
-        } else {
-            console.log("calling is not done ");
-        }
-    }
 
     return (
         <View style={{ backgroundColor: "#FFFFFF" }}>
@@ -108,9 +84,12 @@ const YourMechanics = ({ route }) => {
                                 <Text style={styles.txts}>{route.params.acceptedMDetails.m_distance} away ({route.params.acceptedMDetails.m_duration})</Text>
                             </View>
                         </View>
-                        <View>
-                            <TouchableOpacity style={styles.callBtn} onPress={() => callMechanic()}>
+                        <View style={styles.callSmsView}>
+                            <TouchableOpacity style={styles.callBtn} onPress={() => {Linking.openURL(`tel:${mNumber}`)}}>
                                 <Text style={[styles.callBtnTxt, { color: "#FFFFFF" }]}>Call now</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.smsBtn} onPress={() => {Linking.openURL(`sms:${mNumber}`)}}>
+                                <MaterialIcons name='sms' style={[styles.callBtnTxt, { color: "#FFFFFF", }]} size={40}/>
                             </TouchableOpacity>
                         </View>
                         <Text style={{ fontFamily: "Forza-Bold", alignSelf: "center", color: "#505056", letterSpacing: 1, fontSize: 15 }}>Your OTP : {route.params.acceptedMDetails.otp}</Text>
@@ -212,6 +191,12 @@ const styles = StyleSheet.create({
     contactUrMechanicsView: {
 
     },
+    callSmsView:{
+        flexDirection:"row",
+        alignItems:"center",
+        justifyContent:"space-between",
+        padding:5
+    },
     callBtn: {
         backgroundColor: "#007AFF",
         width: 260,
@@ -224,6 +209,11 @@ const styles = StyleSheet.create({
         fontFamily: "Forza-Bold",
         fontSize: 17,
 
+    },
+    smsBtn:{
+        padding:10,
+        borderRadius:20,
+        backgroundColor:"#FFA514"
     },
     orderNumberView: {
         flexDirection: "row",

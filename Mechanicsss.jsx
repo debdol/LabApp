@@ -21,6 +21,7 @@ const Mechanicsss = () => {
     }, [mechanicsDetails])
 
     useEffect(() => {
+        console.log("status in mechanicss page :",postServiceRequestDetails)
         if (postServiceRequestDetails) {
             if (postServiceRequestDetails[0].status === "accepted") {
                 navigation.navigate("YourMechanics", { acceptedMDetails: postServiceRequestDetails[0] });
