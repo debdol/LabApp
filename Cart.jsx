@@ -72,6 +72,7 @@ const Cart = ({ route }) => {
     }
   }
 
+  //Total amount checkkk.........................
   useEffect(() => {
     if (route.params.acceptedMDetails) {
       axios.get(`${calculateTotalAmount}${route.params.acceptedMDetails._id}`, {
@@ -94,7 +95,6 @@ const Cart = ({ route }) => {
         setProblems(res.data.data.map(item => item.name.charAt(0).toUpperCase() + item.name.slice(1)))
       })
       .catch((err) => console.log("error :", err));
-    console.log("data check in cart page:", route.params.acceptedMDetails)
   }, []);
 
 
