@@ -164,7 +164,7 @@ const Home = () => {
           setPlaceName(res.data.results[4].formatted_address.split(",")[3]);
           setStateName(res.data.results[4].formatted_address.split(",")[4]);
           getUserLocationDetails(res.data.results[4].formatted_address);
-          setGotLatLongIndicator(true);
+          // setGotLatLongIndicator(true);
         })
         .catch((error) => { console.log("error of homePage in geoCoding :", error) })
     } else {
@@ -172,7 +172,7 @@ const Home = () => {
       setStateName("state");
     }
   }
-
+  // Calling the getThePlaceName Funtion here...........................................
   useEffect(() => {
     getThePlaceName();
   }, [userLongitude]);
@@ -198,13 +198,12 @@ const Home = () => {
           }
         })
         .catch((error) => { console.log("error in user data in cart :", error) })
-    }
+    };
+    setTimeout(() => {
+      setGotLatLongIndicator(!gotLatLongIndicator);
+      // console.log("serviceRequestData", gotLatLongIndicator)
+    }, 1000);
   }, [gotLatLongIndicator]);
-
-  // setInterval(() => {
-  //   setGotLatLongIndicator(!gotLatLongIndicator);
-  //   // console.log("serviceRequestData",gotLatLongIndicator)
-  // }, 10000);
 
   useEffect(() => {
     nearByMechanicsApi_Handler();
@@ -231,7 +230,7 @@ const Home = () => {
               color: "black",
               fontFamily: "Forza-Bold"
             }}>your location</Text>
-            
+
             {fullAddressControllerVariable ?
               (<Text style={{ flexDirection: "row", alignItems: "center" }}>
                 <Text style={{
