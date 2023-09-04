@@ -6,10 +6,14 @@ import { baseUrl, logInUrl } from './APIs';
 import * as yup from 'yup';
 import { Formik } from 'formik';
 import messaging from '@react-native-firebase/messaging';
+import BouncyCheckbox from 'react-native-bouncy-checkbox';
+
 
 const SignUpPage = (props) => {
     const [inputNumber, setInputNumber] = useState(null);
     const [fcmToken, setFcmToken] = useState(null);
+    const [checkBtn, setCheckBtn] = useState(false);
+
 
     const getDeviceToken = async () => {
         await messaging().registerDeviceForRemoteMessages();
@@ -31,11 +35,11 @@ const SignUpPage = (props) => {
     }, []);
 
     useEffect(() => {
-        if (inputNumber && fcmToken) {
+        if (inputNumber && fcmToken && checkBtn) {
             props.userNumber(inputNumber);
             axios.get(`${baseUrl}login?contact_number=${inputNumber}&device_fcm=${fcmToken}`)
                 .then((res) => {
-                    console.log("responce in signUpPage:", res.data);
+                    // console.log("responce in signUpPage:", res.data);
                     //Hemant bro add check feature to this login API
                     if (res.data) {
                         props.pagename("otp");
@@ -44,6 +48,8 @@ const SignUpPage = (props) => {
                     }
                 })
                 .catch((error) => console.log(error));
+        } else if (!checkBtn) {
+            Alert.alert("pls,allow terms & conditions");
         }
     }, [inputNumber])
 
@@ -84,7 +90,24 @@ const SignUpPage = (props) => {
                                     <TextInput style={styles.inputStyle} keyboardType='number-pad' onChangeText={handleChange('phoneNumber')} placeholder='write your phone number' maxLength={10} value={values.phoneNumber} />
                                 </View>
                                 {errors.phoneNumber && touched.phoneNumber ? (<Text style={{ color: "red", marginBottom: 9, fontFamily: "Forza-Bold" }}>{errors.phoneNumber}</Text>) : null}
-                                <TouchableOpacity style={{ marginTop: 40, backgroundColor: "#007AFF", borderRadius: 39, width: 190, alignSelf: "center" }} onPress={() => {
+                                <View style={styles.conditionCheckView}>
+                                    <BouncyCheckbox
+                                        style={styles.checkBox}
+                                        size={25}
+                                        fillColor="#007AFF"
+                                        unfillColor="#FFFFFF"
+                                        iconStyle={{ borderColor: "red" }}
+                                        innerIconStyle={{ borderWidth: 2 }}
+                                        disableBuiltInState
+                                        isChecked={checkBtn}
+                                        onPress={() => {
+                                            // console.log(checkBtn);
+                                            setCheckBtn(!checkBtn)
+                                        }}
+                                    />
+                                    <Text style={styles.termsConditionText}>I am hereby agree to all terms & conditions</Text>
+                                </View>
+                                <TouchableOpacity style={checkBtn ? { marginTop: 40, backgroundColor: "#007AFF", borderRadius: 39, width: 190, alignSelf: "center" } : { marginTop: 40, backgroundColor: "#3991bd", borderRadius: 39, width: 190, alignSelf: "center" }} onPress={() => {
                                     handleSubmit();
                                 }}>
                                     <View style={{ display: "flex", flexDirection: "row", padding: 5, alignItems: "center" }}>
@@ -125,6 +148,19 @@ const styles = StyleSheet.create({
         // backgroundColor: "#D7E2F0",
         // borderWidth: 1,
         // borderColor: "red"
+    },
+    conditionCheckView: {
+        // borderWidth:1,
+        // borderColor:"red",
+        flexDirection: "row",
+        justifyContent: "center",
+        alignItems: "center",
+        marginTop: "5%"
+    },
+    termsConditionText: {
+        color: "#3D4759",
+        fontFamily: "Forza-Bold",
+        fontSize:15
     },
     nineOneInputView: {
         backgroundColor: "#D7E2F0",

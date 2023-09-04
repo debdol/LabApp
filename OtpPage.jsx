@@ -5,12 +5,14 @@ import { baseUrl, logInUrl } from './APIs';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StyleContext } from './App';
 import Loading from './Loading';
+import OTPInputView from '@twotalltotems/react-native-otp-input'
 
 const OtpPage = (props) => {
     // const [registerVarification, setRegisterVarification] = useState();
     const { getMainPage } = useContext(StyleContext);
     const [minutes, setMinutes] = useState(1);
     const [seconds, setSeconds] = useState(30);
+    const [otp, setOtp] = useState();
     const storeNumber = props.numberSend;
 
     const textInputRef1 = useRef();
@@ -23,7 +25,7 @@ const OtpPage = (props) => {
     const [num3, setNum3] = useState();
     const [num4, setNum4] = useState();
     const ConcatOtp = num1 + num2 + num3 + num4;
-    // console.log(ConcatOtp);
+
 
     const resendOTP = () => {
         setMinutes(1);
@@ -51,13 +53,13 @@ const OtpPage = (props) => {
     }, [seconds]);
 
 
-    useEffect(() => {
-        textFocus();
-    }, []);
+    // useEffect(() => {
+    //     textFocus();
+    // }, []);
 
-    const textFocus = () => {
-        textInputRef1.current.focus();
-    }
+    // const textFocus = () => {
+    //     textInputRef1.current.focus();
+    // }
 
     const getApiFunction = () => {
         const num = storeNumber.toString();
@@ -70,13 +72,13 @@ const OtpPage = (props) => {
     }
 
     const otpVarification = () => {
-        if (ConcatOtp) {
-            axios.get(`${baseUrl}otp-verification?contact_number=${storeNumber}&otp=${ConcatOtp}`)
-            .then((res) => {
-                    // console.log("trueee:",res.data)
+        if (otp) {
+            axios.get(`${baseUrl}otp-verification?contact_number=${storeNumber}&otp=${otp}`)
+                .then((res) => {
+                    // console.log("trueee:", res.data)
                     if (res.data.registered === true) {
                         AsyncStorage.setItem('User_Token', res.data.token);
-                        getMainPage(<Loading/>);
+                        getMainPage(<Loading />);
                     } else {
                         AsyncStorage.setItem('varified_Token', res.data.token);
                         props.pagename("RegisterPage")
@@ -112,7 +114,7 @@ const OtpPage = (props) => {
             <Image source={require("./assets/logo.png")} style={styles.logo} />
             <Text style={styles.heading}>We sent you an SMS code</Text>
             <Text style={styles.number}>On number: +91 {props.numberSend}</Text>
-            <View style={styles.otpView}>
+            {/* <View style={styles.otpView}>
                 <TextInput ref={textInputRef1}
                     style={styles.inputView}
                     keyboardType='number-pad'
@@ -163,7 +165,20 @@ const OtpPage = (props) => {
                     }}
                 />
 
-            </View>
+            </View> */}
+            <OTPInputView
+                style={styles.otpView}
+                pinCount={4}
+                // code={this.state.code} //You can supply this prop or not. The component will be used as a controlled / uncontrolled component respectively.
+                // onCodeChanged={code => { setOtp(code) }}
+                autoFocusOnLoad
+                codeInputFieldStyle={styles.underlineStyleBase}
+                codeInputHighlightStyle={styles.underlineStyleHighLighted}
+                onCodeFilled={(code => {
+                    // console.log(`your OTP is : ${code}`);
+                    setOtp(code);
+                })}
+            />
             <TouchableOpacity style={styles.submitBtn} onPress={() => {
                 // props.pagename("RegisterPage");
                 otpVarification();
@@ -205,10 +220,13 @@ const styles = StyleSheet.create({
         color: "black"
     },
     otpView: {
-        justifyContent: "center",
+        alignSelf:"center",
         flexDirection: "row",
         marginTop: 50,
+        width:"85%",
+        height:"auto"
     },
+
     inputView: {
         width: 60,
         height: 70,
@@ -280,6 +298,26 @@ const styles = StyleSheet.create({
         marginTop: 19,
         color: "black",
         fontFamily: "Forza-Bold"
-    }
+    },
+    //pakage of OTP style........................
+    borderStyleBase: {
+        width: 30,
+        height: 45
+    },
+
+    borderStyleHighLighted: {
+        borderColor: "#03DAC6",
+    },
+
+    underlineStyleBase: {
+        width: 30,
+        height: 45,
+        borderWidth: 0,
+        borderBottomWidth: 1,
+    },
+
+    underlineStyleHighLighted: {
+        borderColor: "#03DAC6",
+    },
 })
 export default OtpPage;
