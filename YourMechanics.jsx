@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TouchableOpacity, Image ,Linking} from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Image, Linking, Alert } from 'react-native';
 import React, { useContext, useEffect, useState } from 'react';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -23,6 +23,7 @@ const YourMechanics = ({ route }) => {
             // console.log("postServiceRequestDetails :", route.params.acceptedMDetails);
         }
     }, [route.params.acceptedMDetails]);
+
 
     return (
         <View style={{ backgroundColor: "#FFFFFF" }}>
@@ -85,7 +86,7 @@ const YourMechanics = ({ route }) => {
                             </View>
                         </View>
                         <View style={styles.callSmsView}>
-                            <TouchableOpacity style={styles.callBtn} onPress={() => {Linking.openURL(`tel:${mNumber}`)}}>
+                            <TouchableOpacity style={styles.callBtn} onPress={() => { Linking.openURL(`tel:${mNumber}`) }}>
                                 <Text style={[styles.callBtnTxt, { color: "#FFFFFF" }]}>Call now</Text>
                             </TouchableOpacity>
                             {/* <TouchableOpacity style={styles.smsBtn} onPress={() => {Linking.openURL(`sms:${mNumber}`)}}>
@@ -100,10 +101,10 @@ const YourMechanics = ({ route }) => {
                             <Text style={[styles.txts, styles.txtsKey]}>Order number :  </Text>
                             <Text style={[styles.txts, styles.txtsResult]}>{route.params.acceptedMDetails.service_code}</Text>
                         </View>
-                        <View style={styles.orderNumberView}>
+                        {postUserLocationDetails ? <View style={styles.orderNumberView}>
                             <Text style={[styles.txts, styles.txtsKey]}>Your location : </Text>
                             <Text style={[styles.txts, styles.txtsResult]}>{postUserLocationDetails.split(",")[2]},{postUserLocationDetails.split(",")[4]}</Text>
-                        </View>
+                        </View> : null}
                         <View style={styles.orderNumberView}>
                             <Text style={[styles.txts, styles.txtsKey]}>Car name : </Text>
                             <Text style={[styles.txts, styles.txtsResult]}>TATA</Text>
@@ -140,7 +141,7 @@ const styles = StyleSheet.create({
         color: "#3D4759",
         fontFamily: "Forza-Black",
         fontSize: 19,
-        alignItems:"center",
+        alignItems: "center",
     },
     headingIcon: {
         color: "black",
@@ -191,11 +192,11 @@ const styles = StyleSheet.create({
     contactUrMechanicsView: {
 
     },
-    callSmsView:{
-        flexDirection:"row",
-        alignItems:"center",
-        justifyContent:"space-between",
-        padding:5
+    callSmsView: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        padding: 5
     },
     callBtn: {
         backgroundColor: "#007AFF",
@@ -210,10 +211,10 @@ const styles = StyleSheet.create({
         fontSize: 17,
 
     },
-    smsBtn:{
-        padding:10,
-        borderRadius:20,
-        backgroundColor:"#FFA514"
+    smsBtn: {
+        padding: 10,
+        borderRadius: 20,
+        backgroundColor: "#FFA514"
     },
     orderNumberView: {
         flexDirection: "row",

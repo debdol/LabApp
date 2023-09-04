@@ -5,9 +5,29 @@ import axios from 'axios';
 import { baseUrl, logInUrl } from './APIs';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
+import messaging from '@react-native-firebase/messaging';
 
 const SignUpPage = (props) => {
     const [inputNumber, setInputNumber] = useState(null);
+
+
+    const getDeviceToken = async () => {
+        await messaging().registerDeviceForRemoteMessages();
+        const token = await messaging().getToken();
+        console.log("token:", token);
+    }
+
+    useEffect(() => {
+        getDeviceToken();
+    }, []);
+
+    useEffect(() => {
+        const unsubscribe = messaging().onMessage(async remoteMessage => {
+            Alert.alert((remoteMessage.notification.body) + "!");
+            console.log("foreGround msg check:", JSON.stringify(remoteMessage.notification.body))
+        });
+        return unsubscribe;
+    }, []);
 
     useEffect(() => {
         if (inputNumber) {

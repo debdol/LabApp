@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "240584945392",
+    "project_id": "labapp-final",
+    "storage_bucket": "labapp-final.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:240584945392:android:4553cb75e7903876b91c35",
+        "android_client_info": {
+          "package_name": "com.labapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "240584945392-vp37plqi5mmah7m58qlolrcasjmahmkk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.labapp",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "240584945392-c0273t7ctj29jv95ecuhpm7cqlv042kj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyATSyCaAyvCqfUOMJVGMIQjY1anK3JXs7Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "240584945392-c0273t7ctj29jv95ecuhpm7cqlv042kj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
