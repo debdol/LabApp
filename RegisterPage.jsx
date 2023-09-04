@@ -12,7 +12,10 @@ import axios from 'axios';
 import { StyleContext } from './App';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AllStackNavigation from './AllStackNavigation';
-const RegisterPage = (props: any) => {
+import * as Yup from 'yup';
+import { Formik } from 'formik';
+
+const RegisterPage = (props) => {
     const [token, setToken] = useState();
     const { postUserLog, getMainPage, getUserLog, postUserlat, postUserLong } = useContext(StyleContext);
     //user data
@@ -26,7 +29,17 @@ const RegisterPage = (props: any) => {
     // console.log(typeof (longitude));
 
 
-
+    const userSchema = Yup.object().shape({
+        name: Yup.string().required('Pls, enter your name..................'),
+        carNumber: Yup.string().required('Pls, enter your car number..................'),
+        carModel: Yup.string().required('Pls, enter your car model..................'),
+        emailId: Yup.string().required('Pls, enter your email id..................'),
+        address: Yup.string().required('Pls, enter your address..................'),
+        pinCode: Yup.string().required('Pls, enter your pincode..................'),
+        state: Yup.string().required('Pls, enter your state..................'),
+        latitude: Yup.string(),
+        longitude: Yup.string()
+    });
 
     const getData = async () => {
         try {

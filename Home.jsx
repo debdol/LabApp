@@ -199,9 +199,10 @@ const Home = () => {
         })
         .catch((error) => { console.log("error in user data in cart :", error) })
     };
+    //calling openServiceRequestDetails API 
     setTimeout(() => {
       setGotLatLongIndicator(!gotLatLongIndicator);
-      // console.log("serviceRequestData", gotLatLongIndicator)
+      // console.log("serviceRequestData")
     }, 1000);
   }, [gotLatLongIndicator]);
 

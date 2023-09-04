@@ -38,13 +38,13 @@ const Profile = () => {
       if (response.assets) {
         const path = response.assets[0].fileName;
         const type = response.assets[0].type;
-        // console.log("Path: ", path, "Type", type)
+        console.log("Path: ", path, ",", "Type:", type,"update Profile Pic:",updateProfilePic)
         let data = new FormData();
         data.append('images', response.assets[0], path)
         // const data = `profile_picture=@${path};type=${type}`;
         // console.log("user Profile pic :", response.assets[0]);
 
-        axios.put( updateProfilePic, data, {
+        axios.put(updateProfilePic, data, {
           headers: {
             'Authorization': `Bearer ${postUserLog}`,
             'Content-Type': 'multipart/form-data',

@@ -3,17 +3,18 @@ import React, { useEffect, useState } from 'react'
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import axios from 'axios';
 import { baseUrl, logInUrl } from './APIs';
-import * as Yup from 'yup';
+import * as yup from 'yup';
 import { Formik } from 'formik';
 import messaging from '@react-native-firebase/messaging';
 
 const SignUpPage = (props) => {
     const [inputNumber, setInputNumber] = useState(null);
-
+    const [fcmToken, setFcmToken] = useState(null);
 
     const getDeviceToken = async () => {
         await messaging().registerDeviceForRemoteMessages();
         const token = await messaging().getToken();
+        setFcmToken(token);
         console.log("token:", token);
     }
 
@@ -30,11 +31,12 @@ const SignUpPage = (props) => {
     }, []);
 
     useEffect(() => {
-        if (inputNumber) {
+        if (inputNumber && fcmToken) {
             props.userNumber(inputNumber);
-            axios.get(`${baseUrl}login?contact_number=${inputNumber}&device_fcm='eQONCIs3Rku474Chexzonu:APA91bE7cxUy6G9OC4NArxsfALglRFVF6cMyA7XY--ZCVvFJd8qlRWGoT0jXIifw93czKBN5XKjkcjigeDFzKocgKAPzchTmNGnpz6rNiSiCw2I6Her0nGjXVuYxjfjJthrnSTAC4zzP'`)
+            axios.get(`${baseUrl}login?contact_number=${inputNumber}&device_fcm=${fcmToken}`)
                 .then((res) => {
-                    //Hemant add check feature to this login API
+                    console.log("responce in signUpPage:", res.data);
+                    //Hemant bro add check feature to this login API
                     if (res.data) {
                         props.pagename("otp");
                     } else {
@@ -45,8 +47,11 @@ const SignUpPage = (props) => {
         }
     }, [inputNumber])
 
-    const userSchema = Yup.object().shape({
-        phoneNumber: Yup.number().required('Pls, enter your mobile number..................').positive().integer().min(10, "your number must have 10 digit")
+    const userSchema = yup.object().shape({
+        phoneNumber: yup
+            .string()
+            .min(10)
+            .required('Phone number is required')
     });
     return (
         <View>
@@ -65,7 +70,11 @@ const SignUpPage = (props) => {
                 <View style={{ alignItems: "center", borderRadius: 40, marginTop: 24 }}>
                     <Formik
                         initialValues={{ phoneNumber: '' }}
-                        onSubmit={(values, { resetForm }) => { console.log("values :", values.phoneNumber); setInputNumber(values.phoneNumber); resetForm({ values: '' }); }}
+                        onSubmit={(values, { resetForm }) => {
+                            // console.log("values :", values.phoneNumber);
+                            setInputNumber(values.phoneNumber);
+                            resetForm({ values: '' });
+                        }}
                         validationSchema={userSchema}
                     >
                         {({ handleChange, handleSubmit, errors, touched, values, }) => (
