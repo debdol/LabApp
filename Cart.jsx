@@ -18,6 +18,7 @@ const Cart = ({ route }) => {
   const [totalAmount, setTotalAmount] = useState();
   const [problems, setProblems] = useState();
   const [paymentUrl, setPaymentUrl] = useState();
+  const [paymentUrlControler, setPaymentUrlControler] = useState(false);
   const [showServiceTypes, setShowServiceTypes] = useState(false);
 
   useEffect(() => {
@@ -25,7 +26,7 @@ const Cart = ({ route }) => {
       Linking.openURL(paymentUrl);
       // console.log("payment URL :", paymentUrl)
     }
-  }, [paymentUrl]);
+  }, [paymentUrlControler]);
 
   //payment function .....................................
   const payMentHandeler = async () => {
@@ -61,8 +62,9 @@ const Cart = ({ route }) => {
       axios
         .request(options)
         .then((response) => {
-          console.log(response.data.data.instrumentResponse.redirectInfo.url);
+          // console.log(response.data.data.instrumentResponse.redirectInfo.url);
           setPaymentUrl(response.data.data.instrumentResponse.redirectInfo.url);
+          setPaymentUrlControler(!paymentUrlControler)
         })
         .catch((error) => {
           console.error(error);
@@ -82,6 +84,7 @@ const Cart = ({ route }) => {
         }
       })
         .then((res) => {
+          // console.log("total ammount:", res.data);
           setTotalAmount(res.data.data[0].total_amount);
         })
         .catch((error) => console.log("error in total amount :", error))
@@ -103,7 +106,7 @@ const Cart = ({ route }) => {
       <View style={styles.mainContainer}>
         <TouchableOpacity style={styles.headerView} onPress={() => setShowServiceTypes(!showServiceTypes)}>
           <Text style={styles.headerTxt}>View Service Charge List</Text>
-          {showServiceTypes ? <Entypo size={30} name='chevron-small-down' style={styles.headerIcon} /> : <Entypo size={30} name='chevron-small-up' style={styles.headerIcon} />}
+          {showServiceTypes ? <Entypo size={30} name='chevron-small-up' style={styles.headerIcon} /> : <Entypo size={30} name='chevron-small-down' style={styles.headerIcon} />}
         </TouchableOpacity>
         {showServiceTypes ?
           <View style={styles.chartsStyle}>
@@ -242,6 +245,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#E0EAEF",
     position: "absolute",
+    padding: 20,
     zIndex: 6,
     top: "18%",
     width: "80%",

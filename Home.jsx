@@ -154,6 +154,7 @@ const Home = () => {
       <Loading />
     }
   }
+
   //Get the location name of user............................................
   const getThePlaceName = () => {
     if (userLatitude && userLongitude) {
@@ -197,8 +198,9 @@ const Home = () => {
             }
           }
         })
-        .catch((error) => { console.log("error in user data in cart :", error) })
+        .catch((error) => { console.log("error in user data in home page:", error) })
     };
+
     //calling openServiceRequestDetails API 
     setTimeout(() => {
       setGotLatLongIndicator(!gotLatLongIndicator);
@@ -308,12 +310,8 @@ const Home = () => {
               marginBottom: 9,
               height: 72,
             }} onPress={() => {
-              if (gotLatLongIndicator === true) {
-                navigation.navigate("HomeStackScreen");
-                getPageName("Mechanic");
-              } else {
-                Alert.alert("After getting your location click this button");
-              }
+              navigation.navigate("HomeStackScreen");
+              getPageName("Mechanic");
             }}>
               <Text style={{
                 textAlign: "center",

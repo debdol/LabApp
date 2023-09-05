@@ -5,32 +5,35 @@ import { baseUrl, logInUrl } from './APIs';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StyleContext } from './App';
 import Loading from './Loading';
-import OTPInputView from '@twotalltotems/react-native-otp-input'
+import OTPInputView from '@twotalltotems/react-native-otp-input';
+import messaging from '@react-native-firebase/messaging';
 
 const OtpPage = (props) => {
     // const [registerVarification, setRegisterVarification] = useState();
     const { getMainPage } = useContext(StyleContext);
-    const [minutes, setMinutes] = useState(1);
+    const [minutes, setMinutes] = useState(0);
     const [seconds, setSeconds] = useState(30);
     const [otp, setOtp] = useState();
+    const [fcmToken, setFcmToken] = useState(null);
     const storeNumber = props.numberSend;
 
-    const textInputRef1 = useRef();
-    const textInputRef2 = useRef();
-    const textInputRef3 = useRef();
-    const textInputRef4 = useRef();
+    //Getting FCM token.......................
+    const getDeviceToken = async () => {
+        await messaging().registerDeviceForRemoteMessages();
+        const token = await messaging().getToken();
+        setFcmToken(token);
+    }
 
-    const [num1, setNum1] = useState();
-    const [num2, setNum2] = useState();
-    const [num3, setNum3] = useState();
-    const [num4, setNum4] = useState();
-    const ConcatOtp = num1 + num2 + num3 + num4;
-
+    //calling getDevuceToken...........................
+    useEffect(() => {
+        getDeviceToken();
+    }, []);
 
     const resendOTP = () => {
-        setMinutes(1);
+        setMinutes(0);
         setSeconds(30);
     };
+    
     useEffect(() => {
         const interval = setInterval(() => {
             if (seconds > 0) {
@@ -52,21 +55,11 @@ const OtpPage = (props) => {
         };
     }, [seconds]);
 
-
-    // useEffect(() => {
-    //     textFocus();
-    // }, []);
-
-    // const textFocus = () => {
-    //     textInputRef1.current.focus();
-    // }
-
     const getApiFunction = () => {
         const num = storeNumber.toString();
-
         if (num) {
-            axios.get(`${logInUrl}${num}`)
-                .then((res) => console.log("Data: njnjnj", res))
+            axios.get(`${baseUrl}login?contact_number=${num}&device_fcm=${fcmToken}`)
+                .then((res) => console.log("response in resend otp", res.data))
                 .catch((error) => console.log(error));
         }
     }
@@ -114,58 +107,6 @@ const OtpPage = (props) => {
             <Image source={require("./assets/logo.png")} style={styles.logo} />
             <Text style={styles.heading}>We sent you an SMS code</Text>
             <Text style={styles.number}>On number: +91 {props.numberSend}</Text>
-            {/* <View style={styles.otpView}>
-                <TextInput ref={textInputRef1}
-                    style={styles.inputView}
-                    keyboardType='number-pad'
-                    maxLength={1}
-                    onChangeText={txt => {
-                        setNum1(txt);
-                        if (txt.length >= 1) {
-                            textInputRef2.current.focus();
-                            // console.log(textInputRef2.current);
-                        }
-                    }}
-                />
-                <TextInput ref={textInputRef2}
-                    style={styles.inputView}
-                    keyboardType='number-pad'
-                    maxLength={1}
-                    onChangeText={txt => {
-                        setNum2(txt);
-                        if (txt.length >= 1) {
-                            textInputRef3.current.focus();
-                        } else if (txt.length < 1) {
-                            textInputRef1.current.focus();
-                        }
-                    }}
-                />
-                <TextInput ref={textInputRef3}
-                    style={styles.inputView}
-                    keyboardType='number-pad'
-                    maxLength={1}
-                    onChangeText={txt => {
-                        setNum3(txt);
-                        if (txt.length >= 1) {
-                            textInputRef4.current.focus();
-                        } else if (txt.length < 1) {
-                            textInputRef2.current.focus();
-                        }
-                    }}
-                />
-                <TextInput ref={textInputRef4}
-                    style={styles.inputView}
-                    keyboardType='number-pad'
-                    maxLength={1}
-                    onChangeText={txt => {
-                        setNum4(txt);
-                        if (txt.length < 1) {
-                            textInputRef3.current.focus();
-                        }
-                    }}
-                />
-
-            </View> */}
             <OTPInputView
                 style={styles.otpView}
                 pinCount={4}
@@ -180,9 +121,7 @@ const OtpPage = (props) => {
                 })}
             />
             <TouchableOpacity style={styles.submitBtn} onPress={() => {
-                // props.pagename("RegisterPage");
                 otpVarification();
-                // getData();
             }}>
                 <Text style={styles.btnText}>submit</Text>
             </TouchableOpacity>
@@ -199,7 +138,7 @@ const OtpPage = (props) => {
                 <TouchableOpacity
                     disabled={seconds > 0 || minutes > 0}
                     // style={[styles.resendBtn]}
-                    onPress={() => { resendOTP(); getApiFunction(); otpVarification() }}
+                    onPress={() => { resendOTP(); getApiFunction() }}
                 >
                     <Text style={styles.resendTxt}> Resend OTP</Text>
                 </TouchableOpacity>
@@ -220,11 +159,11 @@ const styles = StyleSheet.create({
         color: "black"
     },
     otpView: {
-        alignSelf:"center",
+        alignSelf: "center",
         flexDirection: "row",
         marginTop: 50,
-        width:"85%",
-        height:"auto"
+        width: "85%",
+        height: "auto"
     },
 
     inputView: {

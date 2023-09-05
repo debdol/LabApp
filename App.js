@@ -136,7 +136,7 @@ export default function App() {
   }
   const userlog_handler = (value) => {
     setUserlog(value);
-    console.log("userlog_handler: ", value);
+    // console.log("userlog_handler in app.js page: ", value);
   }
   const serviceRequestDetails_handler = (value) => {
     setServiceRequestDetails(value);

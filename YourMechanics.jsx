@@ -6,6 +6,7 @@ import { StyleContext } from './App';
 import { useNavigation } from '@react-navigation/native';
 import MapView, { PROVIDER_GOOGLE, Marker, Polyline } from 'react-native-maps';
 import axios from 'axios';
+import Loading from './Loading';
 
 const YourMechanics = ({ route }) => {
     const navigation = useNavigation();
@@ -36,46 +37,47 @@ const YourMechanics = ({ route }) => {
                     <Text style={styles.reachingTimeHeading}>Mechanic will reach you in time</Text>
                     <Text style={styles.reachingTime}>{route.params.acceptedMDetails.m_duration}</Text>
                 </View>
-                <View style={styles.page}>
-                    <View style={styles.container}>
-                        <MapView
-                            provider={PROVIDER_GOOGLE}
-                            style={{ width: "100%", height: "100%" }}
-                            initialRegion={{
-                                latitude: postUserlat,
-                                longitude: postUserLong,
-                                latitudeDelta: 0.0922,
-                                longitudeDelta: 0.0421,
-                            }}
-                        >
-                            <Polyline
-                                coordinates={[
-                                    lotationObject[0],
-                                    lotationObject[1]
-                                ]}
-                                strokeColor="#007AFF"
-                                strokeWidth={1.5}
-                            />
-                            {lotationObject ? lotationObject.map((item, index) => {
-                                if (index === 0) {
-                                    return (
-                                        <Marker coordinate={{
-                                            latitude: Number(item.latitude),
-                                            longitude: Number(item.longitude)
-                                        }} tracksViewChanges={false} key={index} image={require("./assets/MapMarker.png")} />
-                                    )
-                                } else {
-                                    return (
-                                        <Marker coordinate={{
-                                            latitude: Number(item.latitude),
-                                            longitude: Number(item.longitude)
-                                        }} tracksViewChanges={false} key={index} image={require("./assets/MechanicIcon.png")} />
-                                    )
-                                }
-                            }) : null}
-                        </MapView>
-                    </View>
-                </View>
+                {lotationObject ?
+                    <View style={styles.page}>
+                        <View style={styles.container}>
+                            <MapView
+                                provider={PROVIDER_GOOGLE}
+                                style={{ width: "100%", height: "100%" }}
+                                initialRegion={{
+                                    latitude: postUserlat,
+                                    longitude: postUserLong,
+                                    latitudeDelta: 0.0922,
+                                    longitudeDelta: 0.0421,
+                                }}
+                            >
+                                <Polyline
+                                    coordinates={[
+                                        lotationObject[0],
+                                        lotationObject[1]
+                                    ]}
+                                    strokeColor="#007AFF"
+                                    strokeWidth={1.5}
+                                />
+                                {lotationObject ? lotationObject.map((item, index) => {
+                                    if (index === 0) {
+                                        return (
+                                            <Marker coordinate={{
+                                                latitude: Number(item.latitude),
+                                                longitude: Number(item.longitude)
+                                            }} tracksViewChanges={false} key={index} image={require("./assets/MapMarker.png")} />
+                                        )
+                                    } else {
+                                        return (
+                                            <Marker coordinate={{
+                                                latitude: Number(item.latitude),
+                                                longitude: Number(item.longitude)
+                                            }} tracksViewChanges={false} key={index} image={require("./assets/MechanicIcon.png")} />
+                                        )
+                                    }
+                                }) : null}
+                            </MapView>
+                        </View>
+                    </View> : <Loading />}
                 <View style={{ backgroundColor: "#FFF", padding: 10, borderWidth: 1, borderColor: "#E0EAEF", justifyContent: "center", width: 350, alignSelf: "center", borderRadius: 10, marginTop: "4%" }}>
                     <View style={styles.yourMechanicsHeaderView}>
                         <View style={styles.yourMechanicsPicContactView}>

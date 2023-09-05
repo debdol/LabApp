@@ -19,7 +19,7 @@ const SignUpPage = (props) => {
         await messaging().registerDeviceForRemoteMessages();
         const token = await messaging().getToken();
         setFcmToken(token);
-        console.log("token:", token);
+        // console.log("token:", token);
     }
 
     useEffect(() => {
@@ -83,7 +83,7 @@ const SignUpPage = (props) => {
                         }}
                         validationSchema={userSchema}
                     >
-                        {({ handleChange, handleSubmit, errors, touched, values, }) => (
+                        {({ handleChange, handleSubmit, errors, touched, values}) => (
                             <View>
                                 <View style={styles.nineOneInputView}>
                                     <Text style={{ fontWeight: "400", marginLeft: 22, fontSize: 15, color: "black", fontFamily: "Forza-Bold" }}>+91</Text>
