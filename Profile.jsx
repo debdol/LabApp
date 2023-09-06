@@ -21,11 +21,22 @@ const Profile = () => {
   const navigation = useNavigation();
   const { getMainPage, getPageName, postUserName, postUserNumber, postUserAddress, postUserEmail, postUserCarModel, postUserCarNumber, getUserImage, postUserLog } = useContext(StyleContext);
   const [imagPath, setImagPath] = useState();
-  // console.log("tpken :", postUserLog);
+  console.log("tpken :", postUserLog);
   const logOutHandler = async () => {
-    await AsyncStorage.removeItem("User_Token");
-    getMainPage(<LoginMain />);
-    getPageName("Home");
+    axios.post("http://43.204.88.205:90/logout-user", {}, {
+      headers: {
+        'Authorization': `Bearer ${postUserLog}`,
+        'accept': 'application/json'
+      }
+    })
+      .then(async (res) => {
+        if (res.data.message) {
+          await AsyncStorage.removeItem("User_Token");
+          getMainPage(<LoginMain />);
+          getPageName("Home");
+        }
+      })
+      .catch((err) => console.log("error in logOut API", err))
   }
 
   const picPicker = () => {
@@ -38,7 +49,7 @@ const Profile = () => {
       if (response.assets) {
         const path = response.assets[0].fileName;
         const type = response.assets[0].type;
-        console.log("Path: ", path, ",", "Type:", type,"update Profile Pic:",updateProfilePic)
+        console.log("Path: ", path, ",", "Type:", type, "update Profile Pic:", updateProfilePic)
         let data = new FormData();
         data.append('images', response.assets[0], path)
         // const data = `profile_picture=@${path};type=${type}`;
