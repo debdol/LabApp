@@ -51,7 +51,7 @@ const MechanicsDetails = ({ route }) => {
                     <View style={{}}>
                         <View style={styles.firstCard}>
                             <View style={styles.firstCardFirstRow}>
-                                {route.params.item.profile_picture ? <Image source={{ uri: `http://43.204.88.205${route.params.item.profile_picture.split("/code")[1]}` }} style={styles.mechanicsPic} /> : null}
+                                <Image source={route.params.item.profile_picture ? { uri: `http://43.204.88.205${route.params.item.profile_picture.split("/code")[1]}` } : require("./assets/profileAvtar.png")} style={styles.mechanicsPic} />
                                 <View style={styles.firstCardFirstRowNameView}>
                                     <Text style={styles.firstCardFirstRowNameTxt}>{route.params.item.m_name}</Text>
                                     <Text style={styles.firstCardFirstRowNameTxt}>Automobile Mechanic</Text>

@@ -10,6 +10,7 @@ import { useNavigation } from '@react-navigation/native';
 import { StyleContext } from './App';
 import axios from 'axios';
 import { creatServiceRequest, openServiceRequestDetails, serviceTypes } from './APIs';
+import Loading from './Loading';
 const InformationPage = () => {
   const { postUserCars, postUserLog, postUserlat, postUserLong, getServiceRequestDetails, getUserService, postUserService } = useContext(StyleContext);
 
@@ -20,7 +21,16 @@ const InformationPage = () => {
   const [serviceCode, setServiceCode] = useState();
   const [problems, setProblems] = useState([]);
   const [serviceRequestData, setServiceRequestData] = useState();
-  // console.log("postUserService", postUserService);
+  // console.log("postUserLog :", postUserLog);
+
+  useEffect(() => {
+    console.log("is this alive???????????????")
+    axios.get(serviceTypes)
+      .then((res) => {
+        console.log("response_check_sertypes_API:", res.data)
+      })
+      .catch((err) => console.log("error_check_sertypes_API:",err))
+  }, [])
 
   const searchMechanics = () => {
     const serviceData = {
@@ -34,7 +44,10 @@ const InformationPage = () => {
     }
 
     //Creating  your service request.....................................
-    if (serviceData.message && postUserService) {
+    console.log('serviceData :', serviceData);
+    if (serviceData.message && postUserService && serviceCode) {
+      // navigation.navigate("Mechanicsss");
+      setServiceRequestData(true);
       axios.post(creatServiceRequest, serviceData, {
         headers: {
           'Authorization': `Bearer ${postUserLog}`,
@@ -43,21 +56,23 @@ const InformationPage = () => {
       })
         .then((res) => {
           if (res.data.message) {
-            setServiceRequestData(true);
+            console.log('response in create request create API :', res);
+            // Alert.alert(res.data.message);
+            navigation.navigate("Mechanicsss");
+            // setServiceRequestData(true);
           } else {
             setModalVisible(true);
           }
         })
-        .catch((err) => console.log("err in create service :", err));
+        .catch((err) => console.log("error in create service :", err));
     } else {
-      Alert.alert("plz,fill up the neccessary field");
+      Alert.alert("plz,fill up the neccessary field or you have not got service types ");
     }
   }
 
   //Get your service request data...........................................
   useEffect(() => {
     if (serviceRequestData) {
-      navigation.navigate("Mechanicsss");
       axios.get(openServiceRequestDetails, {
         headers: {
           'Authorization': `Bearer ${postUserLog}`,
@@ -65,9 +80,10 @@ const InformationPage = () => {
         }
       })
         .then((res) => {
-          // console.log("responce in requestdetails :", res.data.data);
-          getServiceRequestDetails(res.data.data);
+          // console.log("res_in_requestdetails_in_informationPage:", res)
+          // navigation.navigate("Mechanicsss");
           setServiceRequestData(false);
+          getServiceRequestDetails(res.data.data);
         })
         .catch((err) => console.log("error in requestdetails :", err))
     };
@@ -79,6 +95,7 @@ const InformationPage = () => {
     axios.get(serviceTypes)
       .then((res) => {
         setProblems(res.data.data.map(item => item.name.charAt(0).toUpperCase() + item.name.slice(1)))
+        // console.log("data is comming late in information page:", res.data)
       })
       .catch((err) => console.log("error :", err));
   }, []);
@@ -150,18 +167,19 @@ const InformationPage = () => {
 
         <View style={styles.footerSectionMainView}>
           <Text style={styles.ChooseUrServiceTxt}>Choose your service</Text>
-          <SelectDropdown
+          {problems.length != 0 ? <SelectDropdown
             data={problems}
             onSelect={(selectedItem, index) => {
-              // console.log("selected :", selectedItem);
+              console.log("selectedItem :", selectedItem);
               getUserService(selectedItem);
-
-              axios.get("http://43.204.88.205:90/service-types")
+              axios.get(serviceTypes)
                 .then((res) => {
-                  // console.log(res.data.data);
-                  if (selectedItem === problems[index]) {
+                  // console.log("check_service_type_code_response:", res.data)
+                  if (selectedItem === problems[index] && res.data.data[index].service_code) {
+
+                    // problem is in bellow API
                     setServiceCode(res.data.data[index].service_code);
-                    // console.log("service code :", res.data.data[index].service_code);
+                    console.log("service_type_code :", res.data.data[index].service_code);
                   }
                 })
                 .catch((err) => console.log(err))
@@ -186,7 +204,7 @@ const InformationPage = () => {
             dropdownStyle={styles.dropdown1DropdownStyle}
             rowStyle={styles.dropdown1RowStyle}
             rowTextStyle={styles.dropdown1RowTxtStyle}
-          />
+          /> : <Text style={{ color: '#444', textAlign: 'left', fontFamily: "Forza-Bold" }}>you may not have your data so pls wait</Text>}
           <Text style={styles.whatsWrong}>What is wrong with the vehicle?</Text>
           <TextInput placeholder='Write your message' style={styles.footerInput} onChangeText={e => setUreMsg(e)} />
         </View>
@@ -388,7 +406,6 @@ const styles = StyleSheet.create({
   dropdown1DropdownStyle: { backgroundColor: '#EFEFEF', borderRadius: 16 },
   dropdown1RowStyle: { backgroundColor: '#EFEFEF', borderBottomColor: '#C5C5C5' },
   dropdown1RowTxtStyle: { color: '#444', textAlign: 'left', fontFamily: "Forza-Bold" },
-
   //modal style..........................
   centeredView: {
     flex: 1,

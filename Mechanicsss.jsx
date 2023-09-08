@@ -1,17 +1,23 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useContext, useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ImageBackground, Image, TouchableOpacity, ScrollView, SafeAreaView, FlatList, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, ImageBackground, Image, TouchableOpacity, ScrollView, SafeAreaView, FlatList, ActivityIndicator, Alert, Linking } from 'react-native';
 import Entypo from 'react-native-vector-icons/Entypo';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import { StyleContext } from './App';
 import MapView, { PROVIDER_GOOGLE, Marker, MapCircle, } from 'react-native-maps';
+import { baseUrl } from './APIs';
+import Loading from './Loading';
 
 const Mechanicsss = () => {
     const navigation = useNavigation();
     const { postServiceRequestDetails, postUserlat, postUserLong, getPageName } = useContext(StyleContext);
     const [markers, setMarkers] = useState();
     const [mechanicsDetails, setMechanicsDetails] = useState();
+    const [unavailable, setUnavailable] = useState();
+    // useEffect(() => {
+    //     console.log("postServiceRequestDetails :", postServiceRequestDetails);
+    // }, [])
 
     useEffect(() => {
         if (mechanicsDetails) {
@@ -21,13 +27,16 @@ const Mechanicsss = () => {
     }, [mechanicsDetails])
 
     useEffect(() => {
-        console.log("status in mechanicss page :",postServiceRequestDetails)
-        if (postServiceRequestDetails) {
+        // console.log("status in mechanicss page :", postServiceRequestDetails)
+        if (postServiceRequestDetails.length != 0) {
             if (postServiceRequestDetails[0].status === "accepted") {
                 navigation.navigate("YourMechanics", { acceptedMDetails: postServiceRequestDetails[0] });
             } else if (postServiceRequestDetails[0].status === "initiated") {
                 navigation.navigate("Cart", { acceptedMDetails: postServiceRequestDetails[0] });
                 getPageName("Cart")
+            } else if (postServiceRequestDetails[0].status === "not available") {
+                console.log("mechanicsDetails is FALSE now");
+                setUnavailable(true);
             }
             else {
                 setMechanicsDetails(postServiceRequestDetails[0].mechanic);
@@ -36,10 +45,11 @@ const Mechanicsss = () => {
     }, [postServiceRequestDetails]);
 
     const mechanicsList_Handler = ({ item, index }) => {
+        // console.log("mechanics itemList :", item);
         return (
             <View style={styles.machanicsNearMeMainContainer} key={index}>
                 <View style={styles.flatListPicAndLocationView}>
-                    {item.profile_picture ? <Image source={{ uri: `http://43.204.88.205${item.profile_picture.split("/code")[1]}` }} style={styles.mechanicImg} /> : null}
+                    <Image source={item.profile_picture ? { uri: `${baseUrl}${item.profile_picture.split("/code")[1]}` } : require("./assets/profileAvtar.png")} style={styles.mechanicImg} />
                     <View style={{ marginLeft: 11 }}>
                         <Text style={{ color: "black", fontFamily: "Forza-Bold" }}>{item.m_name}</Text>
                         <View style={{ flexDirection: "row" }}>
@@ -92,55 +102,107 @@ const Mechanicsss = () => {
             </View>
         )
     }
-    return (
-        <View>
-            {mechanicsDetails ? (
-                <>
+
+    if (mechanicsDetails) {
+        return (
+            <View>
+                <View style={styles.page}>
+                    <View style={styles.headingView}>
+                        <AntDesign name='left' size={29} style={styles.headingIcon} onPress={() => navigation.goBack()} />
+                        <Text style={styles.headingTxt}>Mechanics</Text>
+                    </View>
                     <View style={styles.page}>
-                        <View style={styles.headingView}>
-                            <AntDesign name='left' size={29} style={styles.headingIcon} onPress={() => navigation.goBack()} />
-                            <Text style={styles.headingTxt}>Mechanics</Text>
-                        </View>
-                        <View style={styles.page}>
-                            <MapView
-                                provider={PROVIDER_GOOGLE}
-                                style={{ width: "100%", height: "80%" }}
-                                initialRegion={{
+                        <MapView
+                            provider={PROVIDER_GOOGLE}
+                            style={{ width: "100%", height: "80%" }}
+                            initialRegion={{
+                                latitude: postUserlat,
+                                longitude: postUserLong,
+                                latitudeDelta: 0.0922,
+                                longitudeDelta: 0.0421,
+                            }}
+                            maxZoomLevel={20}
+                            showsUserLocation
+                            followUserLocation
+                            zoomTapEnabled={true}>
+                            <MapCircle
+                                center={{
                                     latitude: postUserlat,
                                     longitude: postUserLong,
-                                    latitudeDelta: 0.0922,
-                                    longitudeDelta: 0.0421,
                                 }}
-                                showsUserLocation
-                                followUserLocation
-                                zoomTapEnabled={true}>
-                                <MapCircle
-                                    center={{
-                                        latitude: postUserlat,
-                                        longitude: postUserLong,
-                                    }}
-                                    radius={15000}
-                                    strokeWidth={2}
-                                    strokeColor={'#1a66ff'}
-                                    fillColor={'rgba(230,238,255,0.5)'}
-                                />
-                                {markers ? (
-                                    markers.map((item, index) => {
-                                        return (
-                                            <Marker coordinate={{ latitude: Number(item.latitude), longitude: Number(item.longitude) }} tracksViewChanges={false} key={index} image={require("./assets/MechanicIcon.png")} />
-                                        )
-                                    })
-                                ) : null}
-                            </MapView>
-                        </View >
-                    </View>
-                    <View style={{ position: "absolute", zIndex: 2, top: 544, backgroundColor: "rgba(52, 52, 52, 0.8)", width: "100%", paddingVertical: 9 }}>
-                        <FlatList data={mechanicsDetails} renderItem={({ item, index }) => mechanicsList_Handler({ item, index })} keyExtractor={(item, index) => index} horizontal />
-                    </View>
-                </>
-            ) : (<ActivityIndicator size="large" color="#0000ff" style={{ alignItems: "center", marginTop: 350 }} />)}
-        </View>
-    );
+                                radius={15000}
+                                strokeWidth={2}
+                                strokeColor={'#1a66ff'}
+                                fillColor={'rgba(230,238,255,0.5)'}
+                            />
+                            {markers ? (
+                                markers.map((item, index) => {
+                                    return (
+                                        <Marker coordinate={{ latitude: Number(item.latitude), longitude: Number(item.longitude) }} tracksViewChanges={false} key={index} image={require("./assets/MechanicIcon.png")} style={{ height: 20, width: 20 }} />
+                                    )
+                                })
+                            ) : null}
+                        </MapView>
+                    </View >
+                </View>
+                <View style={{ position: "absolute", zIndex: 2, top: 544, backgroundColor: "rgba(52, 52, 52, 0.8)", width: "100%", paddingVertical: 9 }}>
+                    <FlatList data={mechanicsDetails} renderItem={({ item, index }) => mechanicsList_Handler({ item, index })} keyExtractor={(item, index) => index} horizontal />
+                </View>
+            </View>
+        )
+    } else if (unavailable) {
+        return (
+            <View style={styles.page}>
+                <View style={styles.headingView}>
+                    <AntDesign name='left' size={29} style={styles.headingIcon} onPress={() => navigation.goBack()} />
+                    <Text style={styles.headingTxt}>Mechanics</Text>
+                </View>
+                <View style={[styles.page, { height: "125%" }]}>
+                    <MapView
+                        provider={PROVIDER_GOOGLE}
+                        style={{ width: "100%", height: "80%" }}
+                        initialRegion={{
+                            latitude: postUserlat,
+                            longitude: postUserLong,
+                            latitudeDelta: 0.0922,
+                            longitudeDelta: 0.0421,
+                        }}
+                        maxZoomLevel={10}
+                        showsUserLocation
+                        followUserLocation
+                        zoomTapEnabled={true}>
+                        <MapCircle
+                            center={{
+                                latitude: postUserlat,
+                                longitude: postUserLong,
+                            }}
+                            radius={15000}
+                            strokeWidth={1}
+                            strokeColor={'#1a66ff'}
+                            fillColor={'rgba(230,238,255,0.5)'}
+                        />
+                        {markers ? (
+                            markers.map((item, index) => {
+                                return (
+                                    <Marker coordinate={{ latitude: Number(item.latitude), longitude: Number(item.longitude) }} tracksViewChanges={false} key={index} image={require("./assets/MechanicIcon.png")} style={{ height: 20, width: 20 }} />
+                                )
+                            })
+                        ) : null}
+                    </MapView>
+                </View >
+                {/* here has be the the number of support team */}
+                <TouchableOpacity onPress={() => Linking.openURL(`tel:${18003093431}`)} style={[styles.callinkBtn]}>
+                    <Text style={styles.callinkBtnTxt}>Pls,Connect to our support team</Text>
+                </TouchableOpacity>
+            </View>
+        )
+    }
+    else {
+        return (
+            <ActivityIndicator size="large" color="#0000ff" style={{ alignItems: "center", marginTop: 350 }} />
+        )
+    }
+
 };
 
 const styles = StyleSheet.create({
@@ -237,6 +299,26 @@ const styles = StyleSheet.create({
         height: 317,
         width: 389,
         backgroundColor: "white",
+    },
+    callinkBtn: {
+        backgroundColor: "#007AFF",
+        width: "97%",
+        height: "8%",
+        borderRadius: 44,
+        // marginTop: 19,
+        marginBottom: 19,
+        position: "absolute",
+        alignItems:"center",
+        justifyContent:"center",
+        zIndex: 2,
+        bottom: 0
+    },
+    callinkBtnTxt: {
+        color: "white",
+        textAlign: "center",
+        padding: 18,
+        fontFamily: "Forza-Bold",
+        fontSize: 20
     },
 });
 

@@ -10,8 +10,8 @@ import Geolocation from 'react-native-geolocation-service';
 import { useNavigation } from '@react-navigation/native';
 import { StyleContext } from './App';
 import axios from 'axios';
-import Loading from './Loading';
 import { nearByMechanicss, openServiceRequestDetails, } from './APIs';
+import Loading from './Loading';
 
 
 const Home = () => {
@@ -81,84 +81,81 @@ const Home = () => {
   }
 
   const nearByMechanicsList = ({ item, index }) => {
-    // console.log("user Dtaa :",item)
-    if (nearByMechanics) {
-      return (
-        <View style={styles.machanicsNearMeMainContainer}>
-          <View style={{
-            flexDirection: "row",
-            alignItems: "center",
-            // borderWidth:1,
-            width: "100%"
-          }}>
-            {item.profile_picture === null ? <Image source={{
-              uri: "https://media.istockphoto.com/id/1165311626/photo/mechanic-using-a-ratchet-wrench.jpg?s=612x612&w=0&k=20&c=D4XCHr8BeR44hdJXS_Tp-9djQ7jWDKKkBWSKaqhuqK8="
-            }} style={{ height: 50, width: 50, borderRadius: 25 }} /> : <Image source={{
-              uri: `http://43.204.88.205${item.profile_picture.split("/code")[1]}`
-            }} style={{ height: 50, width: 50, borderRadius: 25 }} />}
+    // console.log("item_in_home_page", item);
+    return (
+      <View style={styles.machanicsNearMeMainContainer}>
+        <View style={{
+          flexDirection: "row",
+          alignItems: "center",
+          // borderWidth:1,
+          width: "100%"
+        }}>
+          {item.profile_picture === null ? <Image source={{
+            uri: "https://media.istockphoto.com/id/1165311626/photo/mechanic-using-a-ratchet-wrench.jpg?s=612x612&w=0&k=20&c=D4XCHr8BeR44hdJXS_Tp-9djQ7jWDKKkBWSKaqhuqK8="
+          }} style={{ height: 50, width: 50, borderRadius: 25 }} /> : <Image source={{
+            uri: `http://43.204.88.205${item.profile_picture.split("/code")[1]}`
+          }} style={{ height: 50, width: 50, borderRadius: 25 }} />}
 
-            <View style={{ marginLeft: 11 }}>
-              <Text style={{ color: "black", fontFamily: "Forza-Bold" }}>{item.m_name}</Text>
-              <View style={{ flexDirection: "row" }}>
-                <EvilIcons name='star' size={20} style={styles.fiveStar} />
-                <EvilIcons name='star' size={20} style={styles.fiveStar} />
-                <EvilIcons name='star' size={20} style={styles.fiveStar} />
-                <EvilIcons name='star' size={20} style={styles.fiveStar} />
-              </View>
-            </View>
-          </View>
-          <View>
-            <Text style={{ color: "#3D4759", fontWeight: "400", fontSize: 16, marginTop: 9, marginBottom: 4, fontFamily: "Forza-Bold" }}>Automobile Mechanic</Text>
-            <Text style={{ color: "#3D4759", marginBottom: 6, fontFamily: "Forza-Bold" }}>12km away (18mins)</Text>
-            <View style={{
-              flexDirection: "row",
-              alignItems: "center",
-              marginBottom: 5
-            }}>
-              <Entypo name='location-pin' style={{ fontSize: 20, color: "black" }} />
-              <Text style={{ fontSize: 16, fontFamily: "Forza-Bold", color: "#3D4759" }}>{item.address}</Text>
-            </View>
-            <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-              <View style={{
-                // borderWidth: 1,
-                flexDirection: "column",
-                justifyContent: "center", alignItems: "center",
-              }}>
-                <Text style={{ fontSize: 12, marginBottom: 9, color: "#3D4759", fontFamily: "Forza-Bold" }}>Working time</Text>
-                <Text style={{ backgroundColor: "#F2F9FF", padding: 9, borderRadius: 5, color: "#3D4759", fontFamily: "Forza-Bold", }}>{item.working_time.from_time}-{item.working_time.to_time}</Text>
-              </View>
-              <View style={{
-                // borderWidth: 1,
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-                marginLeft: 9
-              }}>
-                <Text style={{ marginBottom: 9, fontSize: 12, color: "#3D4759", fontFamily: "Forza-Bold" }}>Rate</Text>
-                <Text style={{
-                  fontFamily: "Forza-Bold",
-                  width: 100,
-                  height: 37,
-                  borderRadius: 5,
-                  backgroundColor: "#EEA734",
-                  color: "white",
-                  textAlign: "center",
-                  padding: 9
-                }}>{item.rate}/Hr</Text>
-              </View>
+          <View style={{ marginLeft: 11 }}>
+            <Text style={{ color: "black", fontFamily: "Forza-Bold" }}>{item.m_name}</Text>
+            <View style={{ flexDirection: "row" }}>
+              {/* <EvilIcons name='star' size={20} style={styles.fiveStar} />
+              <EvilIcons name='star' size={20} style={styles.fiveStar} />
+              <EvilIcons name='star' size={20} style={styles.fiveStar} />
+              <EvilIcons name='star' size={20} style={styles.fiveStar} /> */}
+              <Text style={{ color: "#3D4759", fontSize: 13 }}>Ratings...</Text>
             </View>
           </View>
         </View>
-      )
-    } else {
-      <Loading />
-    }
+        <View>
+          <Text style={{ color: "#3D4759", fontWeight: "400", fontSize: 16, marginTop: 9, marginBottom: 4, fontFamily: "Forza-Bold" }}>Automobile Mechanic</Text>
+          <Text style={{ color: "#3D4759", marginBottom: 6, fontFamily: "Forza-Bold" }}>12km away (18mins)</Text>
+          <View style={{
+            flexDirection: "row",
+            alignItems: "center",
+            marginBottom: 5
+          }}>
+            <Entypo name='location-pin' style={{ fontSize: 20, color: "black" }} />
+            <Text style={{ fontSize: 16, fontFamily: "Forza-Bold", color: "#3D4759" }}>{item.address}</Text>
+          </View>
+          <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+            <View style={{
+              // borderWidth: 1,
+              flexDirection: "column",
+              justifyContent: "center", alignItems: "center",
+            }}>
+              <Text style={{ fontSize: 12, marginBottom: 9, color: "#3D4759", fontFamily: "Forza-Bold" }}>Working time</Text>
+              <Text style={{ backgroundColor: "#F2F9FF", padding: 9, borderRadius: 5, color: "#3D4759", fontFamily: "Forza-Bold", }}>{item.working_time.from_time}-{item.working_time.to_time}</Text>
+            </View>
+            <View style={{
+              // borderWidth: 1,
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              marginLeft: 9
+            }}>
+              <Text style={{ marginBottom: 9, fontSize: 12, color: "#3D4759", fontFamily: "Forza-Bold" }}>Rate</Text>
+              <Text style={{
+                fontFamily: "Forza-Bold",
+                width: 100,
+                height: 37,
+                borderRadius: 5,
+                backgroundColor: "#EEA734",
+                color: "white",
+                textAlign: "center",
+                padding: 9
+              }}>{item.rate}/Hr</Text>
+            </View>
+          </View>
+        </View>
+      </View>
+    )
   }
 
   //Get the location name of user............................................
   const getThePlaceName = () => {
     if (userLatitude && userLongitude) {
-      axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${userLatitude},${userLongitude}&key=`)
+      axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${userLatitude},${userLongitude}&key=AIzaSyD03qUlsL_zZueP3nn1sFXwQOBwDRKGl-Y`)
         .then((res) => {
           // console.log("responce in geoCoding :", res.data.results[4].formatted_address.split(",")[3]);
           setFullAddress(res.data.results[4].formatted_address);
@@ -219,222 +216,225 @@ const Home = () => {
     }, 2000);
   }, []);
 
-  return (
-    <SafeAreaView>
-      <View style={styles.headingContainer}>
-        <View style={{ width: "50%", flexDirection: "row", gap: 10 }}>
-          <View style={styles.locationContainer}>
-            <Entypo name='location-pin' style={styles.locationI} size={24} />
-          </View>
-          <TouchableOpacity onPress={() => showFullAddress()}>
-            <Text style={{
-              fontWeight: "400",
-              fontSize: 12,
-              color: "black",
-              fontFamily: "Forza-Bold"
-            }}>your location</Text>
-
-            {fullAddressControllerVariable ?
-              (<Text style={{ flexDirection: "row", alignItems: "center" }}>
-                <Text style={{
-                  color: "#3D4759", fontSize: 12, fontWeight: "500", letterSpacing: 0.5, fontFamily: "Forza-Bold",
-                }} ellipsizeMode='tail' numberOfLines={1}>{placeName},</Text>
-                <Text style={{ fontFamily: "Forza-Bold", fontSize: 12, color: "#3D4759", }}>{stateName}</Text>
-                <AntDesign name="caretup" style={{ color: "#201E1E", textAlignVertical: "center", padding: 2 }} />
-              </Text>)
-              :
-              (<Text style={{ flexDirection: "row", alignItems: "center" }}>
-                <Text style={{
-                  color: "#3D4759", fontSize: 12, fontWeight: "500", letterSpacing: 0.5, fontFamily: "Forza-Bold",
-                }} ellipsizeMode='tail' numberOfLines={1}>{placeName},</Text>
-                <Text style={{ fontFamily: "Forza-Bold", fontSize: 12, color: "#3D4759", }}>{stateName}</Text>
-                <AntDesign name="caretdown" style={{ color: "#201E1E", textAlignVertical: "center", padding: 2 }} />
-              </Text>)}
-          </TouchableOpacity>
-        </View>
-
-        <View style={{
-          display: "flex",
-          justifyContent: "center",
-          marginLeft: 140
-        }}>
-          <Fontisto name='bell' size={30} style={{ color: "black" }} />
-          <Text style={{
-            position: "absolute",
-            backgroundColor: "#DD4B4B",
-            width: 12,
-            height: 12,
-            borderRadius: 6,
-            left: 16,
-            top: 6,
-          }}></Text>
-        </View>
-      </View>
-      {fullAddressControllerVariable ? <Text style={styles.fullAddressStyle}>{fullAddress}</Text> : null}
-      <ScrollView showsVerticalScrollIndicator={false}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { onRefresh(); getThePlaceName() }} />}>
-        {/* BODY .................................. */}
-        <View style={styles.mainContainer}>
-          <View style={{
-            alignSelf: "center",
-            width: 356,
-            height: 185,
-            backgroundColor: "#007AFF",
-            borderRadius: 15,
-            padding: 10,
-            justifyContent: "space-between",
-          }}>
-            <View style={{
-              padding: 9,
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "center"
-            }}>
-              <Image source={require("./assets/Vector1.png")} resizeMode='cover' />
-              <Text style={{
-                marginLeft: 9,
-                fontWeight: "400",
-                width: 177,
-                color: "#FFFFFF",
-                letterSpacing: 1,
-                fontFamily: "Forza-Bold"
-              }}>Get car help with our professional car mechanics.</Text>
+  if (nearByMechanics.length != 0) {
+    return (
+      <SafeAreaView>
+        <View style={styles.headingContainer}>
+          <View style={{ width: "50%", flexDirection: "row", gap: 10 }}>
+            <View style={styles.locationContainer}>
+              <Entypo name='location-pin' style={styles.locationI} size={24} />
             </View>
-            <TouchableOpacity style={{
-              flexDirection: "row",
-              backgroundColor: "#0065D3",
-              borderRadius: 44,
-              alignItems: "center",
-              justifyContent: "space-between",
-              paddingHorizontal: 33,
-              marginBottom: 9,
-              height: 72,
-            }} onPress={() => {
-              navigation.navigate("HomeStackScreen");
-              getPageName("Mechanic");
-            }}>
+            <TouchableOpacity onPress={() => showFullAddress()}>
               <Text style={{
-                textAlign: "center",
-                display: "flex",
-                alignItems: "center",
-                fontWeight: "600",
-                fontSize: 20,
-                color: "#FFFFFF",
+                fontWeight: "400",
+                fontSize: 12,
+                color: "black",
                 fontFamily: "Forza-Bold"
-              }}>Search Mechanics</Text>
-              <View style={{
-                padding: 20,
-                height: 60,
-                width: 60,
-                borderRadius: 30,
-                backgroundColor: "#00D1FF",
-                marginLeft: 55
-              }}>
-                <AntDesign name='search1' size={20} style={{
-                  color: "white",
-                }} />
-              </View>
+              }}>your location</Text>
+
+              {fullAddressControllerVariable ?
+                (<Text style={{ flexDirection: "row", alignItems: "center" }}>
+                  <Text style={{
+                    color: "#3D4759", fontSize: 12, fontWeight: "500", letterSpacing: 0.5, fontFamily: "Forza-Bold",
+                  }} ellipsizeMode='tail' numberOfLines={1}>{placeName},</Text>
+                  <Text style={{ fontFamily: "Forza-Bold", fontSize: 12, color: "#3D4759", }}>{stateName}</Text>
+                  <AntDesign name="caretup" style={{ color: "#201E1E", textAlignVertical: "center", padding: 2 }} />
+                </Text>)
+                :
+                (<Text style={{ flexDirection: "row", alignItems: "center" }}>
+                  <Text style={{
+                    color: "#3D4759", fontSize: 12, fontWeight: "500", letterSpacing: 0.5, fontFamily: "Forza-Bold",
+                  }} ellipsizeMode='tail' numberOfLines={1}>{placeName},</Text>
+                  <Text style={{ fontFamily: "Forza-Bold", fontSize: 12, color: "#3D4759", }}>{stateName}</Text>
+                  <AntDesign name="caretdown" style={{ color: "#201E1E", textAlignVertical: "center", padding: 2 }} />
+                </Text>)}
             </TouchableOpacity>
           </View>
-          <ImageBackground source={require('./assets/card_back.png')} style={{
-            width: 356,
-            height: 185,
-            padding: 14,
-            marginTop: 19,
-            alignSelf: "center",
-          }} imageStyle={{
-            borderRadius: 16,
+
+          <View style={{
+            display: "flex",
+            justifyContent: "center",
+            marginLeft: 140
           }}>
-            {postUsercard_number ?
-              (<>
-                <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                  <View style={{
-                    alignItems: "center",
-                    // marginTop: "9%"
-                    // borderWidth:1,
-                    borderColor: "white"
-                  }}>
-                    <Text style={{
-                      letterSpacing: 0.7,
-                      color: "#ffffff",
-                      fontSize: 19,
-                      fontFamily: "Forza-Bold"
-                    }}>{postUserName}</Text>
-                  </View>
-                  <View>
-                    <Text style={{
-                      color: "#ffffff",
-                      fontFamily: "Forza-Bold"
-                    }}>Validity from</Text>
-                    <Text style={{
-                      color: "#ffffff",
-                      fontFamily: "Forza-Bold"
-                    }}>{postUserCardValidity}</Text>
-                  </View>
+            <Fontisto name='bell' size={30} style={{ color: "black" }} />
+            <Text style={{
+              position: "absolute",
+              backgroundColor: "#DD4B4B",
+              width: 12,
+              height: 12,
+              borderRadius: 6,
+              left: 16,
+              top: 6,
+            }}></Text>
+          </View>
+        </View>
+        {fullAddressControllerVariable ? <Text style={styles.fullAddressStyle}>{fullAddress}</Text> : null}
+        <ScrollView showsVerticalScrollIndicator={false}
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { onRefresh(); getThePlaceName() }} />}>
+          {/* BODY .................................. */}
+          <View style={styles.mainContainer}>
+            <View style={{
+              alignSelf: "center",
+              width: "100%",
+              height: "18%",
+              backgroundColor: "#007AFF",
+              borderRadius: 15,
+              padding: 10,
+              justifyContent: "space-between",
+            }}>
+              <View style={{
+                padding: 9,
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center"
+              }}>
+                <Image source={require("./assets/Vector1.png")} resizeMode='cover' />
+                <Text style={{
+                  marginLeft: 9,
+                  fontWeight: "400",
+                  width: 177,
+                  color: "#FFFFFF",
+                  letterSpacing: 1,
+                  fontFamily: "Forza-Bold"
+                }}>Get car help with our professional car mechanics.</Text>
+              </View>
+              <TouchableOpacity style={{
+                flexDirection: "row",
+                backgroundColor: "#0065D3",
+                borderRadius: 44,
+                alignItems: "center",
+                justifyContent: "space-between",
+                paddingHorizontal: 33,
+                marginBottom: 9,
+                height: 72,
+              }} onPress={() => {
+                navigation.navigate("HomeStackScreen");
+                getPageName("Mechanic");
+              }}>
+                <Text style={{
+                  textAlign: "center",
+                  display: "flex",
+                  alignItems: "center",
+                  fontWeight: "600",
+                  fontSize: 20,
+                  color: "#FFFFFF",
+                  fontFamily: "Forza-Bold"
+                }}>Search Mechanics</Text>
+                <View style={{
+                  padding: 20,
+                  // height: 60,
+                  // width: 60,
+                  borderRadius: 30,
+                  backgroundColor: "#00D1FF",
+                  marginLeft: "26%"
+                }}>
+                  <AntDesign name='search1' size={20} style={{
+                    color: "white",
+                  }} />
                 </View>
-                <View style={{ alignItems: "center", }}>
+              </TouchableOpacity>
+            </View>
+            <ImageBackground source={require('./assets/card_back.png')} style={{
+              // borderWidth:1,
+              // borderColor:"red",
+              width: "100%",
+              height: 198,
+              // padding: 14,
+              marginTop: 19,
+              alignSelf: "center",
+            }} imageStyle={{
+              borderRadius: 16,
+            }}>
+              {postUsercard_number ?
+                (<>
+                  <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+                    <View style={{
+                      alignItems: "center",
+                      // marginTop: "9%"
+                      // borderWidth:1,
+                      borderColor: "white"
+                    }}>
+                      <Text style={{
+                        letterSpacing: 0.7,
+                        color: "#ffffff",
+                        fontSize: 19,
+                        fontFamily: "Forza-Bold"
+                      }}>{postUserName}</Text>
+                    </View>
+                    <View>
+                      <Text style={{
+                        color: "#ffffff",
+                        fontFamily: "Forza-Bold"
+                      }}>Validity from</Text>
+                      <Text style={{
+                        color: "#ffffff",
+                        fontFamily: "Forza-Bold"
+                      }}>{postUserCardValidity}</Text>
+                    </View>
+                  </View>
+                  <View style={{ alignItems: "center", }}>
+                    <Text style={{
+                      color: "#CAD5E2",
+                      fontFamily: "Forza-Bold",
+                      fontSize: 18,
+                      marginTop: "9%",
+                    }}>{postUsercard_number}</Text>
+                  </View>
+                </>) : (<View style={{ alignItems: "center" }}>
                   <Text style={{
                     color: "#CAD5E2",
                     fontFamily: "Forza-Bold",
                     fontSize: 18,
-                    marginTop: "9%",
-                  }}>{postUsercard_number}</Text>
+                  }}>No Card assigned</Text>
+                </View>)}
+            </ImageBackground>
+            <View style={styles.thirdMainContainer}>
+              <View style={styles.thirdCardChildContainer}>
+                <View style={{ display: "flex", flexDirection: "column" }}>
+                  <Text style={{
+                    color: "#3D4759",
+                    fontWeight: "500",
+                    fontSize: 16,
+                    fontFamily: "Forza-Black"
+                  }}>Spare Parts/Shop</Text>
+                  <Text style={{
+                    width: "44%",
+                    color: "black",
+                    fontFamily: "Forza-Bold"
+                  }}>Buy spare and car accessories and car fluids</Text>
                 </View>
-              </>) : (<View style={{ alignItems: "center" }}>
+                <View>
+                  <Image source={require("./assets/pngkit_auto-png-images_2522770.png")} style={styles.thirdCardPic} />
+                </View>
+              </View>
+              <View style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-evenly",
+                backgroundColor: "#FFFFFF",
+                borderRadius: 22.5,
+                width: 174,
+                height: 45,
+              }}>
                 <Text style={{
-                  color: "#CAD5E2",
-                  fontFamily: "Forza-Bold",
-                  fontSize: 18,
-                }}>No Card assign</Text>
-              </View>)}
-          </ImageBackground>
-          <View style={styles.thirdMainContainer}>
-            <View style={styles.thirdCardChildContainer}>
-              <View style={{ display: "flex", flexDirection: "column" }}>
-                <Text style={{
+                  // marginLeft:"12%",
                   color: "#3D4759",
-                  fontWeight: "500",
+                  fontWeight: "700",
                   fontSize: 16,
-                  fontFamily: "Forza-Black"
-                }}>Spare Parts/Shop</Text>
-                <Text style={{
-                  width: "44%",
-                  color: "black",
                   fontFamily: "Forza-Bold"
-                }}>Buy spare and car accessories and car fluids</Text>
-              </View>
-              <View>
-                <Image source={require("./assets/pngkit_auto-png-images_2522770.png")} style={styles.thirdCardPic} />
+                }}>Comming soon...</Text>
+                <AntDesign name='arrowright' size={22} color={"black"} />
               </View>
             </View>
-            <View style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-evenly",
-              backgroundColor: "#FFFFFF",
-              borderRadius: 22.5,
-              width: 174,
-              height: 45,
-            }}>
-              <Text style={{
-                // marginLeft:"12%",
-                color: "#3D4759",
-                fontWeight: "700",
-                fontSize: 16,
-                fontFamily: "Forza-Bold"
-              }}>Comming soon...</Text>
-              <AntDesign name='arrowright' size={22} color={"black"} />
-            </View>
-          </View>
 
-          {/* MECHANICS NEAR ME starts here..................... */}
-          <Text style={styles.mechanicsHeading}>Mechanics Near Me</Text>
-          <FlatList data={nearByMechanics} keyExtractor={(item) => item._id} renderItem={({ item, index }) => nearByMechanicsList({ item, index })} horizontal showsHorizontalScrollIndicator={false} />
-
-          {/* POPULAR OFFER START ................................*/}
-          <Text style={styles.popularOfferHeading}>Popular offer</Text>
-          <Text style={{ color: "black", fontFamily: "Forza-Bold", fontSize: 15 }}>Comming Soon.....................</Text>
-          {/* <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+            {/* MECHANICS NEAR ME starts here..................... */}
+            <Text style={styles.mechanicsHeading}>Mechanics Near Me</Text>
+            {nearByMechanics.length != 0 ? <FlatList data={nearByMechanics} keyExtractor={(item) => item._id} renderItem={({ item, index }) => nearByMechanicsList({ item, index })} horizontal showsHorizontalScrollIndicator={false} />
+              : <Text style={{ color: "black", fontFamily: "Forza-Bold", fontSize: 15, alignSelf: "center", marginBottom: "19%" }}>mechanics are comming pls wait a sec</Text>}
+            {/* POPULAR OFFER START ................................*/}
+            <Text style={styles.popularOfferHeading}>Popular offer</Text>
+            <Text style={{ color: "black", fontFamily: "Forza-Bold", fontSize: 15, alignSelf: "center", marginBottom: "19%" }}>Comming Soon........</Text>
+            {/* <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
               <View style={styles.popularOfferMainContainer}>
                 <Image source={{
                   uri: "https://www.shutterstock.com/image-illustration/perpetuum-mobile-gears-260nw-64576072.jpg"
@@ -622,9 +622,9 @@ const Home = () => {
                 </View>
               </View>
             </ScrollView> */}
-        </View>
-      </ScrollView>
-      {/* <TouchableOpacity style={styles.orderTrackingBtn} onPress={() => {
+          </View>
+        </ScrollView>
+        {/* <TouchableOpacity style={styles.orderTrackingBtn} onPress={() => {
         navigation.navigate("ChatComponent")
       }}>
         <View style={{
@@ -639,8 +639,10 @@ const Home = () => {
           <Text style={{ color: "white", fontSize: 17 }}>tracking</Text>
         </View>
       </TouchableOpacity> */}
-    </SafeAreaView >
-  )
+      </SafeAreaView >
+    )
+  }
+
 }
 
 
@@ -689,14 +691,15 @@ const styles = StyleSheet.create({
     padding: "2%",
     // alignSelf: "center",
     marginBottom: "20%",
+    height: "100%"
   },
   thirdMainContainer: {
     alignSelf: "center",
     flexDirection: "column",
     justifyContent: "space-between",
     backgroundColor: "#F4B755",
-    width: 356,
-    height: 185,
+    width: "100%",
+    height: "18%",
     padding: 14,
     marginTop: 19,
     borderRadius: 16,
@@ -722,15 +725,16 @@ const styles = StyleSheet.create({
   },
   machanicsNearMeMainContainer: {
     marginHorizontal: 4,
-    borderWidth: 1,
+    // borderWidth: 1,
+    // borderColor:"red",
     borderColor: "#E0EAEF",
     backgroundColor: "#FFFFFF",
-    // height: 220,
-    // width: 220,
-    padding: 10,
+    // height:"150%",
+    // // width: 220,
+    padding: 14,
     flexDirection: "column",
     justifyContent: "space-evenly",
-    // alignItems: "flex-start",
+    alignItems: "flex-start",
     borderRadius: 9
   },
   fiveStar: {
@@ -740,7 +744,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     color: "#3D4759",
     fontWeight: "500",
-    marginVertical: 15,
+    marginVertical: "3%",
     fontFamily: "Forza-Black"
   },
   popularOfferMainContainer: {

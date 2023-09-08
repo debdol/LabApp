@@ -116,7 +116,6 @@ const OtpPage = (props) => {
                 codeInputFieldStyle={styles.underlineStyleBase}
                 codeInputHighlightStyle={styles.underlineStyleHighLighted}
                 onCodeFilled={(code => {
-                    // console.log(`your OTP is : ${code}`);
                     setOtp(code);
                 })}
             />
@@ -163,7 +162,8 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         marginTop: 50,
         width: "85%",
-        height: "auto"
+        height: "auto",
+        color:"black"
     },
 
     inputView: {

@@ -12,14 +12,27 @@ import { StyleContext } from './App';
 import { calculateTotalAmount, serviceTypes } from './APIs';
 const Buffer = require("buffer").Buffer;
 import Loading from './Loading';
+import { useNavigation } from '@react-navigation/native';
 
 const Cart = ({ route }) => {
+  const navigation = useNavigation();
   const { postServiceRequestDetails, postUserlat, postUserLong, getPageName, postUserLog } = useContext(StyleContext);
   const [totalAmount, setTotalAmount] = useState();
   const [problems, setProblems] = useState();
   const [paymentUrl, setPaymentUrl] = useState();
   const [paymentUrlControler, setPaymentUrlControler] = useState(false);
   const [showServiceTypes, setShowServiceTypes] = useState(false);
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      // The screen is focused
+      // Call any action
+      setShowServiceTypes(false)
+    });
+
+    // Return the function to unsubscribe from the event so it gets removed on unmount
+    return unsubscribe;
+  }, [navigation]);
 
   useEffect(() => {
     if (paymentUrl) {
@@ -109,8 +122,10 @@ const Cart = ({ route }) => {
           {showServiceTypes ? <Entypo size={30} name='chevron-small-up' style={styles.headerIcon} /> : <Entypo size={30} name='chevron-small-down' style={styles.headerIcon} />}
         </TouchableOpacity>
         {showServiceTypes ?
-          <View style={styles.chartsStyle}>
-            {problems ? problems.map((item, index) => (<Text key={index} style={styles.chartsTextStyle}>{item}</Text>)) : null}
+          <View style={styles.chartsStyleMainView} onStartShouldSetResponder={() => setShowServiceTypes(false)}>
+            <View style={styles.chartsStyle}>
+              {problems ? problems.map((item, index) => (<Text key={index} style={styles.chartsTextStyle}>{item}</Text>)) : null}
+            </View>
           </View> : null}
         <View style={styles.totalBalanceView}>
           <Text style={styles.totalBalanceTxt}>Total Balance</Text>
@@ -241,16 +256,26 @@ const styles = StyleSheet.create({
     borderRadius: 90,
     color: "black"
   },
+  chartsStyleMainView: {
+    // borderColor: "red",
+    // borderWidth: 1,
+    top: "18%",
+    position: "absolute",
+    width: "100%",
+    height: "130%",
+    alignSelf: "center",
+    zIndex: 6,
+  },
   chartsStyle: {
     borderWidth: 1,
     borderColor: "#E0EAEF",
-    position: "absolute",
+    // position: "absolute",
     padding: 20,
-    zIndex: 6,
-    top: "18%",
-    width: "80%",
-    height: "29%",
-    alignSelf: "center",
+    // zIndex: 6,
+    // top: "18%",
+    // width: "80%",
+    // height: "29%",
+    // alignSelf: "center",
     backgroundColor: "#FFFFFF",
     justifyContent: "center",
     alignItems: "center",

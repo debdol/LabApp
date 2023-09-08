@@ -21,7 +21,7 @@ const Profile = () => {
   const navigation = useNavigation();
   const { getMainPage, getPageName, postUserName, postUserNumber, postUserAddress, postUserEmail, postUserCarModel, postUserCarNumber, getUserImage, postUserLog } = useContext(StyleContext);
   const [imagPath, setImagPath] = useState();
-  console.log("tpken :", postUserLog);
+  // console.log("tpken :", postUserLog);
   const logOutHandler = async () => {
     axios.post("http://43.204.88.205:90/logout-user", {}, {
       headers: {

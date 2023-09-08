@@ -123,7 +123,7 @@ const RegisterPage = (props) => {
                     initialValues={{ name: '', car_number: '', car_model: '', email_id: '', address: '', pin_code: '', state: '', latitude: '', longitude: '' }}
                     validationSchema={userSchema}
                     onSubmit={values => {
-                        // console.log(values, "user lat :", typeof (userLat));
+                        // console.log("values  :", values);
                         submitHandler();
                     }}
                 >
@@ -205,7 +205,7 @@ const RegisterPage = (props) => {
                                         borderRadius: 22,
                                         color: "#242B2E"
                                     }} />
-                                    <TextInput placeholder='Pin Code' style={styles.fullNameI} onChangeText={(value) => { handleChange('pin_code')(value); setPincode(value) }} value={values.pin_code} maxLength={6} />
+                                    <TextInput placeholder='Pin Code' style={styles.fullNameI} onChangeText={(value) => { handleChange('pin_code')(value); setPincode(value) }} value={values.pin_code} maxLength={6} keyboardType='number-pad' />
                                 </View>
                                 {errors.pin_code && touched.pin_code ? (<Text style={styles.errorStyle}>{errors.pin_code}</Text>) : null}
 

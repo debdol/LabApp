@@ -37,6 +37,19 @@ export default function App() {
   const [mechanicsDetails, setmechanicsDetails] = useState();
 
   const [mainPage, setMainPage] = useState(<Loading />);
+  //checking userData API................
+  useEffect(() => {
+    console.log("check_userData_token:", Userlog);
+    axios.get(userData, {
+      'Authorization': `Bearer ${Userlog}`,
+      'Content-Type': 'application/json'
+    })
+      .then((res) => {
+        console.log("response_in_userData_check :", res)
+      })
+      .catch((error) => console.log("error_in_userData_check :", error))
+  }, [Userlog])
+
 
   // Set User Token if there is any.........................
   async function logcall() {

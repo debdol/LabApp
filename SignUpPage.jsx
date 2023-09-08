@@ -19,7 +19,7 @@ const SignUpPage = (props) => {
         await messaging().registerDeviceForRemoteMessages();
         const token = await messaging().getToken();
         setFcmToken(token);
-        // console.log("token:", token);
+        console.log("FCM token:", token);
     }
 
     useEffect(() => {
@@ -49,7 +49,7 @@ const SignUpPage = (props) => {
                 })
                 .catch((error) => console.log(error));
         } else if (!checkBtn) {
-            Alert.alert("pls,allow terms & conditions");
+            // Alert.alert("pls,allow terms & conditions");
         }
     }, [inputNumber])
 
@@ -83,14 +83,14 @@ const SignUpPage = (props) => {
                         }}
                         validationSchema={userSchema}
                     >
-                        {({ handleChange, handleSubmit, errors, touched, values}) => (
+                        {({ handleChange, handleSubmit, errors, touched, values }) => (
                             <View>
                                 <View style={styles.nineOneInputView}>
                                     <Text style={{ fontWeight: "400", marginLeft: 22, fontSize: 15, color: "black", fontFamily: "Forza-Bold" }}>+91</Text>
                                     <TextInput style={styles.inputStyle} keyboardType='number-pad' onChangeText={handleChange('phoneNumber')} placeholder='write your phone number' maxLength={10} value={values.phoneNumber} />
                                 </View>
                                 {errors.phoneNumber && touched.phoneNumber ? (<Text style={{ color: "red", marginBottom: 9, fontFamily: "Forza-Bold" }}>{errors.phoneNumber}</Text>) : null}
-                                <View style={styles.conditionCheckView}>
+                                <View style={styles.conditionCheckView} onStartShouldSetResponder={() => setCheckBtn(!checkBtn)}>
                                     <BouncyCheckbox
                                         style={styles.checkBox}
                                         size={25}
@@ -101,11 +101,10 @@ const SignUpPage = (props) => {
                                         disableBuiltInState
                                         isChecked={checkBtn}
                                         onPress={() => {
-                                            // console.log(checkBtn);
                                             setCheckBtn(!checkBtn)
                                         }}
                                     />
-                                    <Text style={styles.termsConditionText}>I am hereby agree to all terms & conditions</Text>
+                                    <Text style={styles.termsConditionText}>I hereby agree to all terms & conditions</Text>
                                 </View>
                                 <TouchableOpacity style={checkBtn ? { marginTop: 40, backgroundColor: "#007AFF", borderRadius: 39, width: 190, alignSelf: "center" } : { marginTop: 40, backgroundColor: "#3991bd", borderRadius: 39, width: 190, alignSelf: "center" }} onPress={() => {
                                     handleSubmit();
@@ -120,7 +119,7 @@ const SignUpPage = (props) => {
                                         }}>send OTP</Text>
                                         <AntDesign name='right' size={20} color={"black"} style={{
                                             backgroundColor: "white", borderRadius: 45, padding: 15,
-                                            marginLeft: 15
+                                            marginLeft: "9%"
                                         }} />
                                     </View>
                                 </TouchableOpacity>
@@ -160,14 +159,15 @@ const styles = StyleSheet.create({
     termsConditionText: {
         color: "#3D4759",
         fontFamily: "Forza-Bold",
-        fontSize:15
+        fontSize: 15
     },
     nineOneInputView: {
         backgroundColor: "#D7E2F0",
         // borderWidth: 1,
         // borderColor: "red" ,
         flexDirection: "row",
-        alignItems: "center"
+        alignItems: "center",
+        borderRadius: 6
     },
     inputFieldErrorView: {
         flexDirection: "column"
