@@ -21,10 +21,9 @@ const InformationPage = () => {
   const [serviceCode, setServiceCode] = useState();
   const [problems, setProblems] = useState([]);
   const [serviceRequestData, setServiceRequestData] = useState();
-  console.log("postUserLog :", postUserLog);
+  // console.log("postUserLog :", postUserLog);
 
   useEffect(() => {
-    console.log("is this alive???????????????")
     axios.get(serviceTypes)
       .then((res) => {
         console.log("response_check_sertypes_API:", res.data)
@@ -32,6 +31,7 @@ const InformationPage = () => {
       .catch((err) => console.log("error_check_sertypes_API:", err))
   }, [])
 
+  // Function for Creating Service Request..............................
   const searchMechanics = () => {
     const serviceData = {
       car_manufacturer: "alto",
@@ -44,7 +44,7 @@ const InformationPage = () => {
     }
 
     //Creating  your service request.....................................
-    console.log('serviceData :', serviceData);
+    // console.log('serviceData :', serviceData);
     if (serviceData.message && postUserService && serviceCode) {
       navigation.navigate("Mechanicsss");
       setServiceRequestData(true);
@@ -57,7 +57,7 @@ const InformationPage = () => {
         .then((res) => {
           if (res.data.message) {
             console.log('response in create request create API :', res);
-            // Alert.alert(res.data.message);
+            Alert.alert(res.data.message);
             // setServiceRequestData(true);
           } else {
             setModalVisible(true);
@@ -205,7 +205,7 @@ const InformationPage = () => {
             dropdownStyle={styles.dropdown1DropdownStyle}
             rowStyle={styles.dropdown1RowStyle}
             rowTextStyle={styles.dropdown1RowTxtStyle}
-          /> : <Text style={{ color: '#444', textAlign: 'left', fontFamily: "Forza-Bold" }}>you may not have your data so pls wait</Text>}
+          /> : <Text style={[styles.dropdown1BtnStyle,{fontFamily:"Forza-Bold",color:"#000000",textAlign:"center",textAlignVertical:"center"}]}>you may not have your data so pls wait</Text>}
           <Text style={styles.whatsWrong}>What is wrong with the vehicle?</Text>
           <TextInput placeholder='Write your message' style={styles.footerInput} onChangeText={e => setUreMsg(e)} />
         </View>
@@ -378,7 +378,7 @@ const styles = StyleSheet.create({
     textAlignVertical: "top",
     fontFamily: "Forza-Bold",
     fontSize: 16,
-    color: "black",
+    color: "#000000",
   },
   searchMehcanicsBtn: {
     backgroundColor: "#007AFF",

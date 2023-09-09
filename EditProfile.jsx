@@ -106,27 +106,27 @@ const EditProfile = () => {
                     <View style={styles.formContainer}>
                         <View style={styles.inputLogoConatiner}>
                             <AntDesign name='user' size={30} style={styles.userIcon} />
-                            <TextInput placeholder='Full name' style={styles.fullNameI} onChangeText={(e: any) => setFullName(e)} value={fullName} />
+                            <TextInput placeholder='Full name' style={styles.fullNameI} onChangeText={(e) => setFullName(e)} value={fullName} />
                         </View>
                         <View style={styles.inputLogoConatiner}>
                             <MaterialCommunityIcons name='email-outline' size={30} style={styles.userIcon} />
-                            <TextInput placeholder='Email' style={styles.fullNameI} onChangeText={(e: any) => setEmail(e)} value={postUserEmail} />
+                            <TextInput placeholder='Email' style={styles.fullNameI} onChangeText={(e) => setEmail(e)} value={postUserEmail} />
                         </View>
                         <View style={styles.inputLogoConatiner}>
                             <Entypo name='location-pin' size={30} style={styles.userIcon} />
-                            <TextInput placeholder='Address' style={styles.fullNameI} onChangeText={(e: any) => setAddress(e)} value={address} />
+                            <TextInput placeholder='Address' style={styles.fullNameI} onChangeText={(e) => setAddress(e)} value={address} />
                         </View>
                         <View style={styles.inputLogoConatiner}>
                             <Feather name='map-pin' size={30} style={styles.userIcon} />
-                            <TextInput placeholder='State' style={styles.fullNameI} onChangeText={(e: any) => setState(e)} value={state} />
+                            <TextInput placeholder='State' style={styles.fullNameI} onChangeText={(e) => setState(e)} value={state} />
                         </View>
                         <View style={styles.inputLogoConatiner}>
                             <MaterialIcons name='fiber-pin' size={30} style={styles.userIcon} />
-                            <TextInput placeholder='pin code' style={styles.fullNameI} onChangeText={(e: any) => setPinCode(e)} value={pinCode} />
+                            <TextInput placeholder='pin code' style={styles.fullNameI} onChangeText={(e) => setPinCode(e)} value={pinCode} />
                         </View>
                         <View style={styles.inputLogoConatiner}>
                             <AntDesign name='car' size={30} style={styles.userIcon} />
-                            <TextInput placeholder='Car Model' style={styles.fullNameI} onChangeText={(e: any) => setCarModel(e)} value={carModel} />
+                            <TextInput placeholder='Car Model' style={styles.fullNameI} onChangeText={(e) => setCarModel(e)} value={carModel} />
                         </View>
                         <View style={styles.inputLogoConatiner}>
                             <FontAwesome5 name='car-alt' size={30} style={styles.userIcon} />
@@ -146,8 +146,8 @@ const EditProfile = () => {
                             <View style={styles.centeredView}>
                                 <View style={styles.modalView}>
                                     <Text style={styles.modalText}>Add New Car</Text>
-                                    <TextInput placeholder='Write your car model' style={{ height: 40, padding: 9, elevation: 2, backgroundColor: "#FFFFFF" }} onChangeText={(e: any) => setChangeCarModel(e)} />
-                                    <TextInput placeholder='Write your car number' style={{ marginTop: 15, marginBottom: 10, elevation: 2, height: 40, padding: 9, backgroundColor: "#FFFFFF" }} onChangeText={(e: any) => setChangeCarNumber(e)} />
+                                    <TextInput placeholder='Write your car model' style={{ height: 40, padding: 9, elevation: 2, backgroundColor: "#FFFFFF" }} onChangeText={(e) => setChangeCarModel(e)} />
+                                    <TextInput placeholder='Write your car number' style={{ marginTop: 15, marginBottom: 10, elevation: 2, height: 40, padding: 9, backgroundColor: "#FFFFFF" }} onChangeText={(e) => setChangeCarNumber(e)} />
                                     <TouchableOpacity
                                         style={[styles.button, styles.buttonClose]}
                                         onPress={() => { setModalVisible(!modalVisible); addCar_Handler() }}>
