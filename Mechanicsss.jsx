@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useContext, useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ImageBackground, Image, TouchableOpacity, ScrollView, SafeAreaView, FlatList, ActivityIndicator, Alert, Linking } from 'react-native';
+import { View, Text, StyleSheet, ImageBackground, Image, TouchableOpacity, ScrollView, SafeAreaView, FlatList, ActivityIndicator, Alert, Linking, Animated } from 'react-native';
 import Entypo from 'react-native-vector-icons/Entypo';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
@@ -24,22 +24,25 @@ const Mechanicsss = () => {
             let temp = mechanicsDetails.map((item, index) => item.location);
             setMarkers(temp);
         }
-    }, [mechanicsDetails])
+    }, [mechanicsDetails]);
+
 
     useEffect(() => {
-        // console.log("status in mechanicss page :", postServiceRequestDetails)
-        if (postServiceRequestDetails.length != 0) {
-            if (postServiceRequestDetails[0].status === "accepted") {
-                navigation.navigate("YourMechanics", { acceptedMDetails: postServiceRequestDetails[0] });
-            } else if (postServiceRequestDetails[0].status === "initiated") {
-                navigation.navigate("Cart", { acceptedMDetails: postServiceRequestDetails[0] });
-                getPageName("Cart")
-            } else if (postServiceRequestDetails[0].status === "not available") {
-                console.log("mechanicsDetails is FALSE now");
-                setUnavailable(true);
-            }
-            else {
-                setMechanicsDetails(postServiceRequestDetails[0].mechanic);
+        if (postServiceRequestDetails) {
+            if (postServiceRequestDetails.length != 0) {
+                // console.log("status in mechanicss page :", postServiceRequestDetails.length);
+                if (postServiceRequestDetails[0].status === "accepted") {
+                    navigation.navigate("YourMechanics", { acceptedMDetails: postServiceRequestDetails[0] });
+                } else if (postServiceRequestDetails[0].status === "initiated") {
+                    navigation.navigate("Cart", { acceptedMDetails: postServiceRequestDetails[0] });
+                    getPageName("Cart")
+                } else if (postServiceRequestDetails[0].status === "not available") {
+                    console.log("mechanicsDetails is FALSE now");
+                    setUnavailable(true);
+                }
+                else {
+                    setMechanicsDetails(postServiceRequestDetails[0].mechanic);
+                }
             }
         }
     }, [postServiceRequestDetails]);
@@ -308,8 +311,8 @@ const styles = StyleSheet.create({
         // marginTop: 19,
         marginBottom: 19,
         position: "absolute",
-        alignItems:"center",
-        justifyContent:"center",
+        alignItems: "center",
+        justifyContent: "center",
         zIndex: 2,
         bottom: 0
     },

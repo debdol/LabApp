@@ -21,7 +21,7 @@ const InformationPage = () => {
   const [serviceCode, setServiceCode] = useState();
   const [problems, setProblems] = useState([]);
   const [serviceRequestData, setServiceRequestData] = useState();
-  // console.log("postUserLog :", postUserLog);
+  console.log("postUserLog :", postUserLog);
 
   useEffect(() => {
     console.log("is this alive???????????????")
@@ -29,7 +29,7 @@ const InformationPage = () => {
       .then((res) => {
         console.log("response_check_sertypes_API:", res.data)
       })
-      .catch((err) => console.log("error_check_sertypes_API:",err))
+      .catch((err) => console.log("error_check_sertypes_API:", err))
   }, [])
 
   const searchMechanics = () => {
@@ -46,7 +46,7 @@ const InformationPage = () => {
     //Creating  your service request.....................................
     console.log('serviceData :', serviceData);
     if (serviceData.message && postUserService && serviceCode) {
-      // navigation.navigate("Mechanicsss");
+      navigation.navigate("Mechanicsss");
       setServiceRequestData(true);
       axios.post(creatServiceRequest, serviceData, {
         headers: {
@@ -58,7 +58,6 @@ const InformationPage = () => {
           if (res.data.message) {
             console.log('response in create request create API :', res);
             // Alert.alert(res.data.message);
-            navigation.navigate("Mechanicsss");
             // setServiceRequestData(true);
           } else {
             setModalVisible(true);
@@ -80,7 +79,7 @@ const InformationPage = () => {
         }
       })
         .then((res) => {
-          // console.log("res_in_requestdetails_in_informationPage:", res)
+          console.log("res_in_requestdetails_in_informationPage:", res.data)
           // navigation.navigate("Mechanicsss");
           setServiceRequestData(false);
           getServiceRequestDetails(res.data.data);
@@ -129,25 +128,26 @@ const InformationPage = () => {
               // onPress={() => { console.log(checkBtn) ;setCheckBtn(!checkBtn)}}
               />
             </View>
-            <View style={styles.addNewCarMainContainer}>
-              <View style={[styles.whichCarFirstSections, { borderBottomWidth: 0 }]}>
-                <View style={styles.carIconNameView}>
-                  <Fontisto name='car' size={33} style={[styles.carIconDiv, styles.carIcon]} />
-                  <Text style={styles.carName}>Add new car</Text>
+            <TouchableOpacity activeOpacity={1}>
+              <View style={styles.addNewCarMainContainer}>
+                <View style={[styles.whichCarFirstSections, { borderBottomWidth: 0 }]}>
+                  <View style={styles.carIconNameView}>
+                    <Fontisto name='car' size={33} style={[styles.carIconDiv, styles.carIcon]} />
+                    <Text style={styles.carName}>Add new car</Text>
+                  </View>
+                  <BouncyCheckbox
+                    style={styles.checkBox}
+                    size={25}
+                    fillColor="#007AFF"
+                    unfillColor="#FFFFFF"
+                    iconStyle={{ borderColor: "red" }}
+                    innerIconStyle={{ borderWidth: 2 }}
+                    disableBuiltInState
+                    isChecked={false}
+                  // onPress={() => { console.log(checkBtn); setCheckBtn(!checkBtn) }}
+                  />
                 </View>
-                <BouncyCheckbox
-                  style={styles.checkBox}
-                  size={25}
-                  fillColor="#007AFF"
-                  unfillColor="#FFFFFF"
-                  iconStyle={{ borderColor: "red" }}
-                  innerIconStyle={{ borderWidth: 2 }}
-                  disableBuiltInState
-                  isChecked={false}
-                // onPress={() => { console.log(checkBtn); setCheckBtn(!checkBtn) }}
-                />
-              </View>
-              {/* <View style={styles.selectionView}>
+                {/* <View style={styles.selectionView}>
                 <View style={styles.SelectManufacturerView}>
                   <Text style={styles.SelectManufacturerTxt}>Select Manufacturer</Text>
                   <AntDesign name='down' size={20} style={styles.downIcon} />
@@ -161,7 +161,8 @@ const InformationPage = () => {
                   <AntDesign name='down' size={20} style={styles.downIcon} />
                 </View>
               </View> */}
-            </View>
+              </View>
+            </TouchableOpacity>
           </View>
         </View>
 
