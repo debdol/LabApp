@@ -389,11 +389,10 @@ const styles = StyleSheet.create({
     color: "#505056",
     fontWeight: "400",
     fontSize: 20,
-    fontFamily: "Forza-Bold",
   },
   phoneNumber: {
     color: "#3D4759",
-    fontWeight: "400",
+    fontWeight: "300",
     fontSize: 18,
   },
   BrandBMWMainView: {
@@ -490,9 +489,9 @@ const styles = StyleSheet.create({
   },
   logOutBtnTxt: {
     color: "black",
-    fontWeight: "700",
     fontSize: 20,
     textAlign: "center",
+    fontFamily:"Forza-Bold"
   }
 })
 export default Profile;

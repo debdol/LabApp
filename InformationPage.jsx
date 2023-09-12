@@ -1,4 +1,4 @@
-import { Image, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, View, TouchableOpacity, Alert, Modal, Pressable } from 'react-native'
+import { Image, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, View, TouchableOpacity, Modal, Pressable } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -11,6 +11,7 @@ import { StyleContext } from './App';
 import axios from 'axios';
 import { creatServiceRequest, openServiceRequestDetails, serviceTypes } from './APIs';
 import Loading from './Loading';
+
 const InformationPage = () => {
   const { postUserCars, postUserLog, postUserlat, postUserLong, getServiceRequestDetails, getUserService, postUserService } = useContext(StyleContext);
 
@@ -56,8 +57,8 @@ const InformationPage = () => {
       })
         .then((res) => {
           if (res.data.message) {
-            console.log('response in create request create API :', res);
-            Alert.alert(res.data.message);
+            console.log('response in create request create API :', res.data.message);
+            // console.log('response in create request create API :', res);
             // setServiceRequestData(true);
           } else {
             setModalVisible(true);
@@ -205,9 +206,9 @@ const InformationPage = () => {
             dropdownStyle={styles.dropdown1DropdownStyle}
             rowStyle={styles.dropdown1RowStyle}
             rowTextStyle={styles.dropdown1RowTxtStyle}
-          /> : <Text style={[styles.dropdown1BtnStyle,{fontFamily:"Forza-Bold",color:"#000000",textAlign:"center",textAlignVertical:"center"}]}>you may not have your data so pls wait</Text>}
+          /> : <Text style={[styles.dropdown1BtnStyle, { fontFamily: "Forza-Bold", color: "#000000", textAlign: "center", textAlignVertical: "center" }]}>you may not have your data so pls wait</Text>}
           <Text style={styles.whatsWrong}>What is wrong with the vehicle?</Text>
-          <TextInput placeholder='Write your message' style={styles.footerInput} onChangeText={e => setUreMsg(e)} />
+          <TextInput placeholder='Write your message......' style={styles.footerInput} onChangeText={e => setUreMsg(e)} />
         </View>
         <TouchableOpacity style={styles.searchMehcanicsBtn} onPress={() => {
           searchMechanics();
@@ -371,22 +372,23 @@ const styles = StyleSheet.create({
     fontSize: 20
   },
   footerInput: {
+    padding: 15,
     height: 137,
-    width: 353,
+    width: "100%",
     backgroundColor: "#EAEEF2",
     borderRadius: 20,
     textAlignVertical: "top",
     fontFamily: "Forza-Bold",
     fontSize: 16,
+    alignSelf: "center",
     color: "#000000",
   },
   searchMehcanicsBtn: {
     backgroundColor: "#007AFF",
-    width: 353,
+    width: "100%",
     height: 64,
+    alignSelf: "center",
     borderRadius: 44,
-    // marginTop: 19,
-    marginBottom: 19
   },
   searchMehcanicsBtnTxt: {
     color: "white",

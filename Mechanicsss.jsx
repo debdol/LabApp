@@ -37,7 +37,7 @@ const Mechanicsss = () => {
                     navigation.navigate("Cart", { acceptedMDetails: postServiceRequestDetails[0] });
                     getPageName("Cart")
                 } else if (postServiceRequestDetails[0].status === "not available") {
-                    console.log("mechanicsDetails is FALSE now");
+                    // console.log("mechanicsDetails is FALSE now");
                     setUnavailable(true);
                 }
                 else {
@@ -202,7 +202,7 @@ const Mechanicsss = () => {
     }
     else {
         return (
-            <ActivityIndicator size="large" color="#0000ff" style={{ alignItems: "center", marginTop: 350 }} />
+            <Loading />
         )
     }
 

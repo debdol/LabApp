@@ -10,6 +10,7 @@ import axios from 'axios';
 import Loading from './Loading';
 import { enableLatestRenderer } from 'react-native-maps';
 import { userData } from './APIs';
+import { NativeBaseProvider } from "native-base";
 
 enableLatestRenderer();
 
@@ -39,15 +40,17 @@ export default function App() {
   const [mainPage, setMainPage] = useState(<Loading />);
   //checking userData API................
   useEffect(() => {
-    console.log("check_userData_token:", Userlog);
-    axios.get(userData, {
-      'Authorization': `Bearer ${Userlog}`,
-      'Content-Type': 'application/json'
-    })
-      .then((res) => {
-        console.log("response_in_userData_check :", res)
+    if (Userlog) {
+      console.log("check_userData_token:", Userlog);
+      axios.get(userData, {
+        'Authorization': `Bearer ${Userlog}`,
+        'Content-Type': 'application/json'
       })
-      .catch((error) => console.log("error_in_userData_check :", error))
+        .then((res) => {
+          console.log("response_in_userData_check :", res.data.data)
+        })
+        .catch((error) => console.log("error_in_userData_check :", error))
+    }
   }, [Userlog])
 
 
@@ -197,51 +200,53 @@ export default function App() {
 
 
   return (
-    <StyleContext.Provider value={{
-      // send
-      postPageName: pageName,
-      postUserLog: Userlog,
+    <NativeBaseProvider>
+      <StyleContext.Provider value={{
+        // send
+        postPageName: pageName,
+        postUserLog: Userlog,
 
-      postUserName: userName,
-      postUserNumber: userNumber,
-      postUserAddress: userAddress,
-      postUserEmail: userEmail,
-      postUserCarModel: userCarModel,
-      postUserCarNumber: userCarNumber,
-      postUserCars: userCars,
-      postUserSate: userState,
-      postUserPinCode: userPinCode,
-      postUserlat: latData,
-      postUserLong: longData,
-      postUserCardValidity: validityOfCard,
-      postUsercard_number: userCardNumber,
-      postUserImage: userImage,
-      postServiceRequestDetails: serviceRequestDetails,
-      postUserLocationDetails: locationDetails,
-      postUserService: userService,
-      postMehcanicsDetails: mechanicsDetails,
-      //recived
-      getPageName: page_handler,
-      getUserLog: userlog_handler,
+        postUserName: userName,
+        postUserNumber: userNumber,
+        postUserAddress: userAddress,
+        postUserEmail: userEmail,
+        postUserCarModel: userCarModel,
+        postUserCarNumber: userCarNumber,
+        postUserCars: userCars,
+        postUserSate: userState,
+        postUserPinCode: userPinCode,
+        postUserlat: latData,
+        postUserLong: longData,
+        postUserCardValidity: validityOfCard,
+        postUsercard_number: userCardNumber,
+        postUserImage: userImage,
+        postServiceRequestDetails: serviceRequestDetails,
+        postUserLocationDetails: locationDetails,
+        postUserService: userService,
+        postMehcanicsDetails: mechanicsDetails,
+        //recived
+        getPageName: page_handler,
+        getUserLog: userlog_handler,
 
-      getUserName: userName_handler,
-      getUseremail: userEmail_handler,
-      getUserAddress: userAddress_handler,
-      getUserCarModel: userCarModel_handler,
-      getUserCarNumber: userCarNumber_handler,
-      getUserlat: userlat_handler,
-      getUserLong: userLong_hanlder,
-      getUserImage: userImage_handler,
-      getMainPage: mainPage_handler,
-      getServiceRequestDetails: serviceRequestDetails_handler,
-      getUserLocationDetails: userLocationDetails_handler,
-      getUserService: userService_handler,
-      getMechanicsDetails: mechanicsDetails_handler,
-    }}>
-      {
-        mainPage
-      }
-    </StyleContext.Provider>
+        getUserName: userName_handler,
+        getUseremail: userEmail_handler,
+        getUserAddress: userAddress_handler,
+        getUserCarModel: userCarModel_handler,
+        getUserCarNumber: userCarNumber_handler,
+        getUserlat: userlat_handler,
+        getUserLong: userLong_hanlder,
+        getUserImage: userImage_handler,
+        getMainPage: mainPage_handler,
+        getServiceRequestDetails: serviceRequestDetails_handler,
+        getUserLocationDetails: userLocationDetails_handler,
+        getUserService: userService_handler,
+        getMechanicsDetails: mechanicsDetails_handler,
+      }}>
+        {
+          mainPage
+        }
+      </StyleContext.Provider>
+    </NativeBaseProvider>
   )
 }
 

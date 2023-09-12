@@ -31,9 +31,9 @@ const AllStackNavigation = () => {
                 <Stack.Screen name="ManuallyLocation" component={ManuallyLocation} options={(() => ({
                     // headerShown: false
                 }))} />
-                <Stack.Screen name="YourMechanics" component={YourMechanics} options={(()=>({
-                    headerShown:false
-                }))}/>
+                <Stack.Screen name="YourMechanics" component={YourMechanics} options={(() => ({
+                    headerShown: false
+                }))} />
             </Stack.Navigator>
         </NavigationContainer>
     )

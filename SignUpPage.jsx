@@ -7,6 +7,7 @@ import * as yup from 'yup';
 import { Formik } from 'formik';
 import messaging from '@react-native-firebase/messaging';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
+import { NativeBaseProvider, Box, extendTheme, Button, HStack, Checkbox, Input, VStack, IconButton } from "native-base";
 
 
 const SignUpPage = (props) => {
@@ -39,7 +40,7 @@ const SignUpPage = (props) => {
             props.userNumber(inputNumber);
             axios.get(`${baseUrl}login?contact_number=${inputNumber}&device_fcm=${fcmToken}`)
                 .then((res) => {
-                    // console.log("responce in signUpPage:", res.data);
+                    console.log("responce in signUpPage:", res.data);
                     //Hemant bro add check feature to this login API
                     if (res.data) {
                         props.pagename("otp");
@@ -47,9 +48,10 @@ const SignUpPage = (props) => {
                         Alert.alert("pls,enter valid number");
                     }
                 })
-                .catch((error) => console.log(error));
-        } else if (!checkBtn) {
-            // Alert.alert("pls,allow terms & conditions");
+                .catch((error) => console.log("error_in_otp_API :", error));
+        } else {
+            Alert.alert("pls,allow terms & conditions");
+            console.log("checkBtn :", checkBtn);
         }
     }, [inputNumber])
 
@@ -91,20 +93,12 @@ const SignUpPage = (props) => {
                                 </View>
                                 {errors.phoneNumber && touched.phoneNumber ? (<Text style={{ color: "red", marginBottom: 9, fontFamily: "Forza-Bold" }}>{errors.phoneNumber}</Text>) : null}
                                 <View style={styles.conditionCheckView} onStartShouldSetResponder={() => setCheckBtn(!checkBtn)}>
-                                    <BouncyCheckbox
-                                        style={styles.checkBox}
-                                        size={25}
-                                        fillColor="#007AFF"
-                                        unfillColor="#FFFFFF"
-                                        iconStyle={{ borderColor: "red" }}
-                                        innerIconStyle={{ borderWidth: 2 }}
-                                        disableBuiltInState
-                                        isChecked={checkBtn}
-                                        onPress={() => {
-                                            setCheckBtn(!checkBtn)
-                                        }}
-                                    />
-                                    <Text style={styles.termsConditionText}>I hereby agree to all terms & conditions</Text>
+                                    <Checkbox value="one" my={2} style={styles.checkBox} onChange={(e) => {
+                                        // console.log("check :", e);
+                                        setCheckBtn(e)
+                                    }} colorScheme={"blue"} size="md" _disabled={true} isChecked={checkBtn}>
+                                        <Text style={styles.termsConditionText}>I hereby agree to all terms & conditions</Text>
+                                    </Checkbox>
                                 </View>
                                 <TouchableOpacity style={checkBtn ? { marginTop: 40, backgroundColor: "#007AFF", borderRadius: 39, width: 190, alignSelf: "center" } : { marginTop: 40, backgroundColor: "#3991bd", borderRadius: 39, width: 190, alignSelf: "center" }} onPress={() => {
                                     handleSubmit();

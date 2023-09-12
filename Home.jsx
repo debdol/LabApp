@@ -257,7 +257,7 @@ const Home = () => {
             marginLeft: 140
           }}>
             <Fontisto name='bell' size={30} style={{ color: "black" }} />
-            <Text style={{
+            {/* <Text style={{
               position: "absolute",
               backgroundColor: "#DD4B4B",
               width: 12,
@@ -265,7 +265,7 @@ const Home = () => {
               borderRadius: 6,
               left: 16,
               top: 6,
-            }}></Text>
+            }}></Text> */}
           </View>
         </View>
         {fullAddressControllerVariable ? <Text style={styles.fullAddressStyle}>{fullAddress}</Text> : null}
@@ -390,22 +390,21 @@ const Home = () => {
             </ImageBackground>
             <View style={styles.thirdMainContainer}>
               <View style={styles.thirdCardChildContainer}>
-                <View style={{ display: "flex", flexDirection: "column" }}>
+                <View style={{
+                  flexDirection: "column",
+                  width: "50%",
+                }}>
                   <Text style={{
                     color: "#3D4759",
-                    fontWeight: "500",
                     fontSize: 16,
-                    fontFamily: "Forza-Black"
+                    fontFamily: "Forza-Black",
                   }}>Spare Parts/Shop</Text>
                   <Text style={{
-                    width: "44%",
                     color: "black",
-                    fontFamily: "Forza-Bold"
+                    fontFamily: "Forza-Bold",
                   }}>Buy spare and car accessories and car fluids</Text>
                 </View>
-                <View>
-                  <Image source={require("./assets/pngkit_auto-png-images_2522770.png")} style={styles.thirdCardPic} />
-                </View>
+                <Image source={require("./assets/pngkit_auto-png-images_2522770.png")} style={styles.thirdCardPic} />
               </View>
               <View style={{
                 flexDirection: "row",
@@ -430,7 +429,7 @@ const Home = () => {
             {/* MECHANICS NEAR ME starts here..................... */}
             <Text style={styles.mechanicsHeading}>Mechanics Near Me</Text>
             {nearByMechanics.length != 0 ? <FlatList data={nearByMechanics} keyExtractor={(item) => item._id} renderItem={({ item, index }) => nearByMechanicsList({ item, index })} horizontal showsHorizontalScrollIndicator={false} />
-              : <Text style={{ color: "black", fontFamily: "Forza-Bold", fontSize: 15, alignSelf: "center", marginBottom: "19%" }}>mechanics are comming pls wait a sec</Text>}
+              : null}
             {/* POPULAR OFFER START ................................*/}
             <Text style={styles.popularOfferHeading}>Popular offer</Text>
             <Text style={{ color: "black", fontFamily: "Forza-Bold", fontSize: 15, alignSelf: "center", marginBottom: "19%" }}>Comming Soon........</Text>
@@ -641,6 +640,10 @@ const Home = () => {
       </TouchableOpacity> */}
       </SafeAreaView >
     )
+  } else {
+    return (
+      <Loading />
+    )
   }
 
 }
@@ -707,13 +710,12 @@ const styles = StyleSheet.create({
   thirdCardChildContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    width: "40%"
+    // borderWidth: 1,
+    // borderColor: "red",
   },
   thirdCardPic: {
-    position: "absolute",
-    right: -20,
-    height: 109,
-    width: 109
+    // borderWidth: 1,
+    // borderColor: "red",
   },
   mechanicsHeading: {
     fontSize: 24,
@@ -725,13 +727,11 @@ const styles = StyleSheet.create({
   },
   machanicsNearMeMainContainer: {
     marginHorizontal: 4,
-    // borderWidth: 1,
-    // borderColor:"red",
+    borderWidth: 1,
     borderColor: "#E0EAEF",
     backgroundColor: "#FFFFFF",
-    // height:"150%",
-    // // width: 220,
-    padding: 14,
+    height: "90%",
+    padding: 10,
     flexDirection: "column",
     justifyContent: "space-evenly",
     alignItems: "flex-start",
