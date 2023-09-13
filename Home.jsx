@@ -178,6 +178,7 @@ const Home = () => {
   //Call the openService Request Detail end point for checking status.................................................
   useEffect(() => {
     if (postUserLog) {
+      // console.log("huudddd");
       axios.get(openServiceRequestDetails, {
         headers: {
           'Authorization': `Bearer ${postUserLog}`,
@@ -185,6 +186,7 @@ const Home = () => {
         }
       })
         .then((res) => {
+          // console.log("res.data.data.length :", res.data.data.length);
           if (res.data.data.length !== 0) {
             if (res.data.data[0].status === "accepted" && gotLatLongIndicator === true) {
               navigation.navigate("YourMechanics", { acceptedMDetails: res.data.data[0] });
@@ -192,6 +194,9 @@ const Home = () => {
             } else if (res.data.data[0].status === "initiated" && gotLatLongIndicator === true) {
               navigation.navigate("Cart", { acceptedMDetails: res.data.data[0] });
               getPageName("Cart")
+            } else if (res.data.data[0].status === "not available") {
+              // console.log("res.data.data[0].status :", res.data.data[0].status);
+              navigation.navigate("InvoicePage", { acceptedMDetails: res.data.data[0] });
             }
           }
         })
