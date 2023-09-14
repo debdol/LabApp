@@ -16,7 +16,7 @@ import Loading from './Loading';
 
 const Home = () => {
   const navigation = useNavigation();
-  const { getPageName, postUserName, postUserCardValidity, postUsercard_number, getUserLocationDetails, postUserLog, getUserlat, getUserLong } = useContext(StyleContext);
+  const { getPageName, postUserName, postUserCardValidity, postUsercard_number, getUserLocationDetails, postUserLog, getUserlat, getUserLong, getUnavailable, postUnavailable } = useContext(StyleContext);
   const [refreshing, setRefreshing] = useState(false);
   const [fullAddress, setFullAddress] = useState();
   const [placeName, setPlaceName] = useState(null);
@@ -155,7 +155,7 @@ const Home = () => {
   //Get the location name of user............................................
   const getThePlaceName = () => {
     if (userLatitude && userLongitude) {
-      axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${userLatitude},${userLongitude}&key=AIzaSyD03qUlsL_zZueP3nn1sFXwQOBwDRKGl-Y`)
+      axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${userLatitude},${userLongitude}&key=`)
         .then((res) => {
           // console.log("responce in geoCoding :", res.data.results[4].formatted_address.split(",")[3]);
           setFullAddress(res.data.results[4].formatted_address);
@@ -178,7 +178,7 @@ const Home = () => {
   //Call the openService Request Detail end point for checking status.................................................
   useEffect(() => {
     if (postUserLog) {
-      // console.log("huudddd");
+      // console.log("postUnavailable :", postUnavailable);
       axios.get(openServiceRequestDetails, {
         headers: {
           'Authorization': `Bearer ${postUserLog}`,
@@ -186,17 +186,18 @@ const Home = () => {
         }
       })
         .then((res) => {
-          // console.log("res.data.data.length :", res.data.data.length);
           if (res.data.data.length !== 0) {
+            // console.log("status_Check :", res.data.data[0].status);
             if (res.data.data[0].status === "accepted" && gotLatLongIndicator === true) {
               navigation.navigate("YourMechanics", { acceptedMDetails: res.data.data[0] });
               getPageName("Mechanic");
             } else if (res.data.data[0].status === "initiated" && gotLatLongIndicator === true) {
               navigation.navigate("Cart", { acceptedMDetails: res.data.data[0] });
               getPageName("Cart")
-            } else if (res.data.data[0].status === "not available") {
-              // console.log("res.data.data[0].status :", res.data.data[0].status);
-              navigation.navigate("InvoicePage", { acceptedMDetails: res.data.data[0] });
+            } else if (res.data.data[0].status === "not available" && gotLatLongIndicator === true) {
+              getUnavailable(true);
+              navigation.navigate("Mechanicsss", { acceptedMDetails: res.data.data[0] });
+              // navigation.navigate("InvoicePage", { acceptedMDetails: res.data.data[0] });
             }
           }
         })

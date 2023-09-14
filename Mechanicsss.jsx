@@ -11,10 +11,9 @@ import Loading from './Loading';
 
 const Mechanicsss = () => {
     const navigation = useNavigation();
-    const { postServiceRequestDetails, postUserlat, postUserLong, getPageName } = useContext(StyleContext);
+    const { postServiceRequestDetails, postUserlat, postUserLong, getPageName, postUnavailable, getUnavailable } = useContext(StyleContext);
     const [markers, setMarkers] = useState();
     const [mechanicsDetails, setMechanicsDetails] = useState();
-    const [unavailable, setUnavailable] = useState();
     // useEffect(() => {
     //     console.log("postServiceRequestDetails :", postServiceRequestDetails);
     // }, [])
@@ -30,7 +29,7 @@ const Mechanicsss = () => {
     useEffect(() => {
         if (postServiceRequestDetails) {
             if (postServiceRequestDetails.length != 0) {
-                // console.log("status in mechanicss page :", postServiceRequestDetails.length);
+                console.log("status in mechanicss page :", postServiceRequestDetails);
                 if (postServiceRequestDetails[0].status === "accepted") {
                     navigation.navigate("YourMechanics", { acceptedMDetails: postServiceRequestDetails[0] });
                 } else if (postServiceRequestDetails[0].status === "initiated") {
@@ -38,7 +37,8 @@ const Mechanicsss = () => {
                     getPageName("Cart")
                 } else if (postServiceRequestDetails[0].status === "not available") {
                     // console.log("mechanicsDetails is FALSE now");
-                    setUnavailable(true);
+                    setMechanicsDetails(false);
+                    getUnavailable(true);
                 }
                 else {
                     setMechanicsDetails(postServiceRequestDetails[0].mechanic);
@@ -106,7 +106,7 @@ const Mechanicsss = () => {
         )
     }
 
-    if (mechanicsDetails) {
+    if (mechanicsDetails && !postUnavailable) {
         return (
             <View>
                 <View style={styles.page}>
@@ -153,7 +153,7 @@ const Mechanicsss = () => {
                 </View>
             </View>
         )
-    } else if (unavailable) {
+    } else if (postUnavailable && postUserlat && postUserLong) {
         return (
             <View style={styles.page}>
                 <View style={styles.headingView}>

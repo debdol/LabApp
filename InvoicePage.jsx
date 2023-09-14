@@ -189,7 +189,6 @@ const styles = StyleSheet.create({
     imgTxtMPicMainView: {
         position: "absolute",
         padding: 10,
-
     },
     showTotalAmount: {
         position: "absolute",
@@ -205,7 +204,6 @@ const styles = StyleSheet.create({
     },
     invoiceForTxt: {
         color: "#3D4759",
-        // fontFamily: "Forza-Bold"
         fontWeight: "500"
     },
     img: {

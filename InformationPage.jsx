@@ -1,4 +1,4 @@
-import { Image, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, View, TouchableOpacity, Modal, Pressable } from 'react-native'
+import { Image, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, View, TouchableOpacity, Modal, Pressable ,Alert} from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -45,10 +45,8 @@ const InformationPage = () => {
     }
 
     //Creating  your service request.....................................
-    // console.log('serviceData :', serviceData);
     if (serviceData.message && postUserService && serviceCode) {
       navigation.navigate("Mechanicsss");
-      setServiceRequestData(true);
       axios.post(creatServiceRequest, serviceData, {
         headers: {
           'Authorization': `Bearer ${postUserLog}`,
@@ -56,10 +54,9 @@ const InformationPage = () => {
         }
       })
         .then((res) => {
-          if (res.data.message) {
-            console.log('response in create request create API :', res.data.message);
-            // console.log('response in create request create API :', res);
-            // setServiceRequestData(true);
+          if (res.data) {
+            console.log('response in create request create API :', res.data);
+            setServiceRequestData(true);
           } else {
             setModalVisible(true);
           }

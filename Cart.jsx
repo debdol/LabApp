@@ -5,12 +5,10 @@ import Fontisto from 'react-native-vector-icons/Fontisto';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 
-import sha256 from 'sha256';
 import LinearGradient from 'react-native-linear-gradient';
 import axios from 'axios';
 import { StyleContext } from './App';
 import { calculateTotalAmount, serviceTypes } from './APIs';
-const Buffer = require("buffer").Buffer;
 import Loading from './Loading';
 import { useNavigation } from '@react-navigation/native';
 

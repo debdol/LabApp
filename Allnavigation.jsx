@@ -2,7 +2,6 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useState, useContext } from 'react'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Home from './Home';
-import Mechanic from './Mechanic';
 import Cart from './Cart';
 import History from './History';
 import Profile from './Profile';

@@ -36,22 +36,27 @@ export default function App() {
   const [locationDetails, setLocationDetails] = useState();
   const [userService, setUserService] = useState();
   const [mechanicsDetails, setmechanicsDetails] = useState();
+  const [unavailable, setUnavailable] = useState();
 
   const [mainPage, setMainPage] = useState(<Loading />);
   //checking userData API................
-  useEffect(() => {
-    if (Userlog) {
-      console.log("check_userData_token:", Userlog);
-      axios.get(userData, {
-        'Authorization': `Bearer ${Userlog}`,
-        'Content-Type': 'application/json'
-      })
-        .then((res) => {
-          console.log("response_in_userData_check :", res.data.data)
-        })
-        .catch((error) => console.log("error_in_userData_check :", error))
-    }
-  }, [Userlog])
+  // useEffect(() => {
+  //   if (Userlog) {
+  //     console.log("check_userData_token:", Userlog);
+  //     axios.get(userData, {
+  //       headers: {
+  //         'Authorization': `Bearer ${Userlog}`,
+  //         'Content-Type': 'application/json'
+  //       }
+  //     })
+  //       .then((res) => {
+  //         console.log("response_in_userData_check :", res)
+  //       })
+  //       .catch((error) => console.log("error_in_userData_check :", error))
+  //   } else {
+  //     console.log("token_is_not_found : ", Userlog);
+  //   }
+  // }, [Userlog])
 
 
   // Set User Token if there is any.........................
@@ -72,6 +77,7 @@ export default function App() {
   //call userData end point to get the user data............................
   useEffect(() => {
     if (Userlog) {
+      // console.log("userData_token:", Userlog);
       setMainPage(<Loading />)
       axios.get(userData, {
         headers: {
@@ -166,6 +172,9 @@ export default function App() {
   const mechanicsDetails_handler = (value) => {
     setmechanicsDetails(value);
   }
+  const unavailable_handler = (value) => {
+    setUnavailable(value);
+  }
 
   const locationPermission = async () => {
     try {
@@ -224,6 +233,7 @@ export default function App() {
         postUserLocationDetails: locationDetails,
         postUserService: userService,
         postMehcanicsDetails: mechanicsDetails,
+        postUnavailable: unavailable,
         //recived
         getPageName: page_handler,
         getUserLog: userlog_handler,
@@ -241,6 +251,7 @@ export default function App() {
         getUserLocationDetails: userLocationDetails_handler,
         getUserService: userService_handler,
         getMechanicsDetails: mechanicsDetails_handler,
+        getUnavailable: unavailable_handler
       }}>
         {
           mainPage
