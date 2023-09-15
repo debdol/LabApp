@@ -1,6 +1,5 @@
 import { StyleSheet, Text, View, Image, FlatList, PermissionsAndroid } from 'react-native'
 import React, { useContext, useEffect, useState, createContext } from 'react'
-// import Geolocation from 'react-native-geolocation-service';
 import SplashScreen from 'react-native-splash-screen';
 import AllStackNavigation from './AllStackNavigation';
 import LoginMain from './LogInMain';
@@ -59,7 +58,7 @@ export default function App() {
   // }, [Userlog])
 
 
-  // Set User Token if there is any.........................
+  // Get User Token if there is any.........................
   async function logcall() {
     if (await AsyncStorage.getItem('User_Token')) {
       setUserlog(await AsyncStorage.getItem('User_Token'));

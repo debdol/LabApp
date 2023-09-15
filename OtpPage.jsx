@@ -24,7 +24,7 @@ const OtpPage = (props) => {
         setFcmToken(token);
     }
 
-    //calling getDevuceToken...........................
+    //calling getDeviceToken...........................
     useEffect(() => {
         getDeviceToken();
     }, []);
