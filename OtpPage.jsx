@@ -33,7 +33,7 @@ const OtpPage = (props) => {
         setMinutes(0);
         setSeconds(30);
     };
-    
+
     useEffect(() => {
         const interval = setInterval(() => {
             if (seconds > 0) {
@@ -64,7 +64,7 @@ const OtpPage = (props) => {
         }
     }
 
-    const otpVarification = () => {
+    const otpVerification = () => {
         if (otp) {
             axios.get(`${baseUrl}otp-verification?contact_number=${storeNumber}&otp=${otp}`)
                 .then((res) => {
@@ -108,11 +108,12 @@ const OtpPage = (props) => {
             <Text style={styles.heading}>We sent you an SMS code</Text>
             <Text style={styles.number}>On number: +91 {props.numberSend}</Text>
             <OTPInputView
+                autoFocusOnLoad
                 style={styles.otpView}
                 pinCount={4}
                 // code={this.state.code} //You can supply this prop or not. The component will be used as a controlled / uncontrolled component respectively.
                 // onCodeChanged={code => { setOtp(code) }}
-                autoFocusOnLoad
+                placeholderTextColor={"#000000"}
                 codeInputFieldStyle={styles.underlineStyleBase}
                 codeInputHighlightStyle={styles.underlineStyleHighLighted}
                 onCodeFilled={(code => {
@@ -120,7 +121,7 @@ const OtpPage = (props) => {
                 })}
             />
             <TouchableOpacity style={styles.submitBtn} onPress={() => {
-                otpVarification();
+                otpVerification();
             }}>
                 <Text style={styles.btnText}>submit</Text>
             </TouchableOpacity>
@@ -163,7 +164,7 @@ const styles = StyleSheet.create({
         marginTop: 50,
         width: "85%",
         height: "auto",
-        color:"black"
+        color: "#000000",
     },
 
     inputView: {
@@ -245,14 +246,15 @@ const styles = StyleSheet.create({
     },
 
     borderStyleHighLighted: {
-        borderColor: "#03DAC6",
+        borderColor: "#007AFF",
     },
 
     underlineStyleBase: {
-        width: 30,
+        width: 45,
         height: 45,
-        borderWidth: 0,
-        borderBottomWidth: 1,
+        borderRadius: 10,
+        borderWidth: 3,
+        color: "#000000"
     },
 
     underlineStyleHighLighted: {

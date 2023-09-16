@@ -6,21 +6,22 @@ import { baseUrl, logInUrl } from './APIs';
 import * as yup from 'yup';
 import { Formik } from 'formik';
 import messaging from '@react-native-firebase/messaging';
-import BouncyCheckbox from 'react-native-bouncy-checkbox';
-import { NativeBaseProvider, Box, extendTheme, Button, HStack, Checkbox, Input, VStack, IconButton } from "native-base";
+import { Checkbox } from "native-base";
 
 
 const SignUpPage = (props) => {
     const [inputNumber, setInputNumber] = useState(null);
     const [fcmToken, setFcmToken] = useState(null);
     const [checkBtn, setCheckBtn] = useState(false);
+    const [otpFuntionController, setOtpFuntionController] = useState(false);
+    // console.log("number :", inputNumber);
 
 
     const getDeviceToken = async () => {
         await messaging().registerDeviceForRemoteMessages();
         const token = await messaging().getToken();
         setFcmToken(token);
-        console.log("FCM token:", token);
+        // console.log("FCM token:", token);
     }
 
     useEffect(() => {
@@ -50,10 +51,9 @@ const SignUpPage = (props) => {
                 })
                 .catch((error) => console.log("error_in_otp_API :", error));
         } else {
-            Alert.alert("pls,allow terms & conditions");
-            console.log("checkBtn :", checkBtn);
+            // Alert.alert("pls,allow terms & conditions");
         }
-    }, [inputNumber])
+    }, [otpFuntionController])
 
     const userSchema = yup.object().shape({
         phoneNumber: yup
@@ -61,6 +61,7 @@ const SignUpPage = (props) => {
             .min(10)
             .required('Phone number is required')
     });
+
     return (
         <View>
             <View style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: 20 }}>
@@ -81,15 +82,16 @@ const SignUpPage = (props) => {
                         onSubmit={(values, { resetForm }) => {
                             // console.log("values :", values.phoneNumber);
                             setInputNumber(values.phoneNumber);
-                            resetForm({ values: '' });
+                            // resetForm({ values: '' });
+                            setOtpFuntionController(!otpFuntionController);
                         }}
                         validationSchema={userSchema}
                     >
                         {({ handleChange, handleSubmit, errors, touched, values }) => (
                             <View>
-                                <View style={styles.nineOneInputView}>
+                                <View style={styles.inputView}>
                                     <Text style={{ fontWeight: "400", marginLeft: 22, fontSize: 15, color: "black", fontFamily: "Forza-Bold" }}>+91</Text>
-                                    <TextInput style={styles.inputStyle} keyboardType='number-pad' onChangeText={handleChange('phoneNumber')} placeholder='write your phone number' maxLength={10} value={values.phoneNumber} />
+                                    <TextInput style={styles.inputStyle} keyboardType='number-pad' onChangeText={handleChange('phoneNumber')} placeholder='write your phone number' maxLength={10} value={values.phoneNumber} autoFocus={true} />
                                 </View>
                                 {errors.phoneNumber && touched.phoneNumber ? (<Text style={{ color: "red", marginBottom: 9, fontFamily: "Forza-Bold" }}>{errors.phoneNumber}</Text>) : null}
                                 <View style={styles.conditionCheckView} onStartShouldSetResponder={() => setCheckBtn(!checkBtn)}>
@@ -103,17 +105,19 @@ const SignUpPage = (props) => {
                                 <TouchableOpacity style={checkBtn ? { marginTop: 40, backgroundColor: "#007AFF", borderRadius: 39, width: 190, alignSelf: "center" } : { marginTop: 40, backgroundColor: "#3991bd", borderRadius: 39, width: 190, alignSelf: "center" }} onPress={() => {
                                     handleSubmit();
                                 }}>
-                                    <View style={{ display: "flex", flexDirection: "row", padding: 5, alignItems: "center" }}>
+                                    <View style={{ justifyContent: 'space-between', flexDirection: "row", padding: 5, alignItems: "center" }}>
+                                        <Text style={{
+                                            // borderWidth: 1,
+                                            // borderColor: "red",
+                                            width:"5%"
+                                        }}></Text>
                                         <Text style={{
                                             color: "white",
-                                            marginLeft: 45,
                                             fontWeight: "500",
                                             fontSize: 16,
-                                            justifyContent: "center"
                                         }}>send OTP</Text>
                                         <AntDesign name='right' size={20} color={"black"} style={{
                                             backgroundColor: "white", borderRadius: 45, padding: 15,
-                                            marginLeft: "9%"
                                         }} />
                                     </View>
                                 </TouchableOpacity>
@@ -155,7 +159,7 @@ const styles = StyleSheet.create({
         fontFamily: "Forza-Bold",
         fontSize: 15
     },
-    nineOneInputView: {
+    inputView: {
         backgroundColor: "#D7E2F0",
         // borderWidth: 1,
         // borderColor: "red" ,

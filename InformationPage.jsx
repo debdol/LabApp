@@ -14,7 +14,6 @@ import Loading from './Loading';
 
 const InformationPage = () => {
   const { postUserCars, postUserLog, postUserlat, postUserLong, getServiceRequestDetails, getUserService, postUserService } = useContext(StyleContext);
-
   const navigation = useNavigation();
   const [modalVisible, setModalVisible] = useState(false);
   const [checkBtn, setCheckBtn] = useState(true);
@@ -22,7 +21,6 @@ const InformationPage = () => {
   const [serviceCode, setServiceCode] = useState();
   const [problems, setProblems] = useState([]);
   const [serviceRequestData, setServiceRequestData] = useState();
-  // console.log("postUserLog :", postUserLog);
 
   useEffect(() => {
     axios.get(serviceTypes)
@@ -40,7 +38,7 @@ const InformationPage = () => {
       car_number: postUserCars[0].car_number,
       latitude: postUserlat,
       longitude: postUserLong,
-      message: ureMsg,
+      message: ureMsg ? ureMsg : ' ',
       service_type_code: [serviceCode],
     }
 

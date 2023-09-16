@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View, Image, ImageBackground, ScrollView, SafeAreaView, StatusBar, TouchableOpacity, RefreshControl, FlatList, Alert } from 'react-native'
 import React, { useContext, useEffect, useState, useCallback } from 'react'
+
 import Entypo from 'react-native-vector-icons/Entypo';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Fontisto from 'react-native-vector-icons/Fontisto';
@@ -155,7 +156,7 @@ const Home = () => {
   //Get the location name of user............................................
   const getThePlaceName = () => {
     if (userLatitude && userLongitude) {
-      axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${userLatitude},${userLongitude}&key=AIzaSyD03qUlsL_zZueP3nn1sFXwQOBwDRKGl-Y`)
+      axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${userLatitude},${userLongitude}&key=`)
         .then((res) => {
           // console.log("responce in geoCoding :", res.data.results[4].formatted_address.split(",")[3]);
           setFullAddress(res.data.results[4].formatted_address);
@@ -197,6 +198,7 @@ const Home = () => {
             } else if (res.data.data[0].status === "not available" && gotLatLongIndicator === true) {
               getUnavailable(true);
               navigation.navigate("Mechanicsss", { acceptedMDetails: res.data.data[0] });
+              // console.log("its running");
               // navigation.navigate("InvoicePage", { acceptedMDetails: res.data.data[0] });
             }
           }
@@ -309,30 +311,29 @@ const Home = () => {
                 backgroundColor: "#0065D3",
                 borderRadius: 44,
                 alignItems: "center",
-                justifyContent: "space-between",
-                paddingHorizontal: 33,
-                marginBottom: 9,
-                height: 72,
+                // paddingHorizontal: 33,
+                // marginBottom: 9,
+                justifyContent: 'space-between',
+                height: '37%',
+                width: '100%',
               }} onPress={() => {
                 navigation.navigate("HomeStackScreen");
                 getPageName("Mechanic");
               }}>
+                <Text></Text>
                 <Text style={{
                   textAlign: "center",
-                  display: "flex",
                   alignItems: "center",
-                  fontWeight: "600",
                   fontSize: 20,
                   color: "#FFFFFF",
                   fontFamily: "Forza-Bold"
                 }}>Search Mechanics</Text>
                 <View style={{
                   padding: 20,
-                  // height: 60,
-                  // width: 60,
+                  height: 60,
+                  width: 60,
                   borderRadius: 30,
                   backgroundColor: "#00D1FF",
-                  marginLeft: "26%"
                 }}>
                   <AntDesign name='search1' size={20} style={{
                     color: "white",

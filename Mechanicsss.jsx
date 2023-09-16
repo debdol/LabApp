@@ -56,11 +56,12 @@ const Mechanicsss = () => {
                     <View style={{ marginLeft: 11 }}>
                         <Text style={{ color: "black", fontFamily: "Forza-Bold" }}>{item.m_name}</Text>
                         <View style={{ flexDirection: "row" }}>
+                            {/* <EvilIcons name='star' size={20} style={styles.fiveStar} />
                             <EvilIcons name='star' size={20} style={styles.fiveStar} />
                             <EvilIcons name='star' size={20} style={styles.fiveStar} />
                             <EvilIcons name='star' size={20} style={styles.fiveStar} />
-                            <EvilIcons name='star' size={20} style={styles.fiveStar} />
-                            <EvilIcons name='star' size={20} style={styles.fiveStar} />
+                            <EvilIcons name='star' size={20} style={styles.fiveStar} /> */}
+                            <Text style={{ color: "#3D4759", fontSize: 13 }}>Ratings...</Text>
                         </View>
                     </View>
                 </View>
@@ -160,7 +161,7 @@ const Mechanicsss = () => {
                     <AntDesign name='left' size={29} style={styles.headingIcon} onPress={() => navigation.goBack()} />
                     <Text style={styles.headingTxt}>Mechanics</Text>
                 </View>
-                <View style={[styles.page, { height: "125%" }]}>
+                <View style={[styles.page, { height: "145%" }]}>
                     <MapView
                         provider={PROVIDER_GOOGLE}
                         style={{ width: "100%", height: "80%" }}

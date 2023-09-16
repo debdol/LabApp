@@ -1,5 +1,6 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View, Linking, Alert } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
+
 import Entypo from 'react-native-vector-icons/Entypo';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -60,7 +61,7 @@ const Cart = ({ route }) => {
     }
   }
 
-  //making an array with your serviceTypes..................................
+  //Making an array with your serviceTypes..................................
   useEffect(() => {
     axios.get(serviceTypes)
       .then((res) => {
