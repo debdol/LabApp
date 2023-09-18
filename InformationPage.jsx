@@ -1,4 +1,4 @@
-import { Image, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, View, TouchableOpacity, Modal, Pressable ,Alert} from 'react-native'
+import { Image, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, View, TouchableOpacity, Modal, Pressable, Alert } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -43,7 +43,7 @@ const InformationPage = () => {
     }
 
     //Creating  your service request.....................................
-    if (serviceData.message && postUserService && serviceCode) {
+    if (postUserService && serviceCode) {
       navigation.navigate("Mechanicsss");
       axios.post(creatServiceRequest, serviceData, {
         headers: {

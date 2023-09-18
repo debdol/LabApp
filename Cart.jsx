@@ -12,6 +12,7 @@ import { StyleContext } from './App';
 import { calculateTotalAmount, serviceTypes } from './APIs';
 import Loading from './Loading';
 import { useNavigation } from '@react-navigation/native';
+// import { Alert, VStack, HStack, IconButton, Box, Center, CloseIcon } from "native-base";
 
 const Cart = ({ route }) => {
   const navigation = useNavigation();
@@ -33,6 +34,7 @@ const Cart = ({ route }) => {
     // Return the function to unsubscribe from the event so it gets removed on unmount
     return unsubscribe;
   }, [navigation]);
+  // console.log("route_params_acceptedMDetails:", route.params.acceptedMDetails.service_types[0].status);
 
   //Total amount checkkk.........................
   useEffect(() => {
@@ -44,7 +46,7 @@ const Cart = ({ route }) => {
         }
       })
         .then((res) => {
-          // console.log("total ammount:", res.data);
+          // console.log("total ammount:", route.params.acceptedMDetails);
           setAmountRelatedData(res.data.data[0])
           setTotalAmount(res.data.data[0].total_amount);
         })
@@ -54,10 +56,10 @@ const Cart = ({ route }) => {
 
   //Go to Invoice Page......................................................
   const goToInvoicePage = () => {
-    if (amountRelatedData) {
-      navigation.navigate("InvoicePage", { totalAmountData: amountRelatedData })
+    if (amountRelatedData && route.params.acceptedMDetails.service_types[0].status === "completed") {
+      navigation.navigate("InvoicePage", { totalAmountData: amountRelatedData, acceptedMDetailss: route.params.acceptedMDetails })
     } else {
-      console.log("1st get your amountRelatedData")
+      Alert.alert("Your survice is not Completed")
     }
   }
 
@@ -171,6 +173,7 @@ const Cart = ({ route }) => {
           goToInvoicePage();
         }}>
           <View style={styles.checkOutBtnView}>
+            <Text style={{ width: "20%" }}></Text>
             <Text style={styles.checkOutBtnTxt}>Checkout</Text>
             <AntDesign name='right' style={styles.checkOutBtnIcon} size={26} />
           </View>
@@ -317,6 +320,7 @@ const styles = StyleSheet.create({
   flatTierPriceView: {
     flexDirection: "row",
     alignItems: "center",
+    gap: 4
   },
   price: {
     color: "#FFA514",
@@ -449,7 +453,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     paddingVertical: 15,
     gap: 9,
-    // padding:19,
     backgroundColor: "#FFFFFF"
   },
   totalPriceView: {
@@ -469,7 +472,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#007AFF",
     borderRadius: 33,
     flexDirection: "row",
-    gap: 45,
+    justifyContent: "space-around",
     alignItems: "center",
     width: 229,
     height: 70,
@@ -477,7 +480,6 @@ const styles = StyleSheet.create({
   checkOutBtnTxt: {
     color: "#FFFFFF",
     fontSize: 18,
-    marginLeft: 34,
     fontFamily: "Forza-Bold",
   },
   checkOutBtnIcon: {

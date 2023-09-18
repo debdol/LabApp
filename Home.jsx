@@ -156,7 +156,7 @@ const Home = () => {
   //Get the location name of user............................................
   const getThePlaceName = () => {
     if (userLatitude && userLongitude) {
-      axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${userLatitude},${userLongitude}&key=`)
+      axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${userLatitude},${userLongitude}&key=AIzaSyD03qUlsL_zZueP3nn1sFXwQOBwDRKGl-Y`)
         .then((res) => {
           // console.log("responce in geoCoding :", res.data.results[4].formatted_address.split(",")[3]);
           setFullAddress(res.data.results[4].formatted_address);
@@ -188,18 +188,16 @@ const Home = () => {
       })
         .then((res) => {
           if (res.data.data.length !== 0) {
-            // console.log("status_Check :", res.data.data[0].status);
             if (res.data.data[0].status === "accepted" && gotLatLongIndicator === true) {
               navigation.navigate("YourMechanics", { acceptedMDetails: res.data.data[0] });
               getPageName("Mechanic");
-            } else if (res.data.data[0].status === "initiated" && gotLatLongIndicator === true) {
+            } else if (res.data.data[0].status === "initiated" && gotLatLongIndicator === true && res.data.data[0].service_types[0].status === "active") {
               navigation.navigate("Cart", { acceptedMDetails: res.data.data[0] });
               getPageName("Cart")
             } else if (res.data.data[0].status === "not available" && gotLatLongIndicator === true) {
               getUnavailable(true);
               navigation.navigate("Mechanicsss", { acceptedMDetails: res.data.data[0] });
               // console.log("its running");
-              // navigation.navigate("InvoicePage", { acceptedMDetails: res.data.data[0] });
             }
           }
         })
@@ -354,12 +352,12 @@ const Home = () => {
             }}>
               {postUsercard_number ?
                 (<>
-                  <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+                  <View style={{ flexDirection: "row", justifyContent: "space-between", padding: 5 }}>
                     <View style={{
                       alignItems: "center",
                       // marginTop: "9%"
                       // borderWidth:1,
-                      borderColor: "white"
+                      // borderColor: "white"
                     }}>
                       <Text style={{
                         letterSpacing: 0.7,

@@ -29,7 +29,7 @@ const Mechanicsss = () => {
     useEffect(() => {
         if (postServiceRequestDetails) {
             if (postServiceRequestDetails.length != 0) {
-                console.log("status in mechanicss page :", postServiceRequestDetails);
+                // console.log("status in mechanicss page :", postServiceRequestDetails);
                 if (postServiceRequestDetails[0].status === "accepted") {
                     navigation.navigate("YourMechanics", { acceptedMDetails: postServiceRequestDetails[0] });
                 } else if (postServiceRequestDetails[0].status === "initiated") {
@@ -171,11 +171,11 @@ const Mechanicsss = () => {
                             latitudeDelta: 0.0922,
                             longitudeDelta: 0.0421,
                         }}
-                        maxZoomLevel={10}
+                        maxZoomLevel={20}
                         showsUserLocation
                         followUserLocation
                         zoomTapEnabled={true}>
-                        <MapCircle
+                        {/* <MapCircle
                             center={{
                                 latitude: postUserlat,
                                 longitude: postUserLong,
@@ -184,17 +184,9 @@ const Mechanicsss = () => {
                             strokeWidth={1}
                             strokeColor={'#1a66ff'}
                             fillColor={'rgba(230,238,255,0.5)'}
-                        />
-                        {markers ? (
-                            markers.map((item, index) => {
-                                return (
-                                    <Marker coordinate={{ latitude: Number(item.latitude), longitude: Number(item.longitude) }} tracksViewChanges={false} key={index} image={require("./assets/MechanicIcon.png")} style={{ height: 20, width: 20 }} />
-                                )
-                            })
-                        ) : null}
+                        /> */}
                     </MapView>
                 </View >
-                {/* here has be the the number of support team */}
                 <TouchableOpacity onPress={() => Linking.openURL(`tel:${18003093431}`)} style={[styles.callinkBtn]}>
                     <Text style={styles.callinkBtnTxt}>Pls,Connect to our support team</Text>
                 </TouchableOpacity>

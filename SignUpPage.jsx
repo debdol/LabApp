@@ -51,7 +51,7 @@ const SignUpPage = (props) => {
                 })
                 .catch((error) => console.log("error_in_otp_API :", error));
         } else {
-            // Alert.alert("pls,allow terms & conditions");
+            Alert.alert("pls,allow terms & conditions");
         }
     }, [otpFuntionController])
 
@@ -109,7 +109,7 @@ const SignUpPage = (props) => {
                                         <Text style={{
                                             // borderWidth: 1,
                                             // borderColor: "red",
-                                            width:"5%"
+                                            width: "5%"
                                         }}></Text>
                                         <Text style={{
                                             color: "white",
