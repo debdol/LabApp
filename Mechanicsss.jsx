@@ -114,6 +114,7 @@ const Mechanicsss = () => {
                     <View style={styles.headingView}>
                         <AntDesign name='left' size={29} style={styles.headingIcon} onPress={() => navigation.goBack()} />
                         <Text style={styles.headingTxt}>Mechanics</Text>
+                        <Text></Text>
                     </View>
                     <View style={styles.page}>
                         <MapView
@@ -160,6 +161,7 @@ const Mechanicsss = () => {
                 <View style={styles.headingView}>
                     <AntDesign name='left' size={29} style={styles.headingIcon} onPress={() => navigation.goBack()} />
                     <Text style={styles.headingTxt}>Mechanics</Text>
+                    <Text></Text>
                 </View>
                 <View style={[styles.page, { height: "145%" }]}>
                     <MapView
@@ -206,11 +208,11 @@ const styles = StyleSheet.create({
         position: "absolute",
         zIndex: 1,
         flexDirection: "row",
-        justifyContent: "center",
+        justifyContent: 'space-between',
         alignItems: "center",
         backgroundColor: "#FFFFFF",
         width: "100%",
-        height: 70,
+        height: "9%",
         elevation: 4,
         shadowColor: "#878787",
         borderWidth: 1,
@@ -219,13 +221,13 @@ const styles = StyleSheet.create({
         borderBottomRightRadius: 24
     },
     headingTxt: {
+        letterSpacing: 0.6,
         color: "black",
         fontFamily: "Forza-Black",
         fontSize: 19
     },
     headingIcon: {
         color: "black",
-        right: 100
     },
     machanicsNearMeMainContainer: {
         marginHorizontal: 3,

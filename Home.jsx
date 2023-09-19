@@ -311,7 +311,7 @@ const Home = () => {
                 alignItems: "center",
                 // paddingHorizontal: 33,
                 // marginBottom: 9,
-                justifyContent: 'space-between',
+                justifyContent:'space-between',
                 height: '37%',
                 width: '100%',
               }} onPress={() => {

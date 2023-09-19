@@ -19,7 +19,8 @@ const SearchMechanics = () => {
                             <TouchableOpacity onPress={() => { navigation.goBack(); getPageName("Home") }}>
                                 <AntDesign name='left' size={29} style={{ color: "black", marginLeft: 3 }} />
                             </TouchableOpacity>
-                            <Text style={{ color: "black", marginLeft: 83, fontFamily: "Forza-Bold", fontSize: 17 }}>Search mechanics</Text>
+                            <Text style={{ color: "black", fontFamily: "Forza-Bold", fontSize: 17 }}>Search mechanics</Text>
+                            <Text style={{width:"5%"}}></Text>
                         </View>
                         <Image source={require("./assets/planet-earth.png")} style={styles.earthImg} />
                         <Text style={styles.whereIsTheCarTxt}>Where is the car?</Text>
@@ -58,7 +59,7 @@ const SearchMechanics = () => {
 const styles = StyleSheet.create({
     headingView: {
         flexDirection: "row",
-        // justifyContent: "space-between",
+        justifyContent: "space-between",
         // height: 44,
         width: "100%",
         alignItems: "center",

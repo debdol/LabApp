@@ -47,6 +47,7 @@ const MechanicsDetails = ({ route }) => {
                         <View style={styles.headingView}>
                             <AntDesign name='left' size={29} style={styles.headingIcon} onPress={() => navigation.goBack()} />
                             <Text style={styles.headingTxt}>Mechanics details</Text>
+                            <Text></Text>
                         </View>
                     </ImageBackground>
                     <View style={{}}>
@@ -168,7 +169,7 @@ const styles = StyleSheet.create({
     },
     headingView: {
         flexDirection: "row",
-        justifyContent: "center",
+        justifyContent: 'space-between',
         alignItems: "center",
         backgroundColor: "#444444",
         height: 60,
@@ -180,7 +181,6 @@ const styles = StyleSheet.create({
     },
     headingIcon: {
         color: "#FFFFFF",
-        right: 110
     },
     firstCard: {
         marginTop: 22,

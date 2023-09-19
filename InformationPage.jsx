@@ -45,6 +45,7 @@ const InformationPage = () => {
     //Creating  your service request.....................................
     if (postUserService && serviceCode) {
       navigation.navigate("Mechanicsss");
+      // console.log("token : ",postUserLog);
       axios.post(creatServiceRequest, serviceData, {
         headers: {
           'Authorization': `Bearer ${postUserLog}`,
@@ -53,7 +54,7 @@ const InformationPage = () => {
       })
         .then((res) => {
           if (res.data) {
-            console.log('response in create request create API :', res.data);
+            // console.log('response in create request create API :', res.data);
             setServiceRequestData(true);
           } else {
             setModalVisible(true);
@@ -75,7 +76,7 @@ const InformationPage = () => {
         }
       })
         .then((res) => {
-          console.log("res_in_requestdetails_in_informationPage:", res.data)
+          // console.log("res_in_requestdetails_in_informationPage:", res.data.data[0].service_types)
           // navigation.navigate("Mechanicsss");
           setServiceRequestData(false);
           getServiceRequestDetails(res.data.data);

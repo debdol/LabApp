@@ -72,7 +72,6 @@ const Cart = ({ route }) => {
       .catch((err) => console.log("error :", err));
   }, []);
 
-
   return (
     <View style={styles.container}>
       <View style={styles.mainContainer}>
@@ -89,11 +88,11 @@ const Cart = ({ route }) => {
         <View style={styles.totalBalanceView}>
           <Text style={styles.totalBalanceTxt}>Total Balance</Text>
           <View style={styles.totalBalanceNumberView}>
-            <LinearGradient colors={["#313335", "#646668"]}>
+            <LinearGradient colors={["#313335", "#646668"]} style={{ borderRadius: 10 }}>
               <Text style={styles.totalBalanceFirstNumber}>{totalAmount}</Text>
             </LinearGradient>
             <Text style={styles.totalBalanceDot}>.</Text>
-            <LinearGradient colors={["#313335", "#646668"]}>
+            <LinearGradient colors={["#313335", "#646668"]} style={{ borderRadius: 10 }}>
               <Text style={styles.totalBalanceFirstNumber}>00</Text>
             </LinearGradient>
             <Fontisto name='inr' size={12} style={styles.inrIcon} />
@@ -173,7 +172,7 @@ const Cart = ({ route }) => {
           goToInvoicePage();
         }}>
           <View style={styles.checkOutBtnView}>
-            <Text style={{ width: "20%" }}></Text>
+            <Text></Text>
             <Text style={styles.checkOutBtnTxt}>Checkout</Text>
             <AntDesign name='right' style={styles.checkOutBtnIcon} size={26} />
           </View>
@@ -449,7 +448,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 22,
     borderTopRightRadius: 22,
     borderColor: "#EBEBEB",
-    justifyContent: "space-evenly",
+    justifyContent: "space-between",
     flexDirection: "row",
     paddingVertical: 15,
     gap: 9,
@@ -474,6 +473,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-around",
     alignItems: "center",
+    gap: 29,
     width: 229,
     height: 70,
   },
