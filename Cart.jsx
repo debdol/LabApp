@@ -72,6 +72,7 @@ const Cart = ({ route }) => {
       .catch((err) => console.log("error :", err));
   }, []);
 
+
   return (
     <View style={styles.container}>
       <View style={styles.mainContainer}>
