@@ -20,9 +20,14 @@ const Cart = ({ route }) => {
   const [totalAmount, setTotalAmount] = useState();
   const [amountRelatedData, setAmountRelatedData] = useState();
   const [problems, setProblems] = useState();
-  const [paymentUrl, setPaymentUrl] = useState();
-  const [paymentUrlControler, setPaymentUrlControler] = useState(false);
   const [showServiceTypes, setShowServiceTypes] = useState(false);
+  const [routedData, setRoutedData] = useState();
+
+  useEffect(() => {
+    if (route.params) {
+      setRoutedData(route.params.acceptedMDetails);
+    }
+  }, [route.params])
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
@@ -38,8 +43,8 @@ const Cart = ({ route }) => {
 
   //Total amount checkkk.........................
   useEffect(() => {
-    if (route.params.acceptedMDetails) {
-      axios.get(`${calculateTotalAmount}${route.params.acceptedMDetails._id}`, {
+    if (routedData) {
+      axios.get(`${calculateTotalAmount}${routedData._id}`, {
         headers: {
           'Authorization': `Bearer ${postUserLog}`,
           'Content-Type': 'application/json'
@@ -52,12 +57,12 @@ const Cart = ({ route }) => {
         })
         .catch((error) => console.log("error in total amount :", error))
     }
-  }, [route.params.acceptedMDetails])
+  }, [routedData])
 
   //Go to Invoice Page......................................................
   const goToInvoicePage = () => {
-    if (amountRelatedData && route.params.acceptedMDetails.service_types[0].status === "completed") {
-      navigation.navigate("InvoicePage", { totalAmountData: amountRelatedData, acceptedMDetailss: route.params.acceptedMDetails })
+    if (amountRelatedData && routedData.service_types[0].status === "completed") {
+      navigation.navigate("InvoicePage", { totalAmountData: amountRelatedData, acceptedMDetailss: routedData })
     } else {
       Alert.alert("Your survice is not Completed")
     }
@@ -72,54 +77,54 @@ const Cart = ({ route }) => {
       .catch((err) => console.log("error :", err));
   }, []);
 
-
-  return (
-    <View style={styles.container}>
-      <View style={styles.mainContainer}>
-        <TouchableOpacity style={styles.headerView} onPress={() => setShowServiceTypes(!showServiceTypes)}>
-          <Text style={styles.headerTxt}>View Service Charge List</Text>
-          {showServiceTypes ? <Entypo size={30} name='chevron-small-up' style={styles.headerIcon} /> : <Entypo size={30} name='chevron-small-down' style={styles.headerIcon} />}
-        </TouchableOpacity>
-        {showServiceTypes ?
-          <View style={styles.chartsStyleMainView} onStartShouldSetResponder={() => setShowServiceTypes(false)}>
-            <View style={styles.chartsStyle}>
-              {problems ? problems.map((item, index) => (<Text key={index} style={styles.chartsTextStyle}>{item}</Text>)) : null}
+  if (routedData) {
+    return (
+      <View style={styles.container}>
+        <View style={styles.mainContainer}>
+          <TouchableOpacity style={styles.headerView} onPress={() => setShowServiceTypes(!showServiceTypes)}>
+            <Text style={styles.headerTxt}>View Service Charge List</Text>
+            {showServiceTypes ? <Entypo size={30} name='chevron-small-up' style={styles.headerIcon} /> : <Entypo size={30} name='chevron-small-down' style={styles.headerIcon} />}
+          </TouchableOpacity>
+          {showServiceTypes ?
+            <View style={styles.chartsStyleMainView} onStartShouldSetResponder={() => setShowServiceTypes(false)}>
+              <View style={styles.chartsStyle}>
+                {problems ? problems.map((item, index) => (<Text key={index} style={styles.chartsTextStyle}>{item}</Text>)) : null}
+              </View>
+            </View> : null}
+          <View style={styles.totalBalanceView}>
+            <Text style={styles.totalBalanceTxt}>Total Balance</Text>
+            <View style={styles.totalBalanceNumberView}>
+              <LinearGradient colors={["#313335", "#646668"]} style={{ borderRadius: 10 }}>
+                <Text style={styles.totalBalanceFirstNumber}>{totalAmount}</Text>
+              </LinearGradient>
+              <Text style={styles.totalBalanceDot}>.</Text>
+              <LinearGradient colors={["#313335", "#646668"]} style={{ borderRadius: 10 }}>
+                <Text style={styles.totalBalanceFirstNumber}>00</Text>
+              </LinearGradient>
+              <Fontisto name='inr' size={12} style={styles.inrIcon} />
             </View>
-          </View> : null}
-        <View style={styles.totalBalanceView}>
-          <Text style={styles.totalBalanceTxt}>Total Balance</Text>
-          <View style={styles.totalBalanceNumberView}>
-            <LinearGradient colors={["#313335", "#646668"]} style={{ borderRadius: 10 }}>
-              <Text style={styles.totalBalanceFirstNumber}>{totalAmount}</Text>
-            </LinearGradient>
-            <Text style={styles.totalBalanceDot}>.</Text>
-            <LinearGradient colors={["#313335", "#646668"]} style={{ borderRadius: 10 }}>
-              <Text style={styles.totalBalanceFirstNumber}>00</Text>
-            </LinearGradient>
-            <Fontisto name='inr' size={12} style={styles.inrIcon} />
           </View>
-        </View>
-        <Text style={styles.serviceChargeHeading}>Service Charge</Text>
-        {route.params.acceptedMDetails.service_types[0].status === "active" ?
-          (<View style={styles.flatTierMainView}>
-            <View style={styles.flatTierChildContainer}>
-              <View style={styles.flatTierTitlePriceView}>
-                <Text style={styles.flatTierTxt}>{route.params.acceptedMDetails.service_types[0].service_name.charAt(0).toUpperCase() + route.params.acceptedMDetails.service_types[0].service_name.slice(1)}</Text>
-                <View style={styles.flatTierPriceView}>
-                  <Text style={styles.price}>{route.params.acceptedMDetails.service_types[0].price}</Text>
-                  <Fontisto name='inr' size={12} style={[styles.price, { fontSize: 11 }]} />
+          <Text style={styles.serviceChargeHeading}>Service Charge</Text>
+          {routedData.service_types[0].status === "active" ?
+            (<View style={styles.flatTierMainView}>
+              <View style={styles.flatTierChildContainer}>
+                <View style={styles.flatTierTitlePriceView}>
+                  <Text style={styles.flatTierTxt}>{routedData.service_types[0].service_name.charAt(0).toUpperCase() + routedData.service_types[0].service_name.slice(1)}</Text>
+                  <View style={styles.flatTierPriceView}>
+                    <Text style={styles.price}>{routedData.service_types[0].price}</Text>
+                    <Fontisto name='inr' size={12} style={[styles.price, { fontSize: 11 }]} />
+                  </View>
                 </View>
+                <FontAwesome name='pause' size={15} style={styles.pauseIcon} />
               </View>
-              <FontAwesome name='pause' size={15} style={styles.pauseIcon} />
-            </View>
-            <View style={styles.bill_Hours_min_secView}>
-              <View style={{}}>
-                <Text style={styles.billTxt}>Bill</Text>
-                <View style={styles.billView}>
-                  <Text style={styles.billFirstPrice}>{route.params.acceptedMDetails.service_types[0].price}</Text>
+              <View style={styles.bill_Hours_min_secView}>
+                <View style={{}}>
+                  <Text style={styles.billTxt}>Bill</Text>
+                  <View style={styles.billView}>
+                    <Text style={styles.billFirstPrice}>{routedData.service_types[0].price}</Text>
+                  </View>
                 </View>
-              </View>
-              {/* <View style={{ flexDirection: "row", alignItems: "center" }}>
+                {/* <View style={{ flexDirection: "row", alignItems: "center" }}>
               <View style={styles.hrView}>
                 <Text style={styles.billHourTxt}>Hours</Text>
                 <View style={styles.timrAndDoubleDotView}>
@@ -139,48 +144,53 @@ const Cart = ({ route }) => {
                 <Text style={styles.billHour}>13</Text>
               </View>
             </View> */}
-            </View>
-          </View>) :
-          route.params.acceptedMDetails.service_types[0].status === "completed" ?
-            (<View style={styles.lowFuelMainView}>
-              <View style={styles.imgTxtView}>
-                <View style={{ padding: 9, backgroundColor: "#E0E6ED", borderRadius: 14, }}>
-                  <Image source={require("./assets/gas-pump1(traced).png")} style={styles.fuelImg} />
-                </View>
-                <View style={styles.lowFuelView}>
-                  <Text style={styles.lowFuelTxt}>{route.params.acceptedMDetails.service_types[0].service_name.charAt(0).toUpperCase() + route.params.acceptedMDetails.service_types[0].service_name.slice(1)}</Text>
-                  <View style={styles.lowFuelPriceIconView}>
-                    <Text style={styles.lowFuelPriceTxt}>{route.params.acceptedMDetails.service_types[0].price}</Text>
-                    <FontAwesome name='inr' style={[styles.lowFuelPriceTxt, { fontSize: 14 }]} />
-                    <Text style={styles.lowFuelPriceTxt}>Fix price</Text>
+              </View>
+            </View>) :
+            routedData.service_types[0].status === "completed" ?
+              (<View style={styles.lowFuelMainView}>
+                <View style={styles.imgTxtView}>
+                  <View style={{ padding: 9, backgroundColor: "#E0E6ED", borderRadius: 14, }}>
+                    <Image source={require("./assets/gas-pump1(traced).png")} style={styles.fuelImg} />
+                  </View>
+                  <View style={styles.lowFuelView}>
+                    <Text style={styles.lowFuelTxt}>{routedData.service_types[0].service_name.charAt(0).toUpperCase() + routedData.service_types[0].service_name.slice(1)}</Text>
+                    <View style={styles.lowFuelPriceIconView}>
+                      <Text style={styles.lowFuelPriceTxt}>{routedData.service_types[0].price}</Text>
+                      <FontAwesome name='inr' style={[styles.lowFuelPriceTxt, { fontSize: 14 }]} />
+                      <Text style={styles.lowFuelPriceTxt}>Fix price</Text>
+                    </View>
                   </View>
                 </View>
-              </View>
-              <Image source={require('./assets/Vector.png')} style={{ marginRight: 11 }} />
-            </View>)
-            : null
-        }
-      </View>
-      <View style={styles.footerView}>
-        <View style={styles.totalPriceView}>
-          <Text style={styles.totalPriceTxt}>Total</Text>
-          <View style={{ flexDirection: "row", alignItems: "center", gap: 7 }}>
-            <Text style={styles.totalPrice}>{totalAmount}</Text>
-            <FontAwesome name='inr' style={styles.totalPrice} />
-          </View>
+                <Image source={require('./assets/Vector.png')} style={{ marginRight: 11 }} />
+              </View>)
+              : null
+          }
         </View>
-        <TouchableOpacity onPress={() => {
-          goToInvoicePage();
-        }}>
-          <View style={styles.checkOutBtnView}>
-            <Text></Text>
-            <Text style={styles.checkOutBtnTxt}>Checkout</Text>
-            <AntDesign name='right' style={styles.checkOutBtnIcon} size={26} />
+        <View style={styles.footerView}>
+          <View style={styles.totalPriceView}>
+            <Text style={styles.totalPriceTxt}>Total</Text>
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 7 }}>
+              <Text style={styles.totalPrice}>{totalAmount}</Text>
+              <FontAwesome name='inr' style={styles.totalPrice} />
+            </View>
           </View>
-        </TouchableOpacity>
-      </View>
-    </View >
-  )
+          <TouchableOpacity onPress={() => {
+            goToInvoicePage();
+          }}>
+            <View style={styles.checkOutBtnView}>
+              <Text></Text>
+              <Text style={styles.checkOutBtnTxt}>Checkout</Text>
+              <AntDesign name='right' style={styles.checkOutBtnIcon} size={26} />
+            </View>
+          </TouchableOpacity>
+        </View>
+      </View >
+    )
+  } else {
+    return (
+      <Loading />
+    )
+  }
 }
 
 

@@ -39,23 +39,23 @@ export default function App() {
 
   const [mainPage, setMainPage] = useState(<Loading />);
   //checking userData API................
-  // useEffect(() => {
-  //   if (Userlog) {
-  //     console.log("check_userData_token:", Userlog);
-  //     axios.get(userData, {
-  //       headers: {
-  //         'Authorization': `Bearer ${Userlog}`,
-  //         'Content-Type': 'application/json'
-  //       }
-  //     })
-  //       .then((res) => {
-  //         console.log("response_in_userData_check :", res)
-  //       })
-  //       .catch((error) => console.log("error_in_userData_check :", error))
-  //   } else {
-  //     console.log("token_is_not_found : ", Userlog);
-  //   }
-  // }, [Userlog])
+  useEffect(() => {
+    if (Userlog) {
+      console.log("check_userData_token:", Userlog);
+      axios.get(userData, {
+        headers: {
+          'Authorization': `Bearer ${Userlog}`,
+          'Content-Type': 'application/json'
+        }
+      })
+        .then((res) => {
+          console.log("response_in_userData_check :", res)
+        })
+        .catch((error) => console.log("error_in_userData_check :", error))
+    } else {
+      console.log("token_is_not_found : ", Userlog);
+    }
+  }, [Userlog])
 
 
   // Get User Token if there is any.........................

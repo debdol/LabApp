@@ -105,6 +105,8 @@ const Allnavigation = () => {
                 tabBarButton: () => (
                     <TouchableOpacity onPress={() => {
                         if (postUserLog) {
+                            navigation.navigate("Cart");
+                            getPageName("Cart");
                             axios.get(openServiceRequestDetails, {
                                 headers: {
                                     'Authorization': `Bearer ${postUserLog}`,

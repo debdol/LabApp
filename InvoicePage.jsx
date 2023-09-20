@@ -62,7 +62,7 @@ const InvoicePage = ({ route }) => {
                 Linking.openURL(response.data.data.instrumentResponse.redirectInfo.url);
             })
             .catch((error) => {
-                console.error(error);
+                console.error("error is in payment :", error);
             });
     }
 
@@ -145,7 +145,9 @@ const InvoicePage = ({ route }) => {
             </View>
         )
     } else {
-        <Loading />
+        return (
+            <Loading />
+        )
     }
 }
 

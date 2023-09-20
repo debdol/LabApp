@@ -106,7 +106,7 @@ const OtpPage = (props) => {
             <Text style={styles.title}>Sign up</Text>
             <Image source={require("./assets/logo.png")} style={styles.logo} />
             <Text style={styles.heading}>We sent you an SMS code</Text>
-            <Text style={styles.number}>On number: +91{props.numberSend}</Text>
+            <Text style={styles.number}>On number: +91 {props.numberSend}</Text>
             <OTPInputView
                 autoFocusOnLoad
                 style={styles.otpView}
