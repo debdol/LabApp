@@ -19,8 +19,7 @@ import { updateProfilePic } from './APIs';
 
 const Profile = () => {
   const navigation = useNavigation();
-  const { getMainPage, getPageName, postUserName, postUserNumber, postUserAddress, postUserEmail, postUserCarModel, postUserCarNumber, getUserImage, postUserLog } = useContext(StyleContext);
-  const [imagPath, setImagPath] = useState();
+  const { getMainPage, getPageName, postUserName, postUserNumber, postUserAddress, postUserEmail, postUserCarModel, postUserCarNumber, getUserImage,postUserImage, postUserLog } = useContext(StyleContext);
   // console.log("tpken :", postUserLog);
   const logOutHandler = async () => {
     axios.post("http://43.204.88.205:90/logout-user", {}, {
@@ -55,16 +54,15 @@ const Profile = () => {
         // const data = `profile_picture=@${path};type=${type}`;
         // console.log("user Profile pic :", response.assets[0]);
 
-        axios.put(updateProfilePic, data, {
-          headers: {
-            'Authorization': `Bearer ${postUserLog}`,
-            'Content-Type': 'multipart/form-data',
-            'accept': 'application/json'
-          }
-        })
-          .then((res) => console.log("responce in image :", res))
-          .catch((error) => console.log("error in image :", error));
-        setImagPath(response.assets[0].uri);
+        // axios.put(updateProfilePic, data, {
+        //   headers: {
+        //     'Authorization': `Bearer ${postUserLog}`,
+        //     'Content-Type': 'multipart/form-data',
+        //     'accept': 'application/json'
+        //   }
+        // })
+        //   .then((res) => console.log("responce in image :", res))
+        //   .catch((error) => console.log("error in image :", error));
         getUserImage(response.assets[0].uri);
       }
     })
@@ -74,7 +72,7 @@ const Profile = () => {
       <ScrollView style={styles.mainView} showsVerticalScrollIndicator={false}>
         <Text style={styles.heading}>Profile</Text>
 
-        <ImageBackground style={styles.imgAndCameraView} source={imagPath ? { uri: imagPath } : require("./assets/profileAvtar.png")} imageStyle={{ borderRadius: 50 }}>
+        <ImageBackground style={styles.imgAndCameraView} source={postUserImage ? { uri: postUserImage } : require("./assets/profileAvtar.png")} imageStyle={{ borderRadius: 50 }}>
           <AntDesign name='camera' size={20} style={styles.cameraStyle} onPress={picPicker} />
         </ImageBackground>
 

@@ -7,6 +7,7 @@ import Feather from 'react-native-vector-icons/Feather';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import axios from 'axios';
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StyleContext } from './App';
 import { addCarUrl, editProfileUrl } from './APIs';
@@ -14,7 +15,7 @@ import Loading from './Loading';
 
 const EditProfile = () => {
 
-    const { getMainPage, getUserLog, postUserName, postUserEmail, postUserAddress, postUserCarModel, postUserCarNumber, postUserSate, postUserPinCode, postUserImage, getPageName } = useContext(StyleContext);
+    const { getMainPage, getUserLog, postUserName, postUserEmail, postUserAddress, postUserCarModel, postUserCarNumber, postUserSate, postUserPinCode, postUserImage, getUserImage, getPageName } = useContext(StyleContext);
 
     const [modalVisible, setModalVisible] = useState(false);
     const [varifiedToken, setVarifiedToken] = useState();
@@ -90,18 +91,45 @@ const EditProfile = () => {
         }
     };
 
+    const picPicker = () => {
+        let options = {
+            storageOptions: {
+                path: "image"
+            }
+        }
+        launchImageLibrary(options, response => {
+            if (response.assets) {
+                const path = response.assets[0].fileName;
+                const type = response.assets[0].type;
+                console.log("update Profile Pic:", response.assets[0].uri);
+                // let data = new FormData();
+                // data.append('images', response.assets[0], path)
+                // // const data = `profile_picture=@${path};type=${type}`;
+                // // console.log("user Profile pic :", response.assets[0]);
+
+                // axios.put(updateProfilePic, data, {
+                //     headers: {
+                //         'Authorization': `Bearer ${postUserLog}`,
+                //         'Content-Type': 'multipart/form-data',
+                //         'accept': 'application/json'
+                //     }
+                // })
+                //     .then((res) => console.log("responce in image :", res))
+                //     .catch((error) => console.log("error in image :", error));
+                getUserImage(response.assets[0].uri);
+            }
+        })
+    }
 
     return (
         <SafeAreaView>
             <ScrollView>
-                <View style={styles.container}>{
-                    postUserImage ?
-                        (<ImageBackground style={styles.imgAndCameraView} source={{ uri: postUserImage }} imageStyle={{ borderRadius: 80 }}>
+                <View style={styles.container}>
+                    <TouchableOpacity onPress={picPicker} style={{ alignSelf: "center" }}>
+                        <ImageBackground style={styles.imgAndCameraView} source={postUserImage ? { uri: postUserImage } : require("./assets/profileAvtar.png")} imageStyle={{ borderRadius: 75, width: 150, height: 150 }}>
                             <AntDesign name='camera' size={29} style={styles.cameraStyle} />
-                        </ImageBackground>) : (<View style={styles.picLessCameraStyleView}>
-                            <Image source={require("./assets/profileAvtar.png")} style={styles.profileAvtar} />
-                            <AntDesign name='camera' size={20} style={styles.picLessCameraStyle} />
-                        </View>)}
+                        </ImageBackground>
+                    </TouchableOpacity>
                     <Text style={styles.formHeading}>Basic details</Text>
                     <View style={styles.formContainer}>
                         <View style={styles.inputLogoConatiner}>
@@ -122,7 +150,7 @@ const EditProfile = () => {
                         </View>
                         <View style={styles.inputLogoConatiner}>
                             <MaterialIcons name='fiber-pin' size={30} style={styles.userIcon} />
-                            <TextInput placeholder='pin code' style={styles.fullNameI} onChangeText={(e) => setPinCode(e)} value={pinCode} />
+                            <TextInput placeholder='pin code' style={styles.fullNameI} onChangeText={(e) => setPinCode(e)} value={pinCode} keyboardType='number-pad' maxLength={6} />
                         </View>
                         <View style={styles.inputLogoConatiner}>
                             <AntDesign name='car' size={30} style={styles.userIcon} />
@@ -187,28 +215,15 @@ const styles = StyleSheet.create({
         width: 170,
         height: 170,
         alignItems: "center",
-        alignSelf: "center",
         marginBottom: 15
     },
-    picLessCameraStyleView: {
-        borderWidth: 0.5,
-        height: 100,
-        width: 100,
-        alignSelf: "center",
-        borderRadius: 50,
-        borderColor: "#778899",
-        justifyContent: "center",
-        alignItems: "center",
-        marginBottom: 15,
-        position:"relative"
-    },
     profileAvtar: {
-        height: 100,
-        width: 100,
+        height: 150,
+        width: 150,
     },
     picLessCameraStyle: {
-        borderWidth:1,
-        borderColor:"#EEEEEE",
+        borderWidth: 1,
+        borderColor: "#EEEEEE",
         textAlign: "center",
         textAlignVertical: "center",
         color: "#FFFFFF",
@@ -217,10 +232,9 @@ const styles = StyleSheet.create({
         left: 77,
         width: 30,
         height: 30,
-        borderRadius:15,
-        position:"absolute"
+        borderRadius: 15,
+        position: "absolute"
     },
-
     cameraStyle: {
         color: "#FFFFFF",
         backgroundColor: "#007AFF",
@@ -230,8 +244,8 @@ const styles = StyleSheet.create({
         borderColor: "#EEEEEE",
         textAlign: "center",
         textAlignVertical: "center",
-        top: 130,
-        left: 60
+        top: 97,
+        left: 47
     },
     formHeading: {
         color: "#3D4759",
@@ -247,16 +261,15 @@ const styles = StyleSheet.create({
         marginBottom: 15
     },
     inputLogoConatiner: {
-        // marginTop: 11,
         marginBottom: 15,
         display: "flex",
-        width: "85%",
+        height: 57,
+        width: "90%",
         alignSelf: "center",
         flexDirection: "row",
         alignItems: "center",
         backgroundColor: "#D7E2F0",
         borderRadius: 29,
-        height: 57,
         position: "relative"
     },
     userIcon: {
@@ -269,7 +282,9 @@ const styles = StyleSheet.create({
     },
     fullNameI: {
         marginLeft: 15,
-        width: 298,
+        // width: 298,
+        fontFamily: "Forza-Bold",
+        letterSpacing:1
     },
     BMWinputLogoConatiner: {
         marginBottom: 15,

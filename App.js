@@ -41,7 +41,7 @@ export default function App() {
   //checking userData API................
   useEffect(() => {
     if (Userlog) {
-      console.log("check_userData_token:", Userlog);
+      console.log("check_userData_token_in_app_page:", Userlog);
       axios.get(userData, {
         headers: {
           'Authorization': `Bearer ${Userlog}`,
@@ -49,9 +49,9 @@ export default function App() {
         }
       })
         .then((res) => {
-          console.log("response_in_userData_check :", res)
+          console.log("response_in_userData_check_in_app_page :", res.data)
         })
-        .catch((error) => console.log("error_in_userData_check :", error))
+        .catch((error) => console.log("error_in_userData_check_in_app_page :", error))
     } else {
       console.log("token_is_not_found : ", Userlog);
     }

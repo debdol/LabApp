@@ -171,10 +171,11 @@ const Home = () => {
       setStateName("state");
     }
   }
+
   // Calling the getThePlaceName Funtion here...........................................
   useEffect(() => {
     getThePlaceName();
-  }, [userLongitude]);
+  }, [userLongitude, userLatitude]);
 
   //Call the openService Request Detail end point for checking status.................................................
   useEffect(() => {
@@ -217,6 +218,7 @@ const Home = () => {
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
+    getThePlaceName();
     setTimeout(() => {
       setRefreshing(false);
     }, 2000);
@@ -311,7 +313,7 @@ const Home = () => {
                 alignItems: "center",
                 // paddingHorizontal: 33,
                 // marginBottom: 9,
-                justifyContent:'space-between',
+                justifyContent: 'space-between',
                 height: '37%',
                 width: '100%',
               }} onPress={() => {
