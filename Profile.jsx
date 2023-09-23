@@ -1,4 +1,4 @@
-import { Image, ImageBackground, SafeAreaView, ScrollView, StyleSheet, Text, View, TouchableOpacity } from 'react-native'
+import { Image, ImageBackground, SafeAreaView, ScrollView, StyleSheet, Text, View, TouchableOpacity, Alert } from 'react-native'
 import React, { useContext, useState } from 'react'
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
@@ -15,12 +15,13 @@ import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import LoginMain from './LogInMain';
 import axios from 'axios';
 import { updateProfilePic } from './APIs';
+import FormData from 'form-data';
 
 
 const Profile = () => {
   const navigation = useNavigation();
-  const { getMainPage, getPageName, postUserName, postUserNumber, postUserAddress, postUserEmail, postUserCarModel, postUserCarNumber, getUserImage,postUserImage, postUserLog } = useContext(StyleContext);
-  // console.log("tpken :", postUserLog);
+  const { getMainPage, getPageName, postUserName, postUserNumber, postUserAddress, postUserEmail, postUserCarModel, postUserCarNumber, postUserLog, postUserImg, getUpdateImg, postUpdateImg } = useContext(StyleContext);
+  // console.log("postUserImg in profile page :", postUserImg);
   const logOutHandler = async () => {
     axios.post("http://43.204.88.205:90/logout-user", {}, {
       headers: {
@@ -46,43 +47,50 @@ const Profile = () => {
     }
     launchImageLibrary(options, response => {
       if (response.assets) {
-        const path = response.assets[0].fileName;
-        const type = response.assets[0].type;
-        console.log("Path: ", path, ",", "Type:", type, "update Profile Pic:", updateProfilePic)
+        let imgData = {
+          uri: response.assets[0].uri,
+          name: response.assets[0].fileName,
+          type: response.assets[0].type
+        }
         let data = new FormData();
-        data.append('images', response.assets[0], path)
-        // const data = `profile_picture=@${path};type=${type}`;
+        data.append('profile_picture', imgData);
         // console.log("user Profile pic :", response.assets[0]);
-
-        // axios.put(updateProfilePic, data, {
-        //   headers: {
-        //     'Authorization': `Bearer ${postUserLog}`,
-        //     'Content-Type': 'multipart/form-data',
-        //     'accept': 'application/json'
-        //   }
-        // })
-        //   .then((res) => console.log("responce in image :", res))
-        //   .catch((error) => console.log("error in image :", error));
-        getUserImage(response.assets[0].uri);
+        uploadImage(data)
       }
     })
   }
+
+  const uploadImage = (data) => {
+    axios.put(updateProfilePic, data, {
+      headers: {
+        'Authorization': `Bearer ${postUserLog}`,
+        'Content-Type': 'multipart/form-data',
+        'accept': 'application/json'
+      }
+    })
+      .then((res) => {
+        // console.log("response in image :", res.data);
+        if (res.data) {
+          Alert.alert(res.data.message);
+          getUpdateImg(!postUpdateImg);
+        }
+      })
+      .catch((error) => console.log("error in image :", error));
+  }
+
   return (
     <SafeAreaView>
       <ScrollView style={styles.mainView} showsVerticalScrollIndicator={false}>
         <Text style={styles.heading}>Profile</Text>
-
-        <ImageBackground style={styles.imgAndCameraView} source={postUserImage ? { uri: postUserImage } : require("./assets/profileAvtar.png")} imageStyle={{ borderRadius: 50 }}>
+        {postUserImg ? <ImageBackground style={styles.imgAndCameraView} source={postUserImg ? { uri: postUserImg } : require("./assets/profileAvtar.png")} imageStyle={{ borderRadius: 50 }}>
           <AntDesign name='camera' size={20} style={styles.cameraStyle} onPress={picPicker} />
-        </ImageBackground>
-
+        </ImageBackground> : null}
         <View style={styles.editProfileIconTxtView}>
           <TouchableOpacity style={styles.editProfileBtn} onPress={() => navigation.navigate("EditProfile")}>
             <FontAwesome name='edit' size={22} style={styles.editProfileIcon} />
           </TouchableOpacity>
           <Text style={styles.editProfileBtnTxt}>Edit Profile</Text>
         </View>
-
         <View style={styles.nameAndOtherTxtView}>
           <Text style={styles.name}>{postUserName}</Text>
         </View>
@@ -489,7 +497,7 @@ const styles = StyleSheet.create({
     color: "black",
     fontSize: 20,
     textAlign: "center",
-    fontFamily:"Forza-Bold"
+    fontFamily: "Forza-Bold"
   }
 })
 export default Profile;

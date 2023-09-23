@@ -10,12 +10,12 @@ import axios from 'axios';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { StyleContext } from './App';
-import { addCarUrl, editProfileUrl } from './APIs';
+import { addCarUrl, editProfileUrl, updateProfilePic } from './APIs';
 import Loading from './Loading';
 
 const EditProfile = () => {
 
-    const { getMainPage, getUserLog, postUserName, postUserEmail, postUserAddress, postUserCarModel, postUserCarNumber, postUserSate, postUserPinCode, postUserImage, getUserImage, getPageName } = useContext(StyleContext);
+    const { getMainPage, getUserLog, postUserName, postUserEmail, postUserAddress, postUserCarModel, postUserCarNumber, postUserSate, postUserPinCode, getPageName, postUserLog, postUserImg, getUpdateImg, postUpdateImg } = useContext(StyleContext);
 
     const [modalVisible, setModalVisible] = useState(false);
     const [varifiedToken, setVarifiedToken] = useState();
@@ -35,7 +35,7 @@ const EditProfile = () => {
     const getData = async () => {
         try {
             const value = await AsyncStorage.getItem('User_Token');
-            console.log("token in editProfile:", await AsyncStorage.getItem('User_Token'));
+            // console.log("token in editProfile:", await AsyncStorage.getItem('User_Token'));
             setVarifiedToken(value);
         } catch (e) {
             console.log(e);
@@ -99,26 +99,35 @@ const EditProfile = () => {
         }
         launchImageLibrary(options, response => {
             if (response.assets) {
-                const path = response.assets[0].fileName;
-                const type = response.assets[0].type;
-                console.log("update Profile Pic:", response.assets[0].uri);
-                // let data = new FormData();
-                // data.append('images', response.assets[0], path)
-                // // const data = `profile_picture=@${path};type=${type}`;
-                // // console.log("user Profile pic :", response.assets[0]);
-
-                // axios.put(updateProfilePic, data, {
-                //     headers: {
-                //         'Authorization': `Bearer ${postUserLog}`,
-                //         'Content-Type': 'multipart/form-data',
-                //         'accept': 'application/json'
-                //     }
-                // })
-                //     .then((res) => console.log("responce in image :", res))
-                //     .catch((error) => console.log("error in image :", error));
-                getUserImage(response.assets[0].uri);
+                let imgData = {
+                    uri: response.assets[0].uri,
+                    name: response.assets[0].fileName,
+                    type: response.assets[0].type
+                }
+                let data = new FormData();
+                data.append('profile_picture', imgData);
+                // console.log("update Profile Pic:", response.assets[0].uri);
+                uploadImage(data);
             }
         })
+    }
+
+    const uploadImage = (data) => {
+        axios.put(updateProfilePic, data, {
+            headers: {
+                'Authorization': `Bearer ${postUserLog}`,
+                'Content-Type': 'multipart/form-data',
+                'accept': 'application/json'
+            }
+        })
+            .then((res) => {
+                // console.log("response in image :", res.data.message);
+                if (res.data) {
+                    Alert.alert(res.data.message);
+                    getUpdateImg(!postUpdateImg);
+                }
+            })
+            .catch((error) => console.log("error in imagein editProfile :", error));
     }
 
     return (
@@ -126,7 +135,7 @@ const EditProfile = () => {
             <ScrollView>
                 <View style={styles.container}>
                     <TouchableOpacity onPress={picPicker} style={{ alignSelf: "center" }}>
-                        <ImageBackground style={styles.imgAndCameraView} source={postUserImage ? { uri: postUserImage } : require("./assets/profileAvtar.png")} imageStyle={{ borderRadius: 75, width: 150, height: 150 }}>
+                        <ImageBackground style={styles.imgAndCameraView} source={postUserImg ? { uri: postUserImg } : require("./assets/profileAvtar.png")} imageStyle={{ borderRadius: 75, width: 150, height: 150 }}>
                             <AntDesign name='camera' size={29} style={styles.cameraStyle} />
                         </ImageBackground>
                     </TouchableOpacity>
@@ -284,7 +293,7 @@ const styles = StyleSheet.create({
         marginLeft: 15,
         // width: 298,
         fontFamily: "Forza-Bold",
-        letterSpacing:1
+        letterSpacing: 1
     },
     BMWinputLogoConatiner: {
         marginBottom: 15,

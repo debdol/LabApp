@@ -8,7 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import Loading from './Loading';
 import { enableLatestRenderer } from 'react-native-maps';
-import { userData } from './APIs';
+import { baseUrl, userData } from './APIs';
 import { NativeBaseProvider } from "native-base";
 
 enableLatestRenderer();
@@ -30,7 +30,8 @@ export default function App() {
   const [userCardNumber, setUserCardNumber] = useState();
   const [userState, setUserState] = useState();
   const [userPinCode, setUserPinCode] = useState();
-  const [userImage, setUserImage] = useState();
+  const [updateImg, setUpdateImg] = useState(false);
+  const [userImg, setUserImg] = useState();
   const [serviceRequestDetails, setServiceRequestDetails] = useState();
   const [locationDetails, setLocationDetails] = useState();
   const [userService, setUserService] = useState();
@@ -39,23 +40,23 @@ export default function App() {
 
   const [mainPage, setMainPage] = useState(<Loading />);
   //checking userData API................
-  useEffect(() => {
-    if (Userlog) {
-      console.log("check_userData_token_in_app_page:", Userlog);
-      axios.get(userData, {
-        headers: {
-          'Authorization': `Bearer ${Userlog}`,
-          'Content-Type': 'application/json'
-        }
-      })
-        .then((res) => {
-          console.log("response_in_userData_check_in_app_page :", res.data)
-        })
-        .catch((error) => console.log("error_in_userData_check_in_app_page :", error))
-    } else {
-      console.log("token_is_not_found : ", Userlog);
-    }
-  }, [Userlog])
+  // useEffect(() => {
+  //   if (Userlog) {
+  //     console.log("check_userData_token_in_app_page:", Userlog);
+  //     axios.get(userData, {
+  //       headers: {
+  //         'Authorization': `Bearer ${Userlog}`,
+  //         'Content-Type': 'application/json'
+  //       }
+  //     })
+  //       .then((res) => {
+  //         console.log("response_in_userData_check_in_app_page :", res.data)
+  //       })
+  //       .catch((error) => console.log("error_in_userData_check_in_app_page :", error))
+  //   } else {
+  //     console.log("token_is_not_found : ", Userlog);
+  //   }
+  // }, [Userlog])
 
 
   // Get User Token if there is any.........................
@@ -72,11 +73,10 @@ export default function App() {
   useEffect(() => {
     logcall();
   }, []);
-
   //call userData end point to get the user data............................
   useEffect(() => {
+    // console.log("userData_token:", Userlog);
     if (Userlog) {
-      // console.log("userData_token:", Userlog);
       setMainPage(<Loading />)
       axios.get(userData, {
         headers: {
@@ -85,7 +85,11 @@ export default function App() {
         }
       })
         .then((res) => {
-          // console.log("responce in appjs :", res.data.data);
+          if (res.data.data.profile_picture) {
+            const splitUserImg = res.data.data.profile_picture.split("/code")[1];
+            const storeUserImg = `http://43.204.88.205${splitUserImg}`;
+            setUserImg(storeUserImg);
+          }
           setUserCars(res.data.data.cars);
           setUserName(res.data.data.name);
           setUserNumber(res.data.data.contact_number);
@@ -114,7 +118,7 @@ export default function App() {
         })
         .catch((e) => console.log("error in app :", e))
     }
-  }, [Userlog]);
+  }, [Userlog, updateImg]);
 
   const userName_handler = (value) => {
     setUserName(value);
@@ -131,9 +135,6 @@ export default function App() {
   const userCarNumber_handler = (value) => {
     setUserCarNumber(value)
   };
-  const userImage_handler = (value) => {
-    setUserImage(value);
-  }
   const mainPage_handler = (value) => {
     setMainPage(value);
     logcall();
@@ -170,6 +171,9 @@ export default function App() {
   }
   const mechanicsDetails_handler = (value) => {
     setmechanicsDetails(value);
+  }
+  const updateImg_handler = (value) => {
+    setUpdateImg(value);
   }
   const unavailable_handler = (value) => {
     setUnavailable(value);
@@ -227,11 +231,12 @@ export default function App() {
         postUserLong: longData,
         postUserCardValidity: validityOfCard,
         postUsercard_number: userCardNumber,
-        postUserImage: userImage,
         postServiceRequestDetails: serviceRequestDetails,
         postUserLocationDetails: locationDetails,
+        postUserImg: userImg,
         postUserService: userService,
         postMehcanicsDetails: mechanicsDetails,
+        postUpdateImg: updateImg,
         postUnavailable: unavailable,
         //recived
         getPageName: page_handler,
@@ -244,12 +249,12 @@ export default function App() {
         getUserCarNumber: userCarNumber_handler,
         getUserlat: userlat_handler,
         getUserLong: userLong_hanlder,
-        getUserImage: userImage_handler,
         getMainPage: mainPage_handler,
         getServiceRequestDetails: serviceRequestDetails_handler,
         getUserLocationDetails: userLocationDetails_handler,
         getUserService: userService_handler,
         getMechanicsDetails: mechanicsDetails_handler,
+        getUpdateImg: updateImg_handler,
         getUnavailable: unavailable_handler
       }}>
         {
