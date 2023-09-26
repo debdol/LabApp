@@ -23,11 +23,11 @@ const Cart = ({ route }) => {
   const [showServiceTypes, setShowServiceTypes] = useState(false);
   const [routedData, setRoutedData] = useState();
 
-  useEffect(() => {
-    if (route.params) {
-      setRoutedData(route.params.acceptedMDetails);
-    }
-  }, [route.params])
+  // useEffect(() => {
+  //   if (route.params) {
+  //     setRoutedData(route.params.acceptedMDetails);
+  //   }
+  // }, [route.params])
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
@@ -42,31 +42,31 @@ const Cart = ({ route }) => {
   // console.log("route_params_acceptedMDetails:", route.params.acceptedMDetails.service_types[0].status);
 
   //Total amount checkkk.........................
-  useEffect(() => {
-    if (routedData) {
-      axios.get(`${calculateTotalAmount}${routedData._id}`, {
-        headers: {
-          'Authorization': `Bearer ${postUserLog}`,
-          'Content-Type': 'application/json'
-        }
-      })
-        .then((res) => {
-          // console.log("total ammount:", route.params.acceptedMDetails);
-          setAmountRelatedData(res.data.data[0])
-          setTotalAmount(res.data.data[0].total_amount);
-        })
-        .catch((error) => console.log("error in total amount :", error))
-    }
-  }, [routedData])
+  // useEffect(() => {
+  //   if (routedData) {
+  //     axios.get(`${calculateTotalAmount}${routedData._id}`, {
+  //       headers: {
+  //         'Authorization': `Bearer ${postUserLog}`,
+  //         'Content-Type': 'application/json'
+  //       }
+  //     })
+  //       .then((res) => {
+  //         // console.log("total ammount:", route.params.acceptedMDetails);
+  //         setAmountRelatedData(res.data.data[0])
+  //         setTotalAmount(res.data.data[0].total_amount);
+  //       })
+  //       .catch((error) => console.log("error in total amount :", error))
+  //   }
+  // }, [routedData])
 
   //Go to Invoice Page......................................................
-  const goToInvoicePage = () => {
-    if (amountRelatedData && routedData.service_types[0].status === "completed") {
-      navigation.navigate("InvoicePage", { totalAmountData: amountRelatedData, acceptedMDetailss: routedData })
-    } else {
-      Alert.alert("Your survice is not Completed")
-    }
-  }
+  // const goToInvoicePage = () => {
+  //   if (amountRelatedData && routedData.service_types[0].status === "completed") {
+  //     navigation.navigate("InvoicePage", { totalAmountData: amountRelatedData, acceptedMDetailss: routedData })
+  //   } else {
+  //     Alert.alert("Your survice is not Completed")
+  //   }
+  // }
 
   //Making an array with your serviceTypes..................................
   useEffect(() => {

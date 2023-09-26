@@ -180,7 +180,6 @@ const Home = () => {
   //Call the openService Request Detail end point for checking status.................................................
   useEffect(() => {
     if (postUserLog) {
-      // console.log("postUnavailable :", postUserLog);
       axios.get(openServiceRequestDetails, {
         headers: {
           'Authorization': `Bearer ${postUserLog}`,
@@ -189,17 +188,20 @@ const Home = () => {
       })
         .then((res) => {
           if (res.data.data.length !== 0) {
+            // console.log("postUnavailable :", res.data.data[0].status);
             if (res.data.data[0].status === "accepted" && gotLatLongIndicator === true) {
               navigation.navigate("YourMechanics", { acceptedMDetails: res.data.data[0] });
               getPageName("Mechanic");
-            } else if (res.data.data[0].status === "initiated" && gotLatLongIndicator === true && res.data.data[0].service_types[0].status === "active") {
-              navigation.navigate("Cart", { acceptedMDetails: res.data.data[0] });
-              getPageName("Cart")
+            } else if (res.data.data[0].status === "payment Initiated" && gotLatLongIndicator === true && res.data.data[0].service_types[0].status === "active") {
+              navigation.navigate("InvoicePage", { acceptedMDetails: res.data.data[0] });
+              // console.log("its running");
             } else if (res.data.data[0].status === "not available" && gotLatLongIndicator === true) {
               getUnavailable(true);
               navigation.navigate("Mechanicsss", { acceptedMDetails: res.data.data[0] });
-              // console.log("its running");
             }
+            // else if (res.data.data[0].status === "active"){
+            //   navigation.navigate("Mechanicsss", { acceptedMDetails: res.data.data[0] });
+            // }
           }
         })
         .catch((error) => { console.log("error in user data in home page:", error) })

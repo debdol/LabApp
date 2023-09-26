@@ -76,7 +76,7 @@ const InformationPage = () => {
         }
       })
         .then((res) => {
-          // console.log("res_in_requestdetails_in_informationPage:", res.data.data[0].service_types)
+          // console.log("res_in_requestdetails_in_informationPage:", res.data.data[0])
           // navigation.navigate("Mechanicsss");
           setServiceRequestData(false);
           getServiceRequestDetails(res.data.data);

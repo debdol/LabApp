@@ -8,23 +8,49 @@ import { StyleContext } from './App';
 import { useNavigation } from '@react-navigation/native';
 import Loading from './Loading';
 import axios from 'axios';
+import { calculateTotalAmount } from './APIs';
 
 const InvoicePage = ({ route }) => {
-    const { postUserLocationDetails, postUserLog, postUserName, postUserImage, postServiceRequestDetails } = useContext(StyleContext);
+    const { postUserLocationDetails, postUserLog, postUserName, postUserImage, postServiceRequestDetails, postUserNumber } = useContext(StyleContext);
     const navigation = useNavigation();
+    const [routedData, setRoutedData] = useState();
+    const [amountRelatedData, setAmountRelatedData] = useState();
     const [monthName, setMonthName] = useState();
-    // console.log("{ route } :", route.params.acceptedMDetailss.requested_at.split("-")[2].split(" ")[0], route.params.acceptedMDetailss.requested_at.split("-")[1], route.params.acceptedMDetailss.requested_at.split("-"));
-    // console.log("{ route } :", postUserLog)
+    // console.log("{ route } :", postUserNumber);
 
+
+    useEffect(() => {
+        if (route.params) {
+            setRoutedData(route.params.acceptedMDetails);
+        }
+    }, [route.params]);
+
+    useEffect(() => {
+        if (routedData) {
+            // console.log("routedData :", routedData._id);
+            axios.get(`${calculateTotalAmount}${routedData._id}`, {
+                headers: {
+                    'Authorization': `Bearer ${postUserLog}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then((res) => {
+                    // console.log("total ammount:", res.data.data[0]);
+                    setAmountRelatedData(res.data.data[0])
+                })
+                .catch((error) => console.log("error in total amount :", error))
+        }
+    }, [routedData])
 
     const getMonthName = (monthNumber) => {
         const date = new Date();
         date.setMonth(monthNumber - 1);
         return date.toLocaleString('en-US', { month: 'long' });
     }
+
     useEffect(() => {
-        setMonthName(getMonthName(route.params.acceptedMDetailss.requested_at.split("-")[1]))
-    }, [route.params.acceptedMDetailss])
+        setMonthName(getMonthName(route.params.acceptedMDetails.requested_at.split("-")[1]))
+    }, [route.params.acceptedMDetails])
 
     const payMentHandeler = async () => {
         const saltKey = '892f68a5-f75e-40ce-96cc-0a71a5b2abc7';
@@ -32,11 +58,11 @@ const InvoicePage = ({ route }) => {
             "merchantId": "ROADUAT",
             "merchantTransactionId": "MT7850590068188104",
             "merchantUserId": "MUID123",
-            "amount": 100 * route.params.totalAmountData.total_amount,
+            "amount": 100 * amountRelatedData.total_amount,
             "redirectUrl": "roadserve://.MainActivity",
             "redirectMode": "POST",
             "callbackUrl": "roadserve://.MainActivity",
-            "mobileNumber": "9999999999",
+            "mobileNumber": postUserNumber,
             "paymentInstrument": {
                 "type": "PAY_PAGE"
             }
@@ -66,7 +92,7 @@ const InvoicePage = ({ route }) => {
             });
     }
 
-    if (postUserLocationDetails) {
+    if (postUserLocationDetails && amountRelatedData) {
         return (
             <View style={{ height: "92%" }}>
                 <View style={styles.headingView}>
@@ -88,10 +114,10 @@ const InvoicePage = ({ route }) => {
                         </View>
                         <View style={styles.showTotalAmount}>
                             <Text style={[styles.txt, { alignSelf: "center" }]} >Total Amount</Text>
-                            <Text style={[styles.invoiceForTxt, { fontSize: 20, alignSelf: "center" }]}>₹ {route.params.totalAmountData.total_amount}</Text>
+                            <Text style={[styles.invoiceForTxt, { fontSize: 20, alignSelf: "center" }]}>₹ {amountRelatedData.total_amount}</Text>
                             <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", gap: 9 }}>
                                 <Image source={require('./assets/calendar.png')} />
-                                <Text style={{ color: "#505056" }}>{monthName}{route.params.acceptedMDetailss.requested_at.split("-")[0]},{route.params.acceptedMDetailss.requested_at.split("-")[2].split(" ")[0]}</Text>
+                                <Text style={{ color: "#505056" }}>{monthName}{route.params.acceptedMDetails.requested_at.split("-")[0]},{route.params.acceptedMDetails.requested_at.split("-")[2].split(" ")[0]}</Text>
                             </View>
                         </View>
                     </View>
@@ -105,12 +131,12 @@ const InvoicePage = ({ route }) => {
                             </View>
                             <View style={[styles.txtContainerTwoChild]}>
                                 <View style={[styles.everyTxtConatiner, { borderBottomColor: "", borderBottomWidth: 0 }]}>
-                                    <Text style={styles.txt}>{route.params.acceptedMDetailss.service_types[0].service_name.charAt(0).toUpperCase() + route.params.acceptedMDetailss.service_types[0].service_name.slice(1)}</Text>
-                                    <Text style={styles.txt}>₹{route.params.acceptedMDetailss.service_types[0].price}</Text>
+                                    <Text style={styles.txt}>{route.params.acceptedMDetails.service_types[0].service_name.charAt(0).toUpperCase() + route.params.acceptedMDetails.service_types[0].service_name.slice(1)}</Text>
+                                    <Text style={styles.txt}>₹{route.params.acceptedMDetails.service_types[0].price}</Text>
                                 </View>
                                 <View style={[styles.everyTxtConatiner, { borderBottomColor: "", borderBottomWidth: 0 }]}>
                                     <Text style={styles.txt}>Service charge</Text>
-                                    <Text style={styles.txt}>₹{route.params.totalAmountData.service_charge}</Text>
+                                    <Text style={styles.txt}>₹{amountRelatedData.service_charge}</Text>
                                 </View>
                             </View>
                             <View style={[styles.txtContainerTwoChild]}>
@@ -119,13 +145,13 @@ const InvoicePage = ({ route }) => {
                                     <Text style={styles.txt}>₹20.00</Text>
                                 </View> */}
                                 <View style={[styles.everyTxtConatiner, { borderBottomColor: "", borderBottomWidth: 0 }]}>
-                                    <Text style={styles.txt}>Discount {route.params.totalAmountData.discount}</Text>
-                                    <Text style={styles.txt}>₹{route.params.totalAmountData.discount}</Text>
+                                    <Text style={styles.txt}>Discount {amountRelatedData.discount}</Text>
+                                    <Text style={styles.txt}>₹{amountRelatedData.discount}</Text>
                                 </View>
                             </View>
                             <View style={styles.everyTxtConatiner}>
                                 <Text style={styles.txt}>Total amount</Text>
-                                <Text style={styles.txt}>₹{route.params.totalAmountData.total_amount}</Text>
+                                <Text style={styles.txt}>₹{amountRelatedData.total_amount}</Text>
                             </View>
                             <View style={[styles.noteIconTxtView, { width: "20%", alignSelf: "center", position: "absolute", bottom: "26%" }]}>
                                 <Image source={require("./assets/notes.png")} style={styles.noteIcon} />

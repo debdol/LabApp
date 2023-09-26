@@ -99,7 +99,7 @@ export default function App() {
           setUserCarNumber(res.data.data.cars[0].car_number);
           setUserState(res.data.data.state);
           setUserPinCode(res.data.data.pin_code);
-
+          // console.log("res.data.data.card_number in app.js :", res.data.data.card_number);
           if (res.data.data.card_number) {
             const cardNumber = res.data.data.card_number;
             const firstFourNum = cardNumber[0] + cardNumber[1] + cardNumber[2] + cardNumber[3];

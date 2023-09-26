@@ -9,7 +9,7 @@ import MapView, { PROVIDER_GOOGLE, Marker, MapCircle, } from 'react-native-maps'
 import { baseUrl } from './APIs';
 import Loading from './Loading';
 
-const Mechanicsss = () => {
+const Mechanicsss = ({ route }) => {
     const navigation = useNavigation();
     const { postServiceRequestDetails, postUserlat, postUserLong, getPageName, postUnavailable, getUnavailable } = useContext(StyleContext);
     const [markers, setMarkers] = useState();
@@ -25,16 +25,20 @@ const Mechanicsss = () => {
         }
     }, [mechanicsDetails]);
 
+    // useEffect(() => {
+    //     setMechanicsDetails(route.params.acceptedMDetails[0].mechanic);
+    // }, [route.params.acceptedMDetails])
+
 
     useEffect(() => {
         if (postServiceRequestDetails) {
-            console.log("status in mechanicss page :", postServiceRequestDetails[0].mechanic);
+            // console.log("status in mechanicss page :", postServiceRequestDetails[0].mechanic);
             if (postServiceRequestDetails.length != 0) {
                 if (postServiceRequestDetails[0].status === "accepted") {
                     navigation.navigate("YourMechanics", { acceptedMDetails: postServiceRequestDetails[0] });
-                } else if (postServiceRequestDetails[0].status === "initiated") {
-                    navigation.navigate("Cart", { acceptedMDetails: postServiceRequestDetails[0] });
-                    getPageName("Cart")
+                } else if (postServiceRequestDetails[0].status === "payment Initiated") {
+                    navigation.navigate("InvoicePage", { acceptedMDetails: postServiceRequestDetails[0] });
+                    // getPageName("Cart")
                 } else if (postServiceRequestDetails[0].status === "not available") {
                     // console.log("mechanicsDetails is FALSE now");
                     setMechanicsDetails(false);

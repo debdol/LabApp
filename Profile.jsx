@@ -21,7 +21,7 @@ import FormData from 'form-data';
 const Profile = () => {
   const navigation = useNavigation();
   const { getMainPage, getPageName, postUserName, postUserNumber, postUserAddress, postUserEmail, postUserCarModel, postUserCarNumber, postUserLog, postUserImg, getUpdateImg, postUpdateImg } = useContext(StyleContext);
-  // console.log("postUserImg in profile page :", postUserImg);
+  // console.log("postUserImg in profile page :", postUserLog);
   const logOutHandler = async () => {
     axios.post("http://43.204.88.205:90/logout-user", {}, {
       headers: {
