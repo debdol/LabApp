@@ -82,9 +82,9 @@ const Profile = () => {
     <SafeAreaView>
       <ScrollView style={styles.mainView} showsVerticalScrollIndicator={false}>
         <Text style={styles.heading}>Profile</Text>
-        {postUserImg ? <ImageBackground style={styles.imgAndCameraView} source={postUserImg ? { uri: postUserImg } : require("./assets/profileAvtar.png")} imageStyle={{ borderRadius: 50 }}>
+        <ImageBackground style={styles.imgAndCameraView} source={postUserImg ? { uri: postUserImg } : require("./assets/profileAvtar.png")} imageStyle={{ borderRadius: 50 }}>
           <AntDesign name='camera' size={20} style={styles.cameraStyle} onPress={picPicker} />
-        </ImageBackground> : null}
+        </ImageBackground>
         <View style={styles.editProfileIconTxtView}>
           <TouchableOpacity style={styles.editProfileBtn} onPress={() => navigation.navigate("EditProfile")}>
             <FontAwesome name='edit' size={22} style={styles.editProfileIcon} />

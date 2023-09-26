@@ -28,8 +28,8 @@ const Mechanicsss = () => {
 
     useEffect(() => {
         if (postServiceRequestDetails) {
+            console.log("status in mechanicss page :", postServiceRequestDetails[0].mechanic);
             if (postServiceRequestDetails.length != 0) {
-                // console.log("status in mechanicss page :", postServiceRequestDetails);
                 if (postServiceRequestDetails[0].status === "accepted") {
                     navigation.navigate("YourMechanics", { acceptedMDetails: postServiceRequestDetails[0] });
                 } else if (postServiceRequestDetails[0].status === "initiated") {

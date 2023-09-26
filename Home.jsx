@@ -180,7 +180,7 @@ const Home = () => {
   //Call the openService Request Detail end point for checking status.................................................
   useEffect(() => {
     if (postUserLog) {
-      // console.log("postUnavailable :", postUnavailable);
+      // console.log("postUnavailable :", postUserLog);
       axios.get(openServiceRequestDetails, {
         headers: {
           'Authorization': `Bearer ${postUserLog}`,
