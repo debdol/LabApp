@@ -187,8 +187,8 @@ const Home = () => {
         }
       })
         .then((res) => {
+          // console.log("postUnavailable :", res.data.data[0].status);
           if (res.data.data.length !== 0) {
-            // console.log("postUnavailable :", res.data.data[0].status);
             if (res.data.data[0].status === "accepted" && gotLatLongIndicator === true) {
               navigation.navigate("YourMechanics", { acceptedMDetails: res.data.data[0] });
               getPageName("Mechanic");

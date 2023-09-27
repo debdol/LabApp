@@ -1,8 +1,9 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity, Linking } from 'react-native'
+import { StyleSheet, Text, View, Image, TouchableOpacity, Linking, Alert } from 'react-native'
 import React, { useState, useEffect, useContext } from 'react'
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import sha256 from 'sha256';
 const Buffer = require("buffer").Buffer;
+import InAppBrowser from 'react-native-inappbrowser-reborn';
 import Entypo from 'react-native-vector-icons/Entypo';
 import { StyleContext } from './App';
 import { useNavigation } from '@react-navigation/native';
@@ -11,12 +12,96 @@ import axios from 'axios';
 import { calculateTotalAmount } from './APIs';
 
 const InvoicePage = ({ route }) => {
-    const { postUserLocationDetails, postUserLog, postUserName, postUserImage, postServiceRequestDetails, postUserNumber } = useContext(StyleContext);
+    const { postUserLocationDetails, postUserLog, postUserName, postUserImage, postServiceRequestDetails } = useContext(StyleContext);
     const navigation = useNavigation();
     const [routedData, setRoutedData] = useState();
     const [amountRelatedData, setAmountRelatedData] = useState();
     const [monthName, setMonthName] = useState();
-    // console.log("{ route } :", postUserNumber);
+    const [checkOutDetails, setCheckOutDetails] = useState(null);
+    const [services, setServices] = useState(null);
+    const [servicesValue, setServicesValue] = useState(null);
+    // console.log("{ route } :", postUserLog);
+
+    useEffect(() => {
+        axios.get('http://43.204.88.205:90/get-checkout-details', {
+            headers: {
+                'Authorization': `Bearer ${postUserLog}`,
+                'Content-Type': 'application/json'
+            }
+        })
+            .then((res) => {
+                console.log("response_in_checkOutDetails:", res.data.data);
+                // navigation.navigate("Mechanicsss");
+                setCheckOutDetails(res.data.data)
+            })
+            .catch((err) => console.log("error_in_checkOutDetails :", err))
+    }, [])
+
+
+
+    async function openLink(url) {
+        try {
+            //   const url = 'https://github.com/proyecto26'
+            if (await InAppBrowser.isAvailable()) {
+                const result = await InAppBrowser.open(url, {
+                    // iOS Properties
+                    dismissButtonStyle: 'cancel',
+                    preferredBarTintColor: '#453AA4',
+                    preferredControlTintColor: 'white',
+                    readerMode: false,
+                    animated: true,
+                    modalPresentationStyle: 'fullScreen',
+                    modalTransitionStyle: 'coverVertical',
+                    modalEnabled: true,
+                    enableBarCollapsing: false,
+                    // Android Properties
+                    showTitle: true,
+                    toolbarColor: '#6200EE',
+                    secondaryToolbarColor: 'black',
+                    navigationBarColor: 'black',
+                    navigationBarDividerColor: 'white',
+                    enableUrlBarHiding: true,
+                    enableDefaultShare: true,
+                    forceCloseOnRedirection: false,
+                    // Specify full animation resource identifier(package:anim/name)
+                    // or only resource name(in case of animation bundled with app).
+                    animations: {
+                        startEnter: 'slide_in_right',
+                        startExit: 'slide_out_left',
+                        endEnter: 'slide_in_left',
+                        endExit: 'slide_out_right'
+                    },
+                    headers: {
+                        'my-custom-header': 'my custom header value'
+                    }
+                })
+                await this.sleep(800);
+                Alert.alert(JSON.stringify(result))
+                // console.log(JSON.stringify(result));
+                const options = {
+                    method: 'GET',
+                    url: `https://api-preprod.phonepe.com/apis/pg-sandbox/pg/v1/status/${checkOutDetails.merchantId}/${checkOutDetails.merchantTransactionId}`,
+                    headers: { accept: 'application/json', 'Content-Type': 'application/json' }
+                };
+
+                axios
+                    .request(options)
+                    .then(function (response) {
+                        console.log("response_to_check_payment_status :", response.data);
+                    })
+                    .catch(function (error) {
+                        console.error("error_to_check_payment_status:", error);
+                    });
+            }
+            else {
+                Linking.openURL(url);
+                console.log("url_in_else_statement :", url);
+            }
+        } catch (error) {
+            console.log("error_msg :", error.message);
+        }
+    }
+
 
 
     useEffect(() => {
@@ -35,7 +120,11 @@ const InvoicePage = ({ route }) => {
                 }
             })
                 .then((res) => {
-                    // console.log("total ammount:", res.data.data[0]);
+                    let services = Object.keys(res.data.data[0].services);
+                    let servicesValue = Object.values(res.data.data[0].services);
+                    setServices(services);
+                    setServicesValue(servicesValue);
+                    // console.log("total ammount:", servicesValue);
                     setAmountRelatedData(res.data.data[0])
                 })
                 .catch((error) => console.log("error in total amount :", error))
@@ -53,43 +142,47 @@ const InvoicePage = ({ route }) => {
     }, [route.params.acceptedMDetails])
 
     const payMentHandeler = async () => {
-        const saltKey = '892f68a5-f75e-40ce-96cc-0a71a5b2abc7';
-        const payload = {
-            "merchantId": "ROADUAT",
-            "merchantTransactionId": "MT7850590068188104",
-            "merchantUserId": "MUID123",
-            "amount": 100 * amountRelatedData.total_amount,
-            "redirectUrl": "roadserve://.MainActivity",
-            "redirectMode": "POST",
-            "callbackUrl": "roadserve://.MainActivity",
-            "mobileNumber": postUserNumber,
-            "paymentInstrument": {
-                "type": "PAY_PAGE"
+        if (checkOutDetails) {
+            // console.log("total_amount :", checkOutDetails.merchantTransactionId);
+            const saltKey = 'a344f36b-a485-410a-94ae-61dcad8a0fcb';
+            const payload = {
+                "merchantId": checkOutDetails.merchantId,
+                "merchantTransactionId": checkOutDetails.merchantTransactionId,
+                "merchantUserId": checkOutDetails.merchantUserId,
+                "amount": 100 * amountRelatedData.total_amount,
+                "redirectUrl": "roadserve://.MainActivity",
+                "redirectMode": "POST",
+                "callbackUrl": "roadserve://.MainActivity",
+                "mobileNumber": checkOutDetails.mobileNumber,
+                "paymentInstrument": {
+                    "type": "PAY_PAGE"
+                }
             }
+
+            let encodedAuth = new Buffer(JSON.stringify(payload)).toString("base64");
+            let shaValue = sha256(encodedAuth + "/pg/v1/pay" + saltKey) + "###" + 1;
+
+            const options = {
+                method: 'POST',
+                url: 'https://api.phonepe.com/apis/hermes/pg/v1/pay',
+                headers: {
+                    accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    'X-VERIFY': shaValue
+                },
+                data: { request: encodedAuth }
+            };
+
+            axios
+                .request(options)
+                .then((response) => {
+                    // console.log(response.data.data.instrumentResponse.redirectInfo.url);
+                    openLink(response.data.data.instrumentResponse.redirectInfo.url)
+                })
+                .catch((error) => {
+                    console.error("error is in payment :", error);
+                });
         }
-        let encodedAuth = new Buffer(JSON.stringify(payload)).toString("base64");
-        let shaValue = sha256(encodedAuth + "/pg/v1/pay" + saltKey) + "###" + 1;
-
-        const options = {
-            method: 'POST',
-            url: 'https://api-preprod.phonepe.com/apis/pg-sandbox/pg/v1/pay',
-            headers: {
-                accept: 'application/json',
-                'Content-Type': 'application/json',
-                'X-VERIFY': shaValue
-            },
-            data: { request: encodedAuth }
-        };
-
-        axios
-            .request(options)
-            .then((response) => {
-                // console.log(response.data.data.instrumentResponse.redirectInfo.url);
-                Linking.openURL(response.data.data.instrumentResponse.redirectInfo.url);
-            })
-            .catch((error) => {
-                console.error("error is in payment :", error);
-            });
     }
 
     if (postUserLocationDetails && amountRelatedData) {
@@ -131,8 +224,8 @@ const InvoicePage = ({ route }) => {
                             </View>
                             <View style={[styles.txtContainerTwoChild]}>
                                 <View style={[styles.everyTxtConatiner, { borderBottomColor: "", borderBottomWidth: 0 }]}>
-                                    <Text style={styles.txt}>{route.params.acceptedMDetails.service_types[0].service_name.charAt(0).toUpperCase() + route.params.acceptedMDetails.service_types[0].service_name.slice(1)}</Text>
-                                    <Text style={styles.txt}>₹{route.params.acceptedMDetails.service_types[0].price}</Text>
+                                    <Text style={styles.txt}>{services[0].charAt(0).toUpperCase() + services[0].slice(1)}</Text>
+                                    <Text style={styles.txt}>₹{servicesValue}</Text>
                                 </View>
                                 <View style={[styles.everyTxtConatiner, { borderBottomColor: "", borderBottomWidth: 0 }]}>
                                     <Text style={styles.txt}>Service charge</Text>
