@@ -34,6 +34,7 @@ const Home = () => {
       // The screen is focused
       // Call any action
       getPageName("Home");
+      dataChecking();
     });
 
     // Return the function to unsubscribe from the event so it gets removed on unmount
@@ -44,7 +45,7 @@ const Home = () => {
   const getLocation = () => {
     Geolocation.getCurrentPosition(
       (position) => {
-        // console.log(position);
+        // console.log(position.coords.latitude);
         setUserLatitude(position.coords.latitude);
         getUserlat(position.coords.latitude);
         setUserLongitude(position.coords.longitude);
@@ -155,15 +156,18 @@ const Home = () => {
 
   //Get the location name of user............................................
   const getThePlaceName = () => {
+    console.log("userLongitude ,userLatitude:", userLongitude, userLatitude);
     if (userLatitude && userLongitude) {
       axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${userLatitude},${userLongitude}&key=`)
         .then((res) => {
-          // console.log("responce in geoCoding :", res.data.results[4].formatted_address.split(",")[3]);
-          setFullAddress(res.data.results[4].formatted_address);
-          setPlaceName(res.data.results[4].formatted_address.split(",")[3]);
-          setStateName(res.data.results[4].formatted_address.split(",")[4]);
-          getUserLocationDetails(res.data.results[4].formatted_address);
-          // setGotLatLongIndicator(true);
+          console.log("responce in geoCoding :", res.data.results);
+          if (res.data.results != 0) {
+            setFullAddress(res.data.results[4].formatted_address);
+            setPlaceName(res.data.results[4].formatted_address.split(",")[3]);
+            setStateName(res.data.results[4].formatted_address.split(",")[4]);
+            getUserLocationDetails(res.data.results[4].formatted_address);
+            // setGotLatLongIndicator(true);
+          }
         })
         .catch((error) => { console.log("error of homePage in geoCoding :", error) })
     } else {
@@ -177,8 +181,10 @@ const Home = () => {
     getThePlaceName();
   }, [userLongitude, userLatitude]);
 
+
+
   //Call the openService Request Detail end point for checking status.................................................
-  useEffect(() => {
+  const dataChecking = () => {
     if (postUserLog) {
       axios.get(openServiceRequestDetails, {
         headers: {
@@ -187,32 +193,53 @@ const Home = () => {
         }
       })
         .then((res) => {
-          // console.log("postUnavailable :", res.data.data[0].status);
+          // console.log("postUnavailable :", res.data);
+          // if (res.data.data.length !== 0) {
+          //   if (res.data.data[0].status === "accepted" && gotLatLongIndicator === true) {
+          //     navigation.navigate("YourMechanics", { acceptedMDetails: res.data.data[0] });
+          //     getPageName("Mechanic");
+          //   } else if (res.data.data[0].status === "payment Initiated" && gotLatLongIndicator === true && res.data.data[0].service_types[0].status === "active") {
+          //     navigation.navigate("InvoicePage", { acceptedMDetails: res.data.data[0] });
+          //     // console.log("its running");
+          //   } else if (res.data.data[0].status === "not available" && gotLatLongIndicator === true) {
+          //     getUnavailable(true);
+          //     navigation.navigate("Mechanicsss", { acceptedMDetails: res.data.data[0] });
+          //   } else if (res.data.data[0].status === "active") {
+          //     navigation.navigate("Mechanicsss", { acceptedMDetails: res.data.data[0] });
+          //     getUnavailable(false);
+          //   }
+          // }
           if (res.data.data.length !== 0) {
-            if (res.data.data[0].status === "accepted" && gotLatLongIndicator === true) {
-              navigation.navigate("YourMechanics", { acceptedMDetails: res.data.data[0] });
-              getPageName("Mechanic");
-            } else if (res.data.data[0].status === "payment Initiated" && gotLatLongIndicator === true && res.data.data[0].service_types[0].status === "active") {
+            if (res.data.data[0].status === "payment Initiated" && res.data.data[0].service_types[0].status === "active") {
               navigation.navigate("InvoicePage", { acceptedMDetails: res.data.data[0] });
               // console.log("its running");
-            } else if (res.data.data[0].status === "not available" && gotLatLongIndicator === true) {
-              getUnavailable(true);
+            } else if (res.data.data[0].status === "active") {
+              // console.log("chol6e")
               navigation.navigate("Mechanicsss", { acceptedMDetails: res.data.data[0] });
+              getUnavailable(false);
+            } else if (res.data.data[0].status === "not available") {
+              // console.log("not available")
+              navigation.navigate("Mechanicsss", { acceptedMDetails: res.data.data[0] });
+              getUnavailable(true);
+            } else if (res.data.data[0].status === "initiated") {
+              navigation.navigate("Cart", { acceptedMDetails: res.data.data[0] });
+              getPageName("Cart")
+            } else if (res.data.data[0].status === "accepted") {
+              navigation.navigate("YourMechanics", { acceptedMDetails: res.data.data });
             }
-            // else if (res.data.data[0].status === "active"){
-            //   navigation.navigate("Mechanicsss", { acceptedMDetails: res.data.data[0] });
-            // }
           }
         })
         .catch((error) => { console.log("error in user data in home page:", error) })
     };
-
-    //calling openServiceRequestDetails API 
+  }
+  //calling openServiceRequestDetails API 
+  useEffect(() => {
     setTimeout(() => {
-      setGotLatLongIndicator(!gotLatLongIndicator);
-      // console.log("serviceRequestData")
-    }, 1000);
-  }, [gotLatLongIndicator]);
+      setGotLatLongIndicator(true);
+      // console.log("chol6e")
+      dataChecking();
+    }, 5000)
+  }, []);
 
   useEffect(() => {
     nearByMechanicsApi_Handler();

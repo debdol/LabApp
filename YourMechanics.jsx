@@ -107,6 +107,7 @@ const YourMechanics = ({ route }) => {
                             <Text style={[styles.txts, styles.txtsKey]}>Your location : </Text>
                             <Text style={[styles.txts, styles.txtsResult]}>{postUserLocationDetails.split(",")[2]},{postUserLocationDetails.split(",")[4]}</Text>
                         </View> : null}
+                        {/* CAR NAME SHOULD BE Dynamic............................................... */}
                         <View style={styles.orderNumberView}>
                             <Text style={[styles.txts, styles.txtsKey]}>Car name : </Text>
                             <Text style={[styles.txts, styles.txtsResult]}>TATA</Text>

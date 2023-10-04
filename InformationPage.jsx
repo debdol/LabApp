@@ -44,7 +44,7 @@ const InformationPage = () => {
 
     //Creating  your service request.....................................
     if (postUserService && serviceCode) {
-      navigation.navigate("Mechanicsss");
+      // navigation.navigate("InvoicePage")
       // console.log("token : ",postUserLog);
       axios.post(creatServiceRequest, serviceData, {
         headers: {
@@ -77,7 +77,7 @@ const InformationPage = () => {
       })
         .then((res) => {
           // console.log("res_in_requestdetails_in_informationPage:", res.data.data[0])
-          // navigation.navigate("Mechanicsss");
+          navigation.navigate("InvoicePage", { acceptedMDetails: res.data.data[0] });
           setServiceRequestData(false);
           getServiceRequestDetails(res.data.data);
         })

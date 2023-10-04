@@ -6,16 +6,17 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import { StyleContext } from './App';
 import MapView, { PROVIDER_GOOGLE, Marker, MapCircle, } from 'react-native-maps';
-import { baseUrl } from './APIs';
+import { baseUrl, openServiceRequestDetails } from './APIs';
+import axios from 'axios';
 import Loading from './Loading';
 
 const Mechanicsss = ({ route }) => {
     const navigation = useNavigation();
-    const { postServiceRequestDetails, postUserlat, postUserLong, getPageName, postUnavailable, getUnavailable } = useContext(StyleContext);
+    const { postServiceRequestDetails, postUserlat, postUserLong, getPageName, postUnavailable, getUnavailable, postUserLog } = useContext(StyleContext);
     const [markers, setMarkers] = useState();
     const [mechanicsDetails, setMechanicsDetails] = useState();
     // useEffect(() => {
-    //     console.log("postServiceRequestDetails :", postServiceRequestDetails);
+    //     console.log("postServiceRequestDetails :", route.params.acceptedMDetails.mechanic);
     // }, [])
 
     useEffect(() => {
@@ -25,31 +26,47 @@ const Mechanicsss = ({ route }) => {
         }
     }, [mechanicsDetails]);
 
-    // useEffect(() => {
-    //     setMechanicsDetails(route.params.acceptedMDetails[0].mechanic);
-    // }, [route.params.acceptedMDetails])
-
-
     useEffect(() => {
-        if (postServiceRequestDetails) {
-            // console.log("status in mechanicss page :", postServiceRequestDetails[0].mechanic);
-            if (postServiceRequestDetails.length != 0) {
-                if (postServiceRequestDetails[0].status === "accepted") {
-                    navigation.navigate("YourMechanics", { acceptedMDetails: postServiceRequestDetails[0] });
-                } else if (postServiceRequestDetails[0].status === "payment Initiated") {
-                    navigation.navigate("InvoicePage", { acceptedMDetails: postServiceRequestDetails[0] });
-                    // getPageName("Cart")
-                } else if (postServiceRequestDetails[0].status === "not available") {
-                    // console.log("mechanicsDetails is FALSE now");
-                    setMechanicsDetails(false);
-                    getUnavailable(true);
-                }
-                else {
-                    setMechanicsDetails(postServiceRequestDetails[0].mechanic);
-                }
-            }
+        if (route.params) {
+            setMechanicsDetails(route.params.acceptedMDetails.mechanic);
+            // console.log("mechanics datailss :",route.params.acceptedMDetails.mechanic);
         }
-    }, [postServiceRequestDetails]);
+    }, [route.params]);
+
+    const dataChecking = () => {
+        // console.log("mechanics datailss :");
+        if (postUserLog) {
+            axios.get(openServiceRequestDetails, {
+                headers: {
+                    'Authorization': `Bearer ${postUserLog}`,
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then((res) => {
+                    // console.log("status :", res.data.data[0].status);
+                    if (res.data) {
+                        if (res.data.data.length !== 0) {
+                            if (res.data.data[0].status === "accepted") {
+                                navigation.navigate("YourMechanics", { acceptedMDetails: res.data.data });
+                            }
+                            else if (res.data.data[0].status === "not available") {
+                                // console.log("mechanicsDetails is FALSE now");
+                                setMechanicsDetails(false);
+                                getUnavailable(true);
+                            } else if (res.data.data[0].status === "initiated") {
+                                navigation.navigate("Cart", { acceptedMDetails: res.data.data[0] });
+                                getPageName("Cart")
+                            }
+                        }
+                    }
+                })
+                .catch((error) => { console.log("error in user data in mechanicsss page:", error) })
+        };
+    }
+    setInterval(() => {
+        dataChecking();
+    }, 10000)
+
 
     const mechanicsList_Handler = ({ item, index }) => {
         // console.log("mechanics itemList :", item);

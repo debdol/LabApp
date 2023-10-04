@@ -13,6 +13,7 @@ import Reviews from './MehcanicsAboutSpecializationReviews/Reviews';
 import Specialization from './MehcanicsAboutSpecializationReviews/Specialization';
 import axios from 'axios';
 import Loading from './Loading';
+import { serviceTypess } from './APIs';
 
 const MechanicsDetails = ({ route }) => {
     const [optionPage, setOptionPage] = useState("About");
@@ -22,7 +23,7 @@ const MechanicsDetails = ({ route }) => {
     const [year, setYear] = useState();
     const [serviceTypes, setServiceTypes] = useState();
 
-    // console.log("postServiceRequestDetails :", postServiceRequestDetails[0].service_types);
+    // console.log("postServiceRequestDetails :", route.params.item);
     useEffect(() => {
         let dates = route.params.item.registered_on.split("-");
         let year = dates[2]
@@ -33,7 +34,7 @@ const MechanicsDetails = ({ route }) => {
     }, [route])
 
     useEffect(() => {
-        axios.get("http://43.204.88.205:90/service-types")
+        axios.get(serviceTypess)
             .then((res) => {
                 setServiceTypes(res.data.data);
             })

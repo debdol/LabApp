@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View, Linking, Alert } from 'react-native'
+import { Image, StyleSheet, Text, TouchableOpacity, View, Linking, Alert, TextInput, FlatList, SafeAreaView, ScrollView, Dimensions } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 
 import Entypo from 'react-native-vector-icons/Entypo';
@@ -9,7 +9,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import LinearGradient from 'react-native-linear-gradient';
 import axios from 'axios';
 import { StyleContext } from './App';
-import { calculateTotalAmount, serviceTypes } from './APIs';
+import { calculateTotalAmount, serviceTypess } from './APIs';
 import Loading from './Loading';
 import { useNavigation } from '@react-navigation/native';
 // import { Alert, VStack, HStack, IconButton, Box, Center, CloseIcon } from "native-base";
@@ -23,11 +23,76 @@ const Cart = ({ route }) => {
   const [showServiceTypes, setShowServiceTypes] = useState(false);
   const [routedData, setRoutedData] = useState();
 
-  // useEffect(() => {
-  //   if (route.params) {
-  //     setRoutedData(route.params.acceptedMDetails);
-  //   }
-  // }, [route.params])
+  const allProducts = [
+    {
+      image: "./assets/wheelProduct.png",
+      rating: "5",
+      name: "Apollo Tyres",
+      price: "120",
+    },
+    {
+      image: "./assets/wheelProduct.png",
+      rating: "5",
+      name: "Apollo Tyres",
+      price: "120",
+    },
+    {
+      image: "./assets/wheelProduct.png",
+      rating: "5",
+      name: "Apollo Tyres",
+      price: "120",
+    },
+    {
+      image: "./assets/wheelProduct.png",
+      rating: "5",
+      name: "Apollo Tyres",
+      price: "120",
+    },
+    {
+      image: "./assets/wheelProduct.png",
+      rating: "5",
+      name: "Apollo Tyres",
+      price: "120",
+    }
+  ]
+  const allProductHandler = (item, index) => {
+    // console.log("item :", item.item.image)
+    return (
+      <TouchableOpacity>
+        <View style={{ borderColor: "#E0EAEF", borderWidth: 1, width: "48%", height: 235, padding: 6, flexDirection: "column", justifyContent: "space-evenly", backgroundColor: "#FFF", borderRadius: 10,}}>
+          <Image source={require('./assets/wheelProduct.png')} style={{ alignSelf: "center" }} />
+          <View style={styles.ratingView}>
+            <View style={{ flexDirection: "row" }}>
+              <Image source={require('./assets/Star.png')} />
+              <Text style={styles.ratingsTxt}>{item.item.rating}</Text>
+            </View>
+            <TouchableOpacity>
+              <AntDesign name='hearto' size={20} />
+            </TouchableOpacity>
+          </View>
+          <Text style={styles.productName}>{item.item.name}</Text>
+          <View style={styles.priceView}>
+            <FontAwesome name='inr' size={15} />
+            <Text style={styles.priceTxt}>{item.item.price}</Text>
+          </View>
+          <View style={styles.cardFooterView}>
+            <TouchableOpacity style={styles.BuyBtn}>
+              <Text style={styles.BuyBtnTxt}>Buy</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.cartBtn}>
+              <Entypo name='shopping-cart' size={20} />
+            </TouchableOpacity>
+          </View>
+        </View>
+      </TouchableOpacity>
+    )
+  }
+
+  useEffect(() => {
+    if (route.params) {
+      setRoutedData(route.params.acceptedMDetails);
+    }
+  }, [route.params])
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
@@ -42,22 +107,22 @@ const Cart = ({ route }) => {
   // console.log("route_params_acceptedMDetails:", route.params.acceptedMDetails.service_types[0].status);
 
   //Total amount checkkk.........................
-  // useEffect(() => {
-  //   if (routedData) {
-  //     axios.get(`${calculateTotalAmount}${routedData._id}`, {
-  //       headers: {
-  //         'Authorization': `Bearer ${postUserLog}`,
-  //         'Content-Type': 'application/json'
-  //       }
-  //     })
-  //       .then((res) => {
-  //         // console.log("total ammount:", route.params.acceptedMDetails);
-  //         setAmountRelatedData(res.data.data[0])
-  //         setTotalAmount(res.data.data[0].total_amount);
-  //       })
-  //       .catch((error) => console.log("error in total amount :", error))
-  //   }
-  // }, [routedData])
+  useEffect(() => {
+    if (routedData) {
+      axios.get(`${calculateTotalAmount}${routedData._id}`, {
+        headers: {
+          'Authorization': `Bearer ${postUserLog}`,
+          'Content-Type': 'application/json'
+        }
+      })
+        .then((res) => {
+          // console.log("total ammount:", route.params.acceptedMDetails);
+          setAmountRelatedData(res.data.data[0])
+          setTotalAmount(res.data.data[0].total_amount);
+        })
+        .catch((error) => console.log("error in total amount :", error))
+    }
+  }, [routedData])
 
   //Go to Invoice Page......................................................
   // const goToInvoicePage = () => {
@@ -70,11 +135,12 @@ const Cart = ({ route }) => {
 
   //Making an array with your serviceTypes..................................
   useEffect(() => {
-    axios.get(serviceTypes)
+    // console.log("serviceTypes :",serviceTypess)
+    axios.get(serviceTypess)
       .then((res) => {
         setProblems(res.data.data.map(item => item.name.charAt(0).toUpperCase() + item.name.slice(1)))
       })
-      .catch((err) => console.log("error :", err));
+      .catch((err) => console.log("error_in_service_types:", err));
   }, []);
 
   if (routedData) {
@@ -174,9 +240,11 @@ const Cart = ({ route }) => {
               <FontAwesome name='inr' style={styles.totalPrice} />
             </View>
           </View>
-          <TouchableOpacity onPress={() => {
-            goToInvoicePage();
-          }}>
+          <TouchableOpacity
+          // onPress={() => {
+          //   goToInvoicePage();
+          // }}
+          >
             <View style={styles.checkOutBtnView}>
               <Text></Text>
               <Text style={styles.checkOutBtnTxt}>Checkout</Text>
@@ -188,7 +256,57 @@ const Cart = ({ route }) => {
     )
   } else {
     return (
-      <Loading />
+      // <Loading />
+      <>
+        <View style={styles.productHeadingView}>
+          <AntDesign name='left' size={29} style={styles.headingIcon} onPress={() => navigation.goBack()} />
+          <Text style={styles.productHeadingTxt}>Shop</Text>
+          <Fontisto name='bell' size={30} style={{ color: "black" }} />
+        </View>
+        <View style={styles.ProductContainer}>
+          <View style={styles.productSlideChildContainer}>
+            <Image source={require('./assets/cartimg.png')} />
+            <View style={styles.productSlideTxtView}>
+              <Text style={styles.safeOnTheRoad}>SAFE ON THE ROAD</Text>
+              <TouchableOpacity style={styles.buyNowBtn}>
+                <Text style={{ fontFamily: "Forza-Bold" }}>Buy Now</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+          <View style={styles.locationView}>
+            <View style={{ width: "50%", flexDirection: "row", gap: 10 }}>
+              <View style={styles.locationContainer}>
+                <Entypo name='location-pin' style={styles.locationI} size={24} />
+              </View>
+              <TouchableOpacity>
+                <Text style={{
+                  fontWeight: "400",
+                  fontSize: 12,
+                  color: "black",
+                  fontFamily: "Forza-Bold"
+                }}>your location</Text>
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <Text style={{
+                    color: "#3D4759", fontSize: 12, fontWeight: "500", letterSpacing: 0.5, fontFamily: "Forza-Bold",
+                  }} ellipsizeMode='tail' numberOfLines={1}>placeName,</Text>
+                  <Text style={{ fontFamily: "Forza-Bold", fontSize: 12, color: "#3D4759", }}>stateName</Text>
+                  <AntDesign name="caretup" style={{ color: "#201E1E", textAlignVertical: "center", padding: 2 }} />
+                </View>
+              </TouchableOpacity>
+            </View>
+          </View>
+          <View style={styles.inputView}>
+            <AntDesign name='search1' size={20} style={{ fontWeight: "400", marginLeft: 22, fontSize: 15, color: "black", fontFamily: "Forza-Bold" }} />
+            <TextInput style={styles.inputStyle} placeholder='Search' />
+          </View>
+          <View style={styles.ourProductHeadingView}>
+            <Text style={styles.ourProductTxt}>Our products</Text>
+            <FontAwesome name='sliders' size={25} style={{ color: "black" }} />
+          </View>
+          <Text style={styles.ourProductTxt}>All products</Text>
+          <FlatList data={allProducts} keyExtractor={(item, index) => index} renderItem={({ item, index }) => allProductHandler({ item, index })} />
+        </View>
+      </>
     )
   }
 }
@@ -200,6 +318,8 @@ const styles = StyleSheet.create({
     height: "100%"
   },
   mainContainer: {
+    // borderWidth: 1,
+    // borderColor: "red",
     padding: 16,
     flexDirection: "column",
   },
@@ -498,6 +618,183 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     color: "black",
     padding: 17
+  },
+  //PRODUCTTTTTTTT SECTION...........................
+  ProductContainer: {
+    height: "100%",
+    padding: 9
+  },
+  productHeadingView: {
+    backgroundColor: "#ffffff",
+    paddingVertical: 15,
+    flexDirection: "row",
+    justifyContent: 'space-between',
+    alignItems: "center",
+    borderBottomLeftRadius: 19,
+    borderBottomRightRadius: 19
+    // borderWidth:1,
+    // borderColor:"red",
+  },
+  productHeadingTxt: {
+    fontFamily: "Forza-Bold",
+    fontSize: 20
+  },
+  // productSlideCard: {
+  //   alignSelf: "center",
+  //   // flexDirection: "column",
+  //   backgroundColor: "#F4B755",
+  //   width: "100%",
+  //   height: "50%",
+  //   padding: 10,
+  //   borderRadius: 16,
+  //   borderColor: "red",
+  //   borderWidth:1
+  // },
+  productSlideChildContainer: {
+    flexDirection: "row",
+    backgroundColor: "#F4B755",
+    justifyContent: "space-between",
+    width: "100%",
+    height: "26%",
+    borderRadius: 16,
+    padding: 10,
+    marginBottom: "3%"
+  },
+  safeOnTheRoad: {
+    fontFamily: "Forza-Black",
+    color: "#1A1A1A",
+  },
+  productSlideTxtView: {
+    // borderWidth: 1,
+    // borderColor: "red",
+    alignItems: "center",
+    flexDirection: 'column',
+    justifyContent: "flex-end"
+  },
+  buyNowBtn: {
+    alignItems: "center",
+    justifyContent: "space-evenly",
+    backgroundColor: "#FFFFFF",
+    borderRadius: 23,
+    width: 160,
+    height: 45,
+  },
+  locationView: {
+    paddingHorizontal: 11,
+    backgroundColor: "#ffffff",
+    paddingVertical: 15,
+    justifyContent: "space-between",
+    alignItems: "center",
+    flexDirection: "row",
+    borderRadius: 19,
+    marginBottom: "3%"
+    // borderWidth: 1,
+    // borderColor: "red",
+  },
+  locationContainer: {
+    backgroundColor: "#F1F7FF",
+    borderWidth: 1,
+    borderColor: "#91BAF6",
+    borderRadius: 22,
+    height: 40,
+    width: 40,
+  },
+  locationI: {
+    top: "19%",
+    left: "17.87%",
+    color: "#FFA514"
+  },
+  inputView: {
+    backgroundColor: "#D7E2F0",
+    // borderWidth: 1,
+    // borderColor: "red" ,
+    borderRadius: 30,
+    flexDirection: "row",
+    alignItems: "center",
+    borderRadius: 33,
+    height: 50,
+    marginBottom: "3%",
+    width: "100%",
+  },
+  inputStyle: {
+    height: 40,
+    width: "88%",
+    padding: 4,
+    color: "#0D0D0D",
+    letterSpacing: 1,
+    fontSize: 15,
+    fontFamily: "Forza-Bold",
+    // backgroundColor: "#D7E2F0",
+    // borderWidth: 1,
+    // borderColor: "red"
+  },
+  ourProductHeadingView: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: "3%",
+    // borderWidth: 1,
+    // borderColor: "red"
+  },
+  ourProductTxt: {
+    fontFamily: "Forza-Bold",
+    fontSize: 22,
+    marginBottom: "3%"
+  },
+  ratingView: {
+    flexDirection: "row",
+    // borderColor:"red",
+    // borderWidth:1,
+    alignItems: "center",
+    justifyContent: "space-between"
+  },
+  ratingsTxt: {
+    color: "#3D4759",
+    fontSize: 15
+  },
+  productName: {
+    fontFamily: "Forza-Bold",
+    fontSize: 18,
+    color: "#3D4759",
+  },
+  priceView: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5
+  },
+  priceTxt: {
+    color: "#3D4759",
+    fontSize: 20,
+    fontFamily: "Forza-Bold"
+  },
+  cardFooterView: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center"
+  },
+  BuyBtn: {
+    // borderWidth: 1,
+    // borderColor: "red",
+    height: 45,
+    width: 95,
+    borderRadius: 25,
+    alignItems: "center",
+    backgroundColor: "#007AFF",
+    padding: 11
+  },
+  BuyBtnTxt: {
+    color: "#FFF",
+    fontFamily: "Forza-Bold"
+  },
+  cartBtn: {
+    height: 45,
+    width: 45,
+    borderRadius: 22,
+    backgroundColor: "#FDF4E6",
+    // borderWidth:1,
+    // borderColor:"red",
+    alignItems: "center",
+    padding: 11
   }
 })
 export default Cart

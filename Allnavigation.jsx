@@ -119,6 +119,9 @@ const Allnavigation = () => {
                                             navigation.navigate("Cart", { acceptedMDetails: res.data.data[0] });
                                             getPageName("Cart")
                                         }
+                                    } else {
+                                        navigation.navigate("Cart");
+                                        getPageName("Cart");
                                     }
                                 })
                                 .catch((error) => { console.log("error in user data in cart :", error) })
