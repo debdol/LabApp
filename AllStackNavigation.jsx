@@ -12,6 +12,7 @@ import MechanicsDetails from './MechanicsDetails';
 import ManuallyLocation from './ManuallyLocation';
 import YourMechanics from './YourMechanics';
 import InvoicePage from './InvoicePage';
+import ProductDetails from './ProductDetails';
 
 const AllStackNavigation = () => {
     return (
@@ -36,6 +37,9 @@ const AllStackNavigation = () => {
                     headerShown: false
                 }))} />
                 <Stack.Screen name="InvoicePage" component={InvoicePage} options={(() => ({
+                    headerShown: false
+                }))} />
+                <Stack.Screen name="ProductDetails" component={ProductDetails} options={(() => ({
                     headerShown: false
                 }))} />
             </Stack.Navigator>

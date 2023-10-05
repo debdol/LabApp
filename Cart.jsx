@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View, Linking, Alert, TextInput, FlatList, SafeAreaView, ScrollView, Dimensions } from 'react-native'
+import { Image, StyleSheet, Text, TouchableOpacity, View, Linking, Alert, TextInput, FlatList, SafeAreaView, Animated, Dimensions } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 
 import Entypo from 'react-native-vector-icons/Entypo';
@@ -16,6 +16,12 @@ import { useNavigation } from '@react-navigation/native';
 
 const Cart = ({ route }) => {
   const navigation = useNavigation();
+  const scrollY = new Animated.Value(0);
+  const diffClamp = Animated.diffClamp(scrollY, 0, 120);
+  const translateY = diffClamp.interpolate({
+    inputRange: [0, 120],
+    outputRange: [0, -120]
+  })
   const { postServiceRequestDetails, postUserlat, postUserLong, getPageName, postUserLog } = useContext(StyleContext);
   const [totalAmount, setTotalAmount] = useState();
   const [amountRelatedData, setAmountRelatedData] = useState();
@@ -26,40 +32,45 @@ const Cart = ({ route }) => {
   const allProducts = [
     {
       image: "./assets/wheelProduct.png",
-      rating: "5",
+      rating: "4.5",
       name: "Apollo Tyres",
-      price: "120",
+      price: "600",
+      original_price :"500"
     },
     {
       image: "./assets/wheelProduct.png",
       rating: "5",
-      name: "Apollo Tyres",
-      price: "120",
+      name: "Apollo Bike",
+      price: "500",
+      original_price :"500"
     },
     {
       image: "./assets/wheelProduct.png",
-      rating: "5",
-      name: "Apollo Tyres",
-      price: "120",
+      rating: "4.9",
+      name: "Apollo Window",
+      price: "400",
+      original_price :"500"
     },
     {
       image: "./assets/wheelProduct.png",
-      rating: "5",
-      name: "Apollo Tyres",
-      price: "120",
+      rating: "4.4",
+      name: "Apollo Door",
+      price: "300",
+      original_price :"500"
     },
     {
       image: "./assets/wheelProduct.png",
-      rating: "5",
-      name: "Apollo Tyres",
-      price: "120",
+      rating: "4",
+      name: "Apollo Mirror",
+      price: "200",
+      original_price :"500"
     }
   ]
   const allProductHandler = (item, index) => {
     // console.log("item :", item.item.image)
     return (
-      <TouchableOpacity>
-        <View style={{ borderColor: "#E0EAEF", borderWidth: 1, width: "48%", height: 235, padding: 6, flexDirection: "column", justifyContent: "space-evenly", backgroundColor: "#FFF", borderRadius: 10,}}>
+      <TouchableOpacity onPress={() => navigation.navigate("ProductDetails", { productDetailss: item })}>
+        <View style={{ borderColor: "#E0EAEF", borderWidth: 1, width: "48%", height: 235, padding: 6, flexDirection: "column", justifyContent: "space-evenly", backgroundColor: "#FFF", borderRadius: 10, }}>
           <Image source={require('./assets/wheelProduct.png')} style={{ alignSelf: "center" }} />
           <View style={styles.ratingView}>
             <View style={{ flexDirection: "row" }}>
@@ -295,16 +306,26 @@ const Cart = ({ route }) => {
               </TouchableOpacity>
             </View>
           </View>
+
+          {/* <Animated.View style={{
+            transform: [
+              { translateY: translateY }
+            ]
+          }}> */}
           <View style={styles.inputView}>
             <AntDesign name='search1' size={20} style={{ fontWeight: "400", marginLeft: 22, fontSize: 15, color: "black", fontFamily: "Forza-Bold" }} />
             <TextInput style={styles.inputStyle} placeholder='Search' />
           </View>
+          {/* </Animated.View> */}
           <View style={styles.ourProductHeadingView}>
             <Text style={styles.ourProductTxt}>Our products</Text>
             <FontAwesome name='sliders' size={25} style={{ color: "black" }} />
           </View>
           <Text style={styles.ourProductTxt}>All products</Text>
-          <FlatList data={allProducts} keyExtractor={(item, index) => index} renderItem={({ item, index }) => allProductHandler({ item, index })} />
+          <FlatList data={allProducts} keyExtractor={(item, index) => index} renderItem={({ item, index }) => allProductHandler({ item, index })} onScroll={(e) => {
+            // console.log("scrolling:", e);
+            scrollY.setValue(e.nativeEvent.contentOffset.y)
+          }} />
         </View>
       </>
     )
