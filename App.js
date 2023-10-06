@@ -37,6 +37,8 @@ export default function App() {
   const [userService, setUserService] = useState();
   const [mechanicsDetails, setmechanicsDetails] = useState();
   const [unavailable, setUnavailable] = useState();
+  const [addToCartData, setAddToCartData] = useState([]);
+  const [cartCounter, setCartCounter] = useState(0);
 
   const [mainPage, setMainPage] = useState(<Loading />);
   //checking userData API................
@@ -179,6 +181,12 @@ export default function App() {
   const unavailable_handler = (value) => {
     setUnavailable(value);
   }
+  const getAddToCartData_handler = (value) => {
+    setAddToCartData([...addToCartData, value]);
+  }
+  const getCartCounter_handler = (value) => {
+    setCartCounter(value);
+  }
 
   const locationPermission = async () => {
     try {
@@ -239,6 +247,8 @@ export default function App() {
         postMehcanicsDetails: mechanicsDetails,
         postUpdateImg: updateImg,
         postUnavailable: unavailable,
+        postAddToCartData: addToCartData,
+        PostCartCounter: cartCounter,
         //recived
         getPageName: page_handler,
         getUserLog: userlog_handler,
@@ -256,7 +266,9 @@ export default function App() {
         getUserService: userService_handler,
         getMechanicsDetails: mechanicsDetails_handler,
         getUpdateImg: updateImg_handler,
-        getUnavailable: unavailable_handler
+        getUnavailable: unavailable_handler,
+        getAddToCartData: getAddToCartData_handler,
+        getCartCounter: getCartCounter_handler,
       }}>
         {
           mainPage

@@ -15,6 +15,7 @@ import InformationPage from './InformationPage';
 import EditProfile from './EditProfile';
 import axios from 'axios';
 import { openServiceRequestDetails } from './APIs';
+import ProductPage from './ProductPage';
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
@@ -100,36 +101,16 @@ const Allnavigation = () => {
                 ),
             }))} />
 
-            <Tab.Screen name="Cart" component={Cart} options={(({ navigation }) => ({
+            <Tab.Screen name="ProductPage" component={ProductPage} options={(({ navigation }) => ({
                 headerShown: false,
                 tabBarButton: () => (
                     <TouchableOpacity onPress={() => {
-                        if (postUserLog) {
-                            navigation.navigate("Cart");
-                            getPageName("Cart");
-                            axios.get(openServiceRequestDetails, {
-                                headers: {
-                                    'Authorization': `Bearer ${postUserLog}`,
-                                    'Content-Type': 'application/json'
-                                }
-                            })
-                                .then((res) => {
-                                    if (res.data.data.length !== 0) {
-                                        if (res.data.data[0].status === "initiated") {
-                                            navigation.navigate("Cart", { acceptedMDetails: res.data.data[0] });
-                                            getPageName("Cart")
-                                        }
-                                    } else {
-                                        navigation.navigate("Cart");
-                                        getPageName("Cart");
-                                    }
-                                })
-                                .catch((error) => { console.log("error in user data in cart :", error) })
-                        }
+                        navigation.navigate("ProductPage");
+                        getPageName("Cart");
                     }} style={postPageName == "Cart" ? styles.tabBtnContainer : styles.tabBtnContainerNonClicked}>
                         <View style={styles.btnContainerView}>
                             <Feather name="shopping-cart" size={20} style={postPageName == "Cart" ? styles.tabBtnIconClicked : styles.tabBtnIconNonClicked} />
-                            <Text style={[styles.btnText, postPageName == "Cart" ? styles.btnTextActive : styles.btnTextHide]}>Cart</Text>
+                            <Text style={[styles.btnText, postPageName == "Cart" ? styles.btnTextActive : styles.btnTextHide]}>Products</Text>
                         </View>
                     </TouchableOpacity>
                 ),

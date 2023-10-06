@@ -9,7 +9,7 @@ import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import { useNavigation } from '@react-navigation/native';
 import { StyleContext } from './App';
 import axios from 'axios';
-import { creatServiceRequest, openServiceRequestDetails, serviceTypes } from './APIs';
+import { creatServiceRequest, openServiceRequestDetails, serviceTypes, serviceTypess } from './APIs';
 import Loading from './Loading';
 
 const InformationPage = () => {
@@ -21,14 +21,6 @@ const InformationPage = () => {
   const [serviceCode, setServiceCode] = useState();
   const [problems, setProblems] = useState([]);
   const [serviceRequestData, setServiceRequestData] = useState();
-
-  useEffect(() => {
-    axios.get(serviceTypes)
-      .then((res) => {
-        console.log("response_check_sertypes_API:", res.data)
-      })
-      .catch((err) => console.log("error_check_sertypes_API:", err))
-  }, [])
 
   // Function for Creating Service Request..............................
   const searchMechanics = () => {
@@ -88,7 +80,7 @@ const InformationPage = () => {
 
   //making an array with your serviceTypes..................................
   useEffect(() => {
-    axios.get(serviceTypes)
+    axios.get(serviceTypess)
       .then((res) => {
         setProblems(res.data.data.map(item => item.name.charAt(0).toUpperCase() + item.name.slice(1)))
         // console.log("data is comming late in information page:", res.data)
@@ -170,7 +162,7 @@ const InformationPage = () => {
             onSelect={(selectedItem, index) => {
               console.log("selectedItem :", selectedItem);
               getUserService(selectedItem);
-              axios.get(serviceTypes)
+              axios.get(serviceTypess)
                 .then((res) => {
                   // console.log("check_service_type_code_response:", res.data)
                   if (selectedItem === problems[index] && res.data.data[index].service_code) {

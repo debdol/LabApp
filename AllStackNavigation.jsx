@@ -13,6 +13,8 @@ import ManuallyLocation from './ManuallyLocation';
 import YourMechanics from './YourMechanics';
 import InvoicePage from './InvoicePage';
 import ProductDetails from './ProductDetails';
+import Cart from './Cart';
+import GoToCartPage from './GoToCartPage';
 
 const AllStackNavigation = () => {
     return (
@@ -41,6 +43,17 @@ const AllStackNavigation = () => {
                 }))} />
                 <Stack.Screen name="ProductDetails" component={ProductDetails} options={(() => ({
                     headerShown: false
+                }))} />
+                <Stack.Screen name="Cart" component={Cart} options={(() => ({
+                    headerShown: false
+                }))} />
+                <Stack.Screen name="GoToCartPage" component={GoToCartPage} options={(() => ({
+                    headerShown: true,
+                    headerTitleAlign :"center",
+                    headerTitle:"Add To Cart",
+                    headerTitleStyle:{
+                        fontFamily:"Forza-Bold"
+                    }
                 }))} />
             </Stack.Navigator>
         </NavigationContainer>

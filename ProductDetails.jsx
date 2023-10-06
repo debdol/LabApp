@@ -2,28 +2,33 @@ import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Entypo from 'react-native-vector-icons/Entypo';
-import React, { useState } from 'react';
+import { StyleContext } from './App';
+import React, { useState, useContext } from 'react';
+import { useNavigation } from '@react-navigation/native';
 
 
 const ProductDetails = ({ route }) => {
-    // console.log('route :', route.params.productDetailss.item);
+    const { postUserLog, getAddToCartData, getCartCounter, PostCartCounter } = useContext(StyleContext);
+    const navigation = useNavigation();
     const [showData, setShowData] = useState("description");
     const [count, setCount] = useState(1);
+    const [goToCart, setGoToCart] = useState(true);
+    // console.log('goToCart :', goToCart);
     return (
         <View>
             <View style={styles.HeadingView}>
-                <AntDesign name='left' onPress={() => navigation.goBack()} size={25} />
-                <Image source={require('./assets/heart.png')} style={{}} />
+                <AntDesign name='left' onPress={() => navigation.goBack()} size={25} color={'#000000'}/>
+                {/* <Image source={require('./assets/heart.png')} style={{}} /> */}
             </View>
             <View style={styles.bodyView}>
                 <View style={styles.productContainer}>
                     <View style={styles.PriceMainView}>
-                        <View style={styles.oiginalPriceView}>
-                            <FontAwesome name='inr' size={15} />
-                            <Text style={[{ textDecorationLine: "line-through", textDecorationColor: "#FF0000" }, styles.originalPriceTxt]}>{route.params.productDetailss.item.original_price}</Text>
+                        <View style={[styles.oiginalPriceView]}>
+                            <FontAwesome name='inr' size={22} color={'#F22023'}/>
+                            <Text style={[styles.originalPriceTxt,{ textDecorationLine: "line-through", textDecorationColor: "#FF0000" ,color:"#F22023"}]}>{route.params.productDetailss.item.original_price}</Text>
                         </View>
                         <View style={styles.oiginalPriceView}>
-                            <FontAwesome name='inr' size={15} />
+                            <FontAwesome name='inr' size={22} color={'#3D4759'}/>
                             <Text style={styles.originalPriceTxt}>{route.params.productDetailss.item.price}</Text>
                         </View>
                     </View>
@@ -69,9 +74,21 @@ const ProductDetails = ({ route }) => {
                             </TouchableOpacity>
                         </View>
                     </View>
-                    <TouchableOpacity style={styles.checkOutBtn}>
-                        <Text style={styles.checkOutBtnTxt}>Add to Cart</Text>
-                    </TouchableOpacity>
+                    {goToCart === true ?
+                        (<TouchableOpacity style={styles.checkOutBtn} onPress={() => {
+                            getAddToCartData(route.params.productDetailss.item);
+                            getCartCounter(PostCartCounter + 1);
+                            setGoToCart(false);
+                        }}>
+                            <Text style={styles.checkOutBtnTxt}>Add to Cart</Text>
+                        </TouchableOpacity>)
+                        :
+                    goToCart === false ?
+                        (<TouchableOpacity style={styles.checkOutBtn} onPress={() => {
+                            navigation.navigate("GoToCartPage");
+                        }}>
+                            <Text style={styles.checkOutBtnTxt}>Go to Cart</Text>
+                        </TouchableOpacity>) : null}
                 </View>
             </View>
         </View>
@@ -80,6 +97,7 @@ const ProductDetails = ({ route }) => {
 
 const styles = StyleSheet.create({
     HeadingView: {
+        padding:9,
         backgroundColor: "#ffffff",
         paddingVertical: 15,
         flexDirection: "row",
@@ -117,6 +135,7 @@ const styles = StyleSheet.create({
     originalPriceTxt: {
         fontSize: 22,
         fontFamily: "Forza-Bold",
+        color:"#3D4759"
     },
     nameRatingView: {
         flexDirection: "row",
