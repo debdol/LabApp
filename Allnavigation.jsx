@@ -84,7 +84,7 @@ const Allnavigation = () => {
                             </View>
                         </TouchableOpacity>
                     ),
-                }))} />
+            }))} />
 
             <Tab.Screen name="HomeStackScreen" component={HomeStackScreen} options={(({ navigation }) => ({
                 headerShown: false,
@@ -130,6 +130,7 @@ const Allnavigation = () => {
                     </TouchableOpacity>
                 ),
             }))} />
+
             <Tab.Screen name="ProfileStackScreen" component={ProfileStackScreen} options={(({ navigation }) => ({
                 headerShown: false,
                 headerTitleAlign: "center",

@@ -10,3 +10,4 @@ export const creatServiceRequest = `${baseUrl}create-service-request`;
 export const userData = `${baseUrl}user-data`;
 export const calculateTotalAmount = `${baseUrl}calculate-total-amount?service_request_id=`;
 export const getCheckOutDetailss = `${baseUrl}get-checkout-details`;
+export const storePaymentData = `${baseUrl}store-payment-data?`;

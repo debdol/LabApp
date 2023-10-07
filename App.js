@@ -41,24 +41,6 @@ export default function App() {
   const [cartCounter, setCartCounter] = useState(0);
 
   const [mainPage, setMainPage] = useState(<Loading />);
-  //checking userData API................
-  // useEffect(() => {
-  //   if (Userlog) {
-  //     console.log("check_userData_token_in_app_page:", Userlog);
-  //     axios.get(userData, {
-  //       headers: {
-  //         'Authorization': `Bearer ${Userlog}`,
-  //         'Content-Type': 'application/json'
-  //       }
-  //     })
-  //       .then((res) => {
-  //         console.log("response_in_userData_check_in_app_page :", res.data)
-  //       })
-  //       .catch((error) => console.log("error_in_userData_check_in_app_page :", error))
-  //   } else {
-  //     console.log("token_is_not_found : ", Userlog);
-  //   }
-  // }, [Userlog])
 
 
   // Get User Token if there is any.........................
@@ -66,7 +48,7 @@ export default function App() {
     if (await AsyncStorage.getItem('User_Token')) {
       setUserlog(await AsyncStorage.getItem('User_Token'));
       // await AsyncStorage.removeItem("User_Token");
-      // console.log("user tokrn : ", await AsyncStorage.getItem('User_Token'));
+      console.log("user tokrn : ", await AsyncStorage.getItem('User_Token'));
     } else {
       setMainPage(<LoginMain />);
     }

@@ -8,7 +8,6 @@ import Loading from './Loading';
 const GoToCartPage = () => {
     const { postAddToCartData, getAddToCartData, getCartCounter, PostCartCounter } = useContext(StyleContext);
     const [cartData, setCartData] = useState([]);
-    // const [cartData, setCartData] = useState([]);
     useEffect(() => {
         if (postAddToCartData) {
             // console.log("postAddToCartData :", PostCartCounter);

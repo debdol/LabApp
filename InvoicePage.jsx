@@ -10,7 +10,7 @@ import { useNavigation } from '@react-navigation/native';
 import Loading from './Loading';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-import { calculateTotalAmount, getCheckOutDetailss } from './APIs';
+import { calculateTotalAmount, getCheckOutDetailss, storePaymentData } from './APIs';
 
 
 const InvoicePage = ({ route }) => {
@@ -37,7 +37,6 @@ const InvoicePage = ({ route }) => {
     }
     //Check AsyncStorage
     useEffect(async () => {
-        // console.log("marchantIdLocalStorage :", marchantIdLocalStorage);
         getStorage();
     }, []);
 
@@ -61,13 +60,14 @@ const InvoicePage = ({ route }) => {
                     console.log("route.params.acceptedMDetails._id :", route.params.acceptedMDetails._id);
                     console.log("response_to_check_payment_status :", response.data);
                     let temp = response.data;
-                    axios.post(`${calculateTotalAmount}${route.params.acceptedMDetails._id}`, [temp], {
+                    //Store Payment Details..................................
+                    axios.post(`${storePaymentData}service_request_id=${route.params.acceptedMDetails._id}`, [temp], {
                         headers: {
                             'Authorization': `Bearer ${postUserLog}`,
                             'accept': 'application/json'
                         }
                     })
-                        .then((response) => { console.log("response_in_store_payment :", response) })
+                        .then((response) => { console.log("response_in_store_payment :", response.data) })
                         .catch((error) => console.log("error_in_store_payment :", error))
 
                 }

@@ -156,17 +156,17 @@ const Home = () => {
 
   //Get the location name of user............................................
   const getThePlaceName = () => {
-    console.log("userLongitude ,userLatitude:", userLongitude, userLatitude);
+    // console.log("userLongitude ,userLatitude:", userLongitude, userLatitude);
     if (userLatitude && userLongitude) {
       axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${userLatitude},${userLongitude}&key=`)
         .then((res) => {
-          console.log("responce in geoCoding :", res.data.results);
+          // console.log("responce in geoCoding :", res.data.results);
           if (res.data.results != 0) {
             setFullAddress(res.data.results[4].formatted_address);
             setPlaceName(res.data.results[4].formatted_address.split(",")[3]);
             setStateName(res.data.results[4].formatted_address.split(",")[4]);
             getUserLocationDetails(res.data.results[4].formatted_address);
-            // setGotLatLongIndicator(true);
+            setGotLatLongIndicator(true);
           }
         })
         .catch((error) => { console.log("error of homePage in geoCoding :", error) })
