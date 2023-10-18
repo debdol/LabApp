@@ -1,5 +1,6 @@
 export const baseUrl = "http://43.204.88.205:90/";
 export const logInUrl = `${baseUrl}login?contact_number=`;
+export const registerUrl = `${baseUrl}registration`
 export const editProfileUrl = `${baseUrl}update_user?`;
 export const addCarUrl = `${baseUrl}add_car`;
 export const updateProfilePic = `${baseUrl}update_profile_picture`;

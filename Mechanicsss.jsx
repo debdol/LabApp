@@ -43,9 +43,9 @@ const Mechanicsss = ({ route }) => {
                 }
             })
                 .then((res) => {
-                    // console.log("status :", res.data.data[0].status);
                     if (res.data) {
                         if (res.data.data.length !== 0) {
+                            // console.log("res.data.data[0].status",res.data.data[0].status)
                             if (res.data.data[0].status === "accepted") {
                                 navigation.navigate("YourMechanics", { acceptedMDetails: res.data.data });
                             }

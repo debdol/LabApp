@@ -30,7 +30,6 @@ const InvoicePage = ({ route }) => {
         if (await AsyncStorage.getItem('marhchant_id')) {
             let temp = await AsyncStorage.getItem('marhchant_id');
             setMarchantIdLocalStorage(temp);
-            // console.log("storage is full of bitches")
         } else {
             setMarchantIdLocalStorage(false);
         }
@@ -57,18 +56,22 @@ const InvoicePage = ({ route }) => {
             .request(options)
             .then(async (response) => {
                 if (response.data.success == true) {
-                    console.log("route.params.acceptedMDetails._id :", route.params.acceptedMDetails._id);
-                    console.log("response_to_check_payment_status :", response.data);
-                    let temp = response.data;
-                    //Store Payment Details..................................
-                    axios.post(`${storePaymentData}service_request_id=${route.params.acceptedMDetails._id}`, [temp], {
-                        headers: {
-                            'Authorization': `Bearer ${postUserLog}`,
-                            'accept': 'application/json'
-                        }
-                    })
-                        .then((response) => { console.log("response_in_store_payment :", response.data) })
-                        .catch((error) => console.log("error_in_store_payment :", error))
+                    console.log("response_to_check_payment_status :", response.data.data.state);
+                    if (response.data.data.state == 'COMPLETED') {
+                        // console.log("route.params.acceptedMDetails._id :", route.params.acceptedMDetails._id);
+                        let temp = response.data;
+                        //Store Payment Details..................................
+                        axios.post(`${storePaymentData}service_request_id=${route.params.acceptedMDetails._id}`, [temp], {
+                            headers: {
+                                'Authorization': `Bearer ${postUserLog}`,
+                                'accept': 'application/json'
+                            }
+                        })
+                            .then((response) => {
+                                console.log("response_in_store_payment :", response.data);
+                            })
+                            .catch((error) => console.log("error_in_store_payment :", error))
+                    }
 
                 }
                 // AsyncStorage.removeItem('marhchant_id')
@@ -86,7 +89,7 @@ const InvoicePage = ({ route }) => {
             }
         })
             .then((res) => {
-                console.log("response_in_checkOutDetails:", res.data.data);
+                // console.log("response_in_checkOutDetails:", res.data.data);
                 AsyncStorage.setItem('marhchant_id', res.data.data.merchantTransactionId);
                 setCheckOutDetails(res.data.data);
             })
@@ -96,7 +99,8 @@ const InvoicePage = ({ route }) => {
     //Checks if transactionID is available on AsyncStorage & calls API accordingly
     useEffect(() => {
         if (marchantIdLocalStorage !== false) {
-            console.log("marchantIdLocalStorage :", marchantIdLocalStorage);
+            // console.log("marchantIdLocalStorage :", marchantIdLocalStorage);
+            console.log("local_storage_is_not_empty");
             checkStatus();
         } else {
             console.log("local_storage_is_empty");
@@ -240,7 +244,7 @@ const InvoicePage = ({ route }) => {
                 .then((response) => {
                     // console.log(response.data.data.instrumentResponse.redirectInfo.url);
                     // console.log("{ route } :", checkOutDetails.merchantTransactionId);
-                    openLink(response.data.data.instrumentResponse.redirectInfo.url)
+                    openLink(response.data.data.instrumentResponse.redirectInfo.url);
                     navigation.navigate("Home");
                 })
                 .catch((error) => {

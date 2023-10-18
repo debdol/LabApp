@@ -15,6 +15,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import AllStackNavigation from './AllStackNavigation';
 import * as Yup from 'yup';
 import { Formik } from 'formik';
+import { registerUrl } from './APIs';
 
 const RegisterPage = (props) => {
     const [token, setToken] = useState();
@@ -91,7 +92,7 @@ const RegisterPage = (props) => {
         }
         // console.log('token in registerPage: ', datas);
         if (userLat && userLong) {
-            axios.post("http://43.204.88.205:90/registration", datas, {
+            axios.post(registerUrl, datas, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json '

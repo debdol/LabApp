@@ -34,7 +34,11 @@ const Home = () => {
       // The screen is focused
       // Call any action
       getPageName("Home");
-      dataChecking();
+      setTimeout(() => {
+        setGotLatLongIndicator(true);
+        console.log("chol6e")
+        dataChecking();
+      }, 10000)
     });
 
     // Return the function to unsubscribe from the event so it gets removed on unmount
@@ -83,7 +87,7 @@ const Home = () => {
   }
 
   const nearByMechanicsList = ({ item, index }) => {
-    // console.log("item_in_home_page", item);
+    // console.log("near_by_mechanics_item_in_home_page", item);
     return (
       <View style={styles.machanicsNearMeMainContainer}>
         <View style={{
@@ -160,11 +164,11 @@ const Home = () => {
     if (userLatitude && userLongitude) {
       axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${userLatitude},${userLongitude}&key=`)
         .then((res) => {
-          // console.log("responce in geoCoding :", res.data.results);
+          // console.log("responce in geoCoding :", res.data.results[4].formatted_address);
           if (res.data.results != 0) {
             setFullAddress(res.data.results[4].formatted_address);
-            setPlaceName(res.data.results[4].formatted_address.split(",")[3]);
-            setStateName(res.data.results[4].formatted_address.split(",")[4]);
+            setPlaceName(res.data.results[4].formatted_address.split(",")[0]);
+            setStateName(res.data.results[4].formatted_address.split(",")[1]);
             getUserLocationDetails(res.data.results[4].formatted_address);
             setGotLatLongIndicator(true);
           }
@@ -193,32 +197,17 @@ const Home = () => {
         }
       })
         .then((res) => {
-          // console.log("postUnavailable :", res.data);
-          // if (res.data.data.length !== 0) {
-          //   if (res.data.data[0].status === "accepted" && gotLatLongIndicator === true) {
-          //     navigation.navigate("YourMechanics", { acceptedMDetails: res.data.data[0] });
-          //     getPageName("Mechanic");
-          //   } else if (res.data.data[0].status === "payment Initiated" && gotLatLongIndicator === true && res.data.data[0].service_types[0].status === "active") {
-          //     navigation.navigate("InvoicePage", { acceptedMDetails: res.data.data[0] });
-          //     // console.log("its running");
-          //   } else if (res.data.data[0].status === "not available" && gotLatLongIndicator === true) {
-          //     getUnavailable(true);
-          //     navigation.navigate("Mechanicsss", { acceptedMDetails: res.data.data[0] });
-          //   } else if (res.data.data[0].status === "active") {
-          //     navigation.navigate("Mechanicsss", { acceptedMDetails: res.data.data[0] });
-          //     getUnavailable(false);
-          //   }
-          // }
           if (res.data.data.length !== 0) {
+            console.log("res.data.data[0].status :",res.data.data[0].status);
             if (res.data.data[0].status === "payment Initiated" && res.data.data[0].service_types[0].status === "active") {
               navigation.navigate("InvoicePage", { acceptedMDetails: res.data.data[0] });
-              // console.log("its running");
+              console.log("go to invoice page");
             } else if (res.data.data[0].status === "active") {
-              // console.log("chol6e")
+              console.log("go to mechanics page")
               navigation.navigate("Mechanicsss", { acceptedMDetails: res.data.data[0] });
               getUnavailable(false);
             } else if (res.data.data[0].status === "not available") {
-              // console.log("not available")
+              console.log(" go to not available")
               navigation.navigate("Mechanicsss", { acceptedMDetails: res.data.data[0] });
               getUnavailable(true);
             } else if (res.data.data[0].status === "initiated") {
@@ -229,16 +218,16 @@ const Home = () => {
             }
           }
         })
-        .catch((error) => { console.log("error in user data in home page:", error) })
+        .catch((error) => { console.log("error in openService_Request_Detail in home page:", error) })
     };
   }
   //calling openServiceRequestDetails API 
   useEffect(() => {
     setTimeout(() => {
       setGotLatLongIndicator(true);
-      // console.log("chol6e")
+      console.log(" normal_useEffect_chol6e")
       dataChecking();
-    }, 5000)
+    }, 10000)
   }, []);
 
   useEffect(() => {
@@ -253,7 +242,7 @@ const Home = () => {
     }, 2000);
   }, []);
 
-  if (nearByMechanics.length != 0) {
+  if (nearByMechanics) {
     return (
       <SafeAreaView>
         <View style={styles.headingContainer}>
@@ -313,7 +302,7 @@ const Home = () => {
             <View style={{
               alignSelf: "center",
               width: "100%",
-              height: "18%",
+              height: "20%",
               backgroundColor: "#007AFF",
               borderRadius: 15,
               padding: 10,
@@ -465,7 +454,7 @@ const Home = () => {
             {/* MECHANICS NEAR ME starts here..................... */}
             <Text style={styles.mechanicsHeading}>Mechanics Near Me</Text>
             {nearByMechanics.length != 0 ? <FlatList data={nearByMechanics} keyExtractor={(item) => item._id} renderItem={({ item, index }) => nearByMechanicsList({ item, index })} horizontal showsHorizontalScrollIndicator={false} />
-              : null}
+              : <Text style={styles.mechanicsAreAbsent}>Mechanics are far away from you</Text>}
             {/* POPULAR OFFER START ................................*/}
             <Text style={styles.popularOfferHeading}>Popular offer</Text>
             <Text style={{ color: "black", fontFamily: "Forza-Bold", fontSize: 15, alignSelf: "center", marginBottom: "19%" }}>Comming Soon........</Text>
@@ -738,7 +727,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     backgroundColor: "#F4B755",
     width: "100%",
-    height: "18%",
+    height: "22%",
     padding: 14,
     marginTop: 19,
     borderRadius: 16,
@@ -760,6 +749,18 @@ const styles = StyleSheet.create({
     marginVertical: 15,
     fontFamily: "Forza-Black",
 
+  },
+  mechanicsAreAbsent: {
+    // marginHorizontal: 4,
+    borderWidth: 1,
+    borderColor: "#E0EAEF",
+    // height: "0%",
+    padding: 10,
+    flexDirection: "column",
+    justifyContent: "space-evenly",
+    borderRadius: 9,
+    fontFamily: "Forza-Bold",
+    fontSize: 20
   },
   machanicsNearMeMainContainer: {
     marginHorizontal: 4,
