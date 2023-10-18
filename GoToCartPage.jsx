@@ -1,4 +1,4 @@
-import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { StyleContext } from './App';
 import React, { useContext, useEffect, useState } from 'react'
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -10,7 +10,7 @@ const GoToCartPage = () => {
     const [cartData, setCartData] = useState([]);
     useEffect(() => {
         if (postAddToCartData) {
-            // console.log("postAddToCartData :", PostCartCounter);
+            // console.log("postAddToCartData :", postAddToCartData);
             setCartData(postAddToCartData);
         }
     }, [postAddToCartData])
@@ -20,8 +20,8 @@ const GoToCartPage = () => {
             {cartData.length != 0 ? <FlatList data={cartData} keyExtractor={({ item, index }) => index} renderItem={({ item, index }) => {
                 // console.log("items :", index)
                 return (
-                    <View style={styles.container} key={index}>
-                        <Text></Text>
+                    <View style={styles.container}>
+                        <Image source={require("./assets/wheelProduct.png")} />
                         <View style={{ flexDirection: "column", justifyContent: "space-evenly", width: "66%" }}>
                             <View style={styles.nameAndDeleteView}>
                                 <Text style={styles.nameTxt}>{item.name}</Text>

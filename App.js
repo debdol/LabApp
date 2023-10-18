@@ -48,7 +48,7 @@ export default function App() {
     if (await AsyncStorage.getItem('User_Token')) {
       setUserlog(await AsyncStorage.getItem('User_Token'));
       // await AsyncStorage.removeItem("User_Token");
-      console.log("user tokrn : ", await AsyncStorage.getItem('User_Token'));
+      // console.log("user tokrn : ", await AsyncStorage.getItem('User_Token'));
     } else {
       setMainPage(<LoginMain />);
     }

@@ -25,17 +25,17 @@ const ProductDetails = ({ route }) => {
                     <View style={styles.PriceMainView}>
                         <View style={[styles.oiginalPriceView]}>
                             <FontAwesome name='inr' size={22} color={'#F22023'}/>
-                            <Text style={[styles.originalPriceTxt,{ textDecorationLine: "line-through", textDecorationColor: "#FF0000" ,color:"#F22023"}]}>{route.params.productDetailss.item.original_price}</Text>
+                            <Text style={[styles.originalPriceTxt,{ textDecorationLine: "line-through", textDecorationColor: "#FF0000" ,color:"#F22023"}]}>{route.params.productDetailss.original_price}</Text>
                         </View>
                         <View style={styles.oiginalPriceView}>
                             <FontAwesome name='inr' size={22} color={'#3D4759'}/>
-                            <Text style={styles.originalPriceTxt}>{route.params.productDetailss.item.price}</Text>
+                            <Text style={styles.originalPriceTxt}>{route.params.productDetailss.price}</Text>
                         </View>
                     </View>
                     <View style={styles.nameRatingView}>
-                        <Text style={styles.originalPriceTxt}>{route.params.productDetailss.item.name}</Text>
+                        <Text style={styles.originalPriceTxt}>{route.params.productDetailss.name}</Text>
                         <View style={styles.ratingView}>
-                            <Text style={[styles.originalPriceTxt, { fontSize: 14 }]}>{route.params.productDetailss.item.rating}</Text>
+                            <Text style={[styles.originalPriceTxt, { fontSize: 14 }]}>{route.params.productDetailss.rating}</Text>
                             <Entypo name='star' size={15} color={'#F1C203'} />
                         </View>
                     </View>
