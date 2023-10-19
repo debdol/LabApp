@@ -14,13 +14,9 @@ const ProductPage = ({ route }) => {
     const { getAddToCartData, getCartCounter, PostCartCounter, postUserLocationDetails } = useContext(StyleContext);
     const navigation = useNavigation();
     const [placeName, setPlaceName] = useState();
-    useEffect(() => {
-        if (postUserLocationDetails) {
-            setPlaceName(postUserLocationDetails.split(','));
-        }
-
-    }, [postUserLocationDetails])
-    const allProducts = [
+    const [yAxis, setYaxis] = useState();
+    const [searchedProduct, setSearchedProduct] = useState();
+    const [allProducts, setAllProducts] = useState([
         {
             image: "./assets/wheelProduct.png",
             rating: "4.5",
@@ -55,11 +51,47 @@ const ProductPage = ({ route }) => {
             name: "Apollo Mirror",
             price: "200",
             original_price: "500"
+        },
+        {
+            image: "./assets/wheelProduct.png",
+            rating: "3",
+            name: "Apollo Headlight",
+            price: "30",
+            original_price: "500"
+        },
+        {
+            image: "./assets/wheelProduct.png",
+            rating: "4.8",
+            name: "Apollo Handle",
+            price: "40",
+            original_price: "500"
         }
-    ]
+    ]);
+
+    const searcheProduct_handler = (searchedProduct) => {
+        //Search API should b called here
+        console.log("searchedProduct :", searchedProduct);
+    }
+
+    useEffect(() => {
+        if (searchedProduct) {
+            searcheProduct_handler(searchedProduct);
+        }
+    }, [searchedProduct]);
+
+    useEffect(() => {
+        if (postUserLocationDetails) {
+            setPlaceName(postUserLocationDetails.split(','));
+        }
+    }, [postUserLocationDetails])
+
     return (
         <SafeAreaView>
-            <ScrollView style={styles.scrollViewStyle} showsHorizontalScrollIndicator={false}>
+            <ScrollView style={styles.scrollViewStyle} showsHorizontalScrollIndicator={false} onScroll={(event) => {
+                const y = event.nativeEvent.contentOffset.y;
+                // console.log('eventSc:', parseFloat(y).toFixed(0).toString());
+                setYaxis(parseFloat(y).toFixed(0).toString());
+            }}>
                 <View style={styles.productHeadingView}>
                     <AntDesign name='left' size={29} style={{ color: "#3D4759" }} onPress={() => navigation.goBack()} />
                     <Text style={styles.productHeadingTxt}>Shop</Text>
@@ -104,23 +136,44 @@ const ProductPage = ({ route }) => {
                         </View>
                     </View>
                     <View style={styles.inputView}>
-                        <AntDesign name='search1' size={20} style={{ fontWeight: "400", marginLeft: 22, fontSize: 15, color: "black", fontFamily: "Forza-Bold" }} />
-                        <TextInput style={styles.inputStyle} placeholder='Search' placeholderTextColor={"#3D4759"} />
+                        <View style={{ flexDirection: "row", alignItems: "center" }}>
+                            <AntDesign name='search1' size={20} style={{ fontWeight: "400", marginLeft: 22, fontSize: 15, fontFamily: "Forza-Bold" }} color={"#3D4759"} />
+                            <TextInput style={styles.inputStyle} placeholder='Search' placeholderTextColor={"#3D4759"} value={searchedProduct} onChangeText={(text) => {
+                                setSearchedProduct(text);
+                            }} />
+                        </View>
+                        {searchedProduct ?
+                            <TouchableOpacity onPress={() => setSearchedProduct()}>
+                                <Entypo size={25} name='cross' color={"#FFFFFF"} style={styles.cross} />
+                            </TouchableOpacity> : null}
                     </View>
                     <View style={styles.ourProductHeadingView}>
                         <Text style={styles.ourProductTxt}>Our products</Text>
                         <FontAwesome name='sliders' size={25} style={{ color: "black" }} />
                     </View>
                     <Text style={styles.ourProductTxt}>All products</Text>
-                    <View style={styles.allProductView}>
-                        {allProducts.map((item, index) => {
-                            return (
-                                <AllProductHandler item={item} key={index} />
-                            )
-                        })}
-                    </View>
+                    {allProducts ?
+                        <View style={styles.allProductView}>
+                            {allProducts.map((item, index) => {
+                                return (
+                                    <AllProductHandler item={item} key={index} />
+                                )
+                            })}
+                        </View> : null}
                 </View>
             </ScrollView>
+            <View style={yAxis >= 360 ? [{ position: "absolute", zIndex: 10, top: 0, alignSelf: "center" }, styles.inputView] : styles.inputView}>
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                    <AntDesign name='search1' size={20} style={{ fontWeight: "400", marginLeft: 22, fontSize: 15, fontFamily: "Forza-Bold" }} color={'#3D4759'} />
+                    <TextInput style={styles.inputStyle} placeholder='Search' placeholderTextColor={"#3D4759"} onChangeText={(text) => {
+                        setSearchedProduct(text);
+                    }} value={searchedProduct} />
+                </View>
+                {searchedProduct ?
+                    <TouchableOpacity onPress={() => setSearchedProduct()}>
+                        <Entypo size={25} name='cross' color={"#FFFFFF"} style={styles.cross} />
+                    </TouchableOpacity> : null}
+            </View>
         </SafeAreaView>
     )
 }
@@ -133,7 +186,7 @@ const styles = StyleSheet.create({
     },
     ProductContainer: {
         height: "100%",
-        padding: 9
+        padding: 9,
     },
     productHeadingView: {
         padding: 9,
@@ -231,14 +284,26 @@ const styles = StyleSheet.create({
     },
     inputStyle: {
         height: 40,
-        width: "88%",
+        width: "82%",
         padding: 4,
         letterSpacing: 1,
         fontSize: 15,
         fontFamily: "Forza-Bold",
+        color: "#3D4759",
         // backgroundColor: "#D7E2F0",
         // borderWidth: 1,
         // borderColor: "red"
+    },
+    cross: {
+        textAlign: "center",
+        textAlignVertical: "center",
+        position: "absolute",
+        left: -4,
+        bottom: -14,
+        borderWidth: 1,
+        borderColor: "#FFFFFF",
+        backgroundColor: "#F12028",
+        borderRadius: 20
     },
     ourProductHeadingView: {
         flexDirection: "row",
@@ -259,7 +324,10 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         flexWrap: "wrap",
         width: "100%",
+        height: "140%",
         gap: 8,
+        // borderColor:"red",
+        // borderWidth:1
     }
 })
 export default ProductPage;
