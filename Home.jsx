@@ -36,7 +36,7 @@ const Home = () => {
       getPageName("Home");
       setTimeout(() => {
         setGotLatLongIndicator(true);
-        console.log("chol6e")
+        // console.log("chol6e")
         dataChecking();
       }, 10000)
     });
@@ -198,7 +198,7 @@ const Home = () => {
       })
         .then((res) => {
           if (res.data.data.length !== 0) {
-            console.log("res.data.data[0].status :",res.data.data[0].status);
+            console.log("res.data.data[0].status :", res.data.data[0].status);
             if (res.data.data[0].status === "payment Initiated" && res.data.data[0].service_types[0].status === "active") {
               navigation.navigate("InvoicePage", { acceptedMDetails: res.data.data[0] });
               console.log("go to invoice page");
@@ -225,7 +225,7 @@ const Home = () => {
   useEffect(() => {
     setTimeout(() => {
       setGotLatLongIndicator(true);
-      console.log(" normal_useEffect_chol6e")
+      // console.log(" normal_useEffect_chol6e")
       dataChecking();
     }, 10000)
   }, []);
@@ -282,7 +282,7 @@ const Home = () => {
             justifyContent: "center",
             marginLeft: 140
           }}>
-            <Fontisto name='bell' size={30} style={{ color: "black" }} />
+            <Fontisto name='bell' size={30} color={"#000000"} />
             {/* <Text style={{
               position: "absolute",
               backgroundColor: "#DD4B4B",
@@ -751,10 +751,9 @@ const styles = StyleSheet.create({
 
   },
   mechanicsAreAbsent: {
-    // marginHorizontal: 4,
-    borderWidth: 1,
+    borderWidth: 2,
     borderColor: "#E0EAEF",
-    // height: "0%",
+    color:"#000000",
     padding: 10,
     flexDirection: "column",
     justifyContent: "space-evenly",

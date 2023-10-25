@@ -13,30 +13,31 @@ const ProductDetails = ({ route }) => {
     const [showData, setShowData] = useState("description");
     const [count, setCount] = useState(1);
     const [goToCart, setGoToCart] = useState(true);
-    // console.log('goToCart :', goToCart);
+    // console.log('goToCart :', route.params.productDetailss);
     return (
         <View>
             <View style={styles.HeadingView}>
-                <AntDesign name='left' onPress={() => navigation.goBack()} size={25} color={'#000000'}/>
-                {/* <Image source={require('./assets/heart.png')} style={{}} /> */}
+                <AntDesign name='left' onPress={() => navigation.goBack()} size={35} color={'#FFFFFF'} style={styles.backButton} />
+                <Image source={{ uri: route.params.productDetailss.images[0] }} style={styles.productImage} />
+                <Text></Text>
             </View>
             <View style={styles.bodyView}>
                 <View style={styles.productContainer}>
-                    <View style={styles.PriceMainView}>
-                        <View style={[styles.oiginalPriceView]}>
-                            <FontAwesome name='inr' size={22} color={'#F22023'}/>
-                            <Text style={[styles.originalPriceTxt,{ textDecorationLine: "line-through", textDecorationColor: "#FF0000" ,color:"#F22023"}]}>{route.params.productDetailss.original_price}</Text>
-                        </View>
-                        <View style={styles.oiginalPriceView}>
-                            <FontAwesome name='inr' size={22} color={'#3D4759'}/>
-                            <Text style={styles.originalPriceTxt}>{route.params.productDetailss.price}</Text>
-                        </View>
-                    </View>
                     <View style={styles.nameRatingView}>
-                        <Text style={styles.originalPriceTxt}>{route.params.productDetailss.name}</Text>
-                        <View style={styles.ratingView}>
+                        <Text style={styles.originalPriceTxt}>{route.params.productDetailss.product_name}</Text>
+                        {/* <View style={styles.ratingView}>
                             <Text style={[styles.originalPriceTxt, { fontSize: 14 }]}>{route.params.productDetailss.rating}</Text>
                             <Entypo name='star' size={15} color={'#F1C203'} />
+                        </View> */}
+                    </View>
+                    <View style={styles.PriceMainView}>
+                        {/* <View style={[styles.oiginalPriceView]}>
+                            <FontAwesome name='inr' size={22} color={'#F22023'} />
+                            <Text style={[styles.originalPriceTxt, { textDecorationLine: "line-through", textDecorationColor: "#FF0000", color: "#F22023" }]}>{route.params.productDetailss.original_price}</Text>
+                        </View> */}
+                        <View style={styles.oiginalPriceView}>
+                            <FontAwesome name='inr' size={22} color={'#3D4759'} />
+                            <Text style={styles.originalPriceTxt}>{route.params.productDetailss.price}</Text>
                         </View>
                     </View>
                 </View>
@@ -83,12 +84,12 @@ const ProductDetails = ({ route }) => {
                             <Text style={styles.checkOutBtnTxt}>Add to Cart</Text>
                         </TouchableOpacity>)
                         :
-                    goToCart === false ?
-                        (<TouchableOpacity style={styles.checkOutBtn} onPress={() => {
-                            navigation.navigate("GoToCartPage");
-                        }}>
-                            <Text style={styles.checkOutBtnTxt}>Go to Cart</Text>
-                        </TouchableOpacity>) : null}
+                        goToCart === false ?
+                            (<TouchableOpacity style={styles.checkOutBtn} onPress={() => {
+                                navigation.navigate("GoToCartPage");
+                            }}>
+                                <Text style={styles.checkOutBtnTxt}>Go to Cart</Text>
+                            </TouchableOpacity>) : null}
                 </View>
             </View>
         </View>
@@ -97,14 +98,32 @@ const ProductDetails = ({ route }) => {
 
 const styles = StyleSheet.create({
     HeadingView: {
-        padding:9,
+        // padding: 6,
+        elevation:9,
         backgroundColor: "#ffffff",
-        paddingVertical: 15,
+        // paddingVertical: 15,
         flexDirection: "row",
         justifyContent: 'space-between',
-        alignItems: "center",
-        // borderWidth:1,
-        // borderColor:"red",
+        // alignItems: "center",
+        borderWidth:1,
+        borderColor:"black",
+        borderRadius:9
+    },
+    backButton: {
+        position: "absolute",
+        top:7,
+        left:6,
+        zIndex: 9,
+        // borderWidth: 1,
+        // borderColor: "red",
+    },
+    productImage: {
+        // alignSelf: "center",
+        height: 240,
+        width: '100%',
+        borderWidth: 1,
+        borderColor: "black",
+        borderRadius: 5
     },
     bodyView: {
         padding: 14,
@@ -113,19 +132,21 @@ const styles = StyleSheet.create({
         position: "relative"
     },
     productContainer: {
-        borderWidth: 1,
-        borderColor: "#E0EAEF",
+        // borderWidth: 1,
+        // // borderColor: "#E0EAEF",
+        // borderColor: "red",
         backgroundColor: "#FFF",
         borderRadius: 10,
         padding: 9,
         width: "100%",
         height: "15%",
-        flexDirection: "column",
+        flexDirection: "row",
         justifyContent: "space-between"
     },
     PriceMainView: {
-        flexDirection: "row",
-        justifyContent: "flex-end",
+        // borderWidth: 1,
+        // borderColor: "red",
+        // justifyContent: "flex-end",
         gap: 9
     },
     oiginalPriceView: {
@@ -135,7 +156,7 @@ const styles = StyleSheet.create({
     originalPriceTxt: {
         fontSize: 22,
         fontFamily: "Forza-Bold",
-        color:"#3D4759"
+        color: "#3D4759"
     },
     nameRatingView: {
         flexDirection: "row",
@@ -178,7 +199,7 @@ const styles = StyleSheet.create({
         position: "absolute",
         flexDirection: "row",
         justifyContent: "space-between",
-        bottom: 0,
+        top:515
     },
     countMainView: {
         flexDirection: "row",

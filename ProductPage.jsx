@@ -8,6 +8,8 @@ import { StyleContext } from './App';
 import { useNavigation } from '@react-navigation/native';
 import { ScrollView } from 'native-base';
 import AllProductHandler from './AllProductHandler';
+import axios from 'axios';
+import { error } from 'console';
 // import { Alert, VStack, HStack, IconButton, Box, Center, CloseIcon } from "native-base";
 
 const ProductPage = ({ route }) => {
@@ -16,58 +18,16 @@ const ProductPage = ({ route }) => {
     const [placeName, setPlaceName] = useState();
     const [yAxis, setYaxis] = useState();
     const [searchedProduct, setSearchedProduct] = useState();
-    const [allProducts, setAllProducts] = useState([
-        {
-            image: "./assets/wheelProduct.png",
-            rating: "4.5",
-            name: "Apollo Tyres",
-            price: "600",
-            original_price: "500"
-        },
-        {
-            image: "./assets/wheelProduct.png",
-            rating: "5",
-            name: "Apollo Bike",
-            price: "500",
-            original_price: "500"
-        },
-        {
-            image: "./assets/wheelProduct.png",
-            rating: "4.9",
-            name: "Apollo Window",
-            price: "400",
-            original_price: "500"
-        },
-        {
-            image: "./assets/wheelProduct.png",
-            rating: "4.4",
-            name: "Apollo Door",
-            price: "300",
-            original_price: "500"
-        },
-        {
-            image: "./assets/wheelProduct.png",
-            rating: "4",
-            name: "Apollo Mirror",
-            price: "200",
-            original_price: "500"
-        },
-        {
-            image: "./assets/wheelProduct.png",
-            rating: "3",
-            name: "Apollo Headlight",
-            price: "30",
-            original_price: "500"
-        },
-        {
-            image: "./assets/wheelProduct.png",
-            rating: "4.8",
-            name: "Apollo Handle",
-            price: "40",
-            original_price: "500"
-        }
-    ]);
+    const [allProducts, setAllProducts] = useState();
 
+    useEffect(() => {
+        axios.get("http://43.204.88.205:90/all-parts-details")
+            .then((response) => {
+                console.log('products:', response.data.data);
+                setAllProducts(response.data.data);
+            })
+            .catch((error) => console.log("error_in_app_parts_details:", error))
+    }, [])
     const searcheProduct_handler = (searchedProduct) => {
         //Search API should b called here
         console.log("searchedProduct :", searchedProduct);
@@ -87,7 +47,7 @@ const ProductPage = ({ route }) => {
 
     return (
         <SafeAreaView>
-            <ScrollView style={styles.scrollViewStyle} showsHorizontalScrollIndicator={false} onScroll={(event) => {
+            <ScrollView style={styles.scrollViewStyle} showsVerticalScrollIndicator={false} onScroll={(event) => {
                 const y = event.nativeEvent.contentOffset.y;
                 // console.log('eventSc:', parseFloat(y).toFixed(0).toString());
                 setYaxis(parseFloat(y).toFixed(0).toString());

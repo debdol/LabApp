@@ -9,19 +9,20 @@ import { useNavigation } from '@react-navigation/native';
 const AllProductHandler = ({ item }) => {
     const { getAddToCartData, getCartCounter, PostCartCounter } = useContext(StyleContext);
     const navigation = useNavigation();
+    // console.log("item:", item)
     return (
         <TouchableOpacity onPress={() => navigation.navigate("ProductDetails", { productDetailss: item })} style={styles.productBox}>
-            <Image source={require('./assets/wheelProduct.png')} style={{ alignSelf: "center" }} />
-            <View style={styles.ratingView}>
+            <Image source={{ uri: item.images[0] }} style={styles.productImage} />
+            {/* <View style={styles.ratingView}>
                 <View style={{ flexDirection: "row" }}>
                     <Image source={require('./assets/Star.png')} />
                     <Text style={styles.ratingsTxt}>{item.rating}</Text>
                 </View>
-                {/* <TouchableOpacity>
-                        <AntDesign name='hearto' size={20} />
-                    </TouchableOpacity> */}
-            </View>
-            <Text style={styles.productName}>{item.name}</Text>
+                <TouchableOpacity>
+                    <AntDesign name='hearto' size={20} />
+                </TouchableOpacity>
+            </View> */}
+            <Text style={styles.productName}>{item.product_name}</Text>
             <View style={styles.priceView}>
                 <FontAwesome name='inr' size={15} color={"#3D4759"} />
                 <Text style={styles.priceTxt}>{item.price}</Text>
@@ -49,10 +50,18 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         width: "47%",
         height: 225,
-        padding: 10,
+        padding: 5,
         flexDirection: "column",
         justifyContent: "space-evenly",
         backgroundColor: "#FFF",
+    },
+    productImage: {
+        alignSelf: "center",
+        height: 110,
+        width: 150,
+        borderWidth:1,
+        borderColor:"white",
+        borderRadius:9
     },
     ratingView: {
         flexDirection: "row",
