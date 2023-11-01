@@ -9,8 +9,9 @@ import { useNavigation } from '@react-navigation/native';
 import { ScrollView } from 'native-base';
 import AllProductHandler from './AllProductHandler';
 import axios from 'axios';
-import { error } from 'console';
-// import { Alert, VStack, HStack, IconButton, Box, Center, CloseIcon } from "native-base";
+import Loading from './Loading';
+import { Box, Center, VStack, Skeleton, HStack, Heading, Spinner } from "native-base";
+import { SliderBox } from "react-native-image-slider-box";
 
 const ProductPage = ({ route }) => {
     const { getAddToCartData, getCartCounter, PostCartCounter, postUserLocationDetails } = useContext(StyleContext);
@@ -19,14 +20,28 @@ const ProductPage = ({ route }) => {
     const [yAxis, setYaxis] = useState();
     const [searchedProduct, setSearchedProduct] = useState();
     const [allProducts, setAllProducts] = useState();
+    const images = [
+        { uri: 'https://www.shutterstock.com/image-photo/mechanic-scan-tool-diagnosing-car-260nw-533585167.jpg' },
+        { uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTRuB7OQWLmVs1lIgPlD7AtZ8BjOeWyZUZrg03ydikT&s' },
+        { uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyEmC7xX79M78idNry0LsoX1n0uBjH6tCpUPna80e9&s' },
+        { uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQO8dfb0V6-8K-sThWavqVa3FQQKEzp3A0PisfR_NO-&s' },
+        { uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR8_keM8vz7dYglQCe7MtNTAC5PTphGEMZZrpByWj_X&s' },
+    ];
 
     useEffect(() => {
         axios.get("http://43.204.88.205:90/all-parts-details")
             .then((response) => {
-                console.log('products:', response.data.data);
+                // console.log('products:', response.data.data);
                 setAllProducts(response.data.data);
             })
             .catch((error) => console.log("error_in_app_parts_details:", error))
+    }, []);
+    const productImageSlider = () => {
+        //image slider API should b called here
+        console.log("image_slider_API");
+    }
+    useEffect(() => {
+        productImageSlider();
     }, [])
     const searcheProduct_handler = (searchedProduct) => {
         //Search API should b called here
@@ -43,7 +58,7 @@ const ProductPage = ({ route }) => {
         if (postUserLocationDetails) {
             setPlaceName(postUserLocationDetails.split(','));
         }
-    }, [postUserLocationDetails])
+    }, [postUserLocationDetails]);
 
     return (
         <SafeAreaView>
@@ -64,7 +79,7 @@ const ProductPage = ({ route }) => {
                     </TouchableOpacity>
                 </View>
                 <View style={styles.ProductContainer}>
-                    <View style={styles.productSlideChildContainer}>
+                    {/* <View style={styles.productSlideChildContainer}>
                         <Image source={require('./assets/cartimg.png')} />
                         <View style={styles.productSlideTxtView}>
                             <Text style={styles.safeOnTheRoad}>SAFE ON THE ROAD</Text>
@@ -72,7 +87,25 @@ const ProductPage = ({ route }) => {
                                 <Text style={{ fontFamily: "Forza-Bold", color: "#3D4759" }}>Buy Now</Text>
                             </TouchableOpacity>
                         </View>
-                    </View>
+                    </View> */}
+                    <SliderBox
+                        autoplay={true}
+                        images={images}
+                        sliderBoxHeight={200}
+                        onCurrentImagePressed={index => console.log(`image ${index} pressed`)}
+                        dotColor="#FFEE58"
+                        inactiveDotColor="#90A4AE"
+                        dotStyle={{
+                            width: 15,
+                            height: 15,
+                            borderRadius: 15,
+                            marginHorizontal: 10,
+                            padding: 0,
+                            margin: 0
+                        }}
+                        circleLoop={true}
+                        ImageComponentStyle={styles.productSlideChildContainer}
+                    />
                     <View style={styles.locationView}>
                         <View style={{ width: "50%", flexDirection: "row", gap: 10 }}>
                             <View style={styles.locationContainer}>
@@ -119,7 +152,11 @@ const ProductPage = ({ route }) => {
                                     <AllProductHandler item={item} key={index} />
                                 )
                             })}
-                        </View> : null}
+                        </View> :
+                        <HStack space={8} justifyContent="center" alignItems="center" style={{ alignItems: "center", }}>
+                            <Spinner size="lg" />
+                        </HStack>
+                    }
                 </View>
             </ScrollView>
             <View style={yAxis >= 360 ? [{ position: "absolute", zIndex: 10, top: 0, alignSelf: "center" }, styles.inputView] : styles.inputView}>
@@ -132,7 +169,7 @@ const ProductPage = ({ route }) => {
                 {searchedProduct ?
                     <TouchableOpacity onPress={() => setSearchedProduct()}>
                         <Entypo size={25} name='cross' color={"#FFFFFF"} style={styles.cross} />
-                    </TouchableOpacity> : null}
+                    </TouchableOpacity> : <Loading />}
             </View>
         </SafeAreaView>
     )
@@ -141,25 +178,34 @@ const ProductPage = ({ route }) => {
 
 const styles = StyleSheet.create({
     scrollViewStyle: {
-        color: "#FFFFFF",
-        height: "100%"
-    },
-    ProductContainer: {
         height: "100%",
-        padding: 9,
+        width: "100%",
+        borderColor: "red",
+        // borderWidth:1,
+        backgroundColor: '#FFFFF',
     },
     productHeadingView: {
         padding: 9,
+        height: 65,
+        width: '100%',
         backgroundColor: "#ffffff",
-        paddingVertical: 15,
         flexDirection: "row",
         justifyContent: 'space-between',
         alignItems: "center",
-        borderBottomLeftRadius: 19,
-        borderBottomRightRadius: 19,
+        borderBottomLeftRadius: 15,
+        borderBottomRightRadius: 15,
         // borderWidth:1,
-        // borderColor:"red",
+        borderColor: "red",
     },
+
+    ProductContainer: {
+        height: "100%",
+        width: "100%",
+        padding: 9,
+        // borderWidth: 2,
+        borderColor: "red"
+    },
+
     productHeadingTxt: {
         fontFamily: "Forza-Bold",
         fontSize: 20,
@@ -177,14 +223,17 @@ const styles = StyleSheet.create({
     //   borderWidth:1
     // },
     productSlideChildContainer: {
-        flexDirection: "row",
-        backgroundColor: "#F4B755",
-        justifyContent: "space-between",
-        width: "100%",
-        height: "15%",
+        // flexDirection: "row",
+        // backgroundColor: "#F4B755",
+        // alignItems:"center",
+        right: 7,
+        width: "96%",
+        // height: "15%",
         borderRadius: 16,
-        padding: 10,
-        marginBottom: "3%"
+        // padding: 10,
+        marginBottom: "3%",
+        // borderColor: "red",
+        // borderWidth: 1
     },
     safeOnTheRoad: {
         fontFamily: "Forza-Black",
@@ -281,10 +330,11 @@ const styles = StyleSheet.create({
     },
     allProductView: {
         flexDirection: "row",
-        justifyContent: 'space-between',
+        justifyContent: 'center',
+        alignSelf: "center",
         flexWrap: "wrap",
         width: "100%",
-        height: "140%",
+        // height: "140%",
         gap: 8,
         // borderColor:"red",
         // borderWidth:1

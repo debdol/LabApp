@@ -10,7 +10,7 @@ import { useNavigation } from '@react-navigation/native';
 const ProductDetails = ({ route }) => {
     const { postUserLog, getAddToCartData, getCartCounter, PostCartCounter } = useContext(StyleContext);
     const navigation = useNavigation();
-    const [showData, setShowData] = useState("description");
+    const [showData, setShowData] = useState(route.params.productDetailss.description);
     const [count, setCount] = useState(1);
     const [goToCart, setGoToCart] = useState(true);
     // console.log('goToCart :', route.params.productDetailss);
@@ -44,7 +44,7 @@ const ProductDetails = ({ route }) => {
                 <View style={styles.DescriptionReviewContainer}>
                     <View style={styles.btnView}>
                         <TouchableOpacity onPress={() => {
-                            setShowData("description");
+                            setShowData(route.params.productDetailss.description);
                         }} style={showData === "description" ? { borderBottomColor: "#3D4759", borderBottomWidth: 2 } : null}>
                             <Text style={styles.originalPriceTxt}>Description</Text>
                         </TouchableOpacity>
@@ -98,28 +98,28 @@ const ProductDetails = ({ route }) => {
 
 const styles = StyleSheet.create({
     HeadingView: {
-        // padding: 6,
-        elevation:9,
+        elevation: 9,
         backgroundColor: "#ffffff",
-        // paddingVertical: 15,
         flexDirection: "row",
         justifyContent: 'space-between',
-        // alignItems: "center",
-        borderWidth:1,
-        borderColor:"black",
-        borderRadius:9
+        borderWidth: 1,
+        borderBottomColor: "black",
+        // borderColor:"red",
+        borderBottomLeftRadius: 20,
+        borderBottomRightRadius: 20,
+        height: "27%"
     },
     backButton: {
         position: "absolute",
-        top:7,
-        left:6,
+        top: 7,
+        left: 6,
         zIndex: 9,
         // borderWidth: 1,
         // borderColor: "red",
     },
     productImage: {
         // alignSelf: "center",
-        height: 240,
+        height: '100%',
         width: '100%',
         borderWidth: 1,
         borderColor: "black",
@@ -199,7 +199,7 @@ const styles = StyleSheet.create({
         position: "absolute",
         flexDirection: "row",
         justifyContent: "space-between",
-        top:515
+        top: 515
     },
     countMainView: {
         flexDirection: "row",

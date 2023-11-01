@@ -13,8 +13,6 @@ import SearchMechanics from './SearchMechanics';
 import { StyleContext } from './App';
 import InformationPage from './InformationPage';
 import EditProfile from './EditProfile';
-import axios from 'axios';
-import { openServiceRequestDetails } from './APIs';
 import ProductPage from './ProductPage';
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -94,7 +92,7 @@ const Allnavigation = () => {
                         getPageName("Mechanic")
                     }} style={postPageName == "Mechanic" ? styles.tabBtnContainer : styles.tabBtnContainerNonClicked}>
                         <View style={styles.btnContainerView}>
-                            <Feather name="shopping-cart" size={20} style={postPageName == "Mechanic" ? styles.tabBtnIconClicked : styles.tabBtnIconNonClicked} />
+                            <Feather name="settings" size={20} style={postPageName == "Mechanic" ? styles.tabBtnIconClicked : styles.tabBtnIconNonClicked} />
                             <Text style={[styles.btnText, postPageName == "Mechanic" ? styles.btnTextActive : styles.btnTextHide]}>Mechanic</Text>
                         </View>
                     </TouchableOpacity>

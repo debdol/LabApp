@@ -162,7 +162,7 @@ const Home = () => {
   const getThePlaceName = () => {
     // console.log("userLongitude ,userLatitude:", userLongitude, userLatitude);
     if (userLatitude && userLongitude) {
-      axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${userLatitude},${userLongitude}&key=`)
+      axios.get(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${userLatitude},${userLongitude}&key=AIzaSyDEodBA3a3D-8LEXWKzP6-dtk2PlODNf9c`)
         .then((res) => {
           // console.log("responce in geoCoding :", res.data.results[4].formatted_address);
           if (res.data.results != 0) {
