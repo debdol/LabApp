@@ -23,7 +23,7 @@ const MechanicsDetails = ({ route }) => {
     const [year, setYear] = useState();
     const [serviceTypes, setServiceTypes] = useState();
 
-    console.log("postServiceRequestDetails :", route.params.item);
+    // console.log("postServiceRequestDetails :", route.params.item);
     useEffect(() => {
         let dates = route.params.item.registered_on.split("-");
         let year = dates[2]
