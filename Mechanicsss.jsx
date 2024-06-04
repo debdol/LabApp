@@ -151,7 +151,7 @@ const Mechanicsss = ({ route }) => {
                             showsUserLocation
                             followUserLocation
                             zoomTapEnabled={true}>
-                            <MapCircle
+                            {/* <MapCircle
                                 center={{
                                     latitude: postUserlat,
                                     longitude: postUserLong,
@@ -160,7 +160,7 @@ const Mechanicsss = ({ route }) => {
                                 strokeWidth={2}
                                 strokeColor={'#1a66ff'}
                                 fillColor={'rgba(230,238,255,0.5)'}
-                            />
+                            /> */}
                             {markers ? (
                                 markers.map((item, index) => {
                                     return (
