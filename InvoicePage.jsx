@@ -142,13 +142,13 @@ const InvoicePage = ({ route }) => {
                     }
                 })
                     .then((res) => {
-                        console.log("Bombai se aaya mera dost: ", res);
+                        // console.log("Bombai se aaya mera dost: ", res);
                         if (result.type === "loadstop") {
                             console.log("Callback URL is: ", res.url);
                         }
                     })
                     .catch((err) => {
-                        console.log("Gadbad hai re baba: ", err)
+                        console.log("error: ", err)
                     })
                 await this.sleep(800);
                 Alert.alert(JSON.stringify(result))
